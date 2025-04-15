@@ -4,6 +4,7 @@ Members:
  - Olodin, Krizza Beth M.
  - Lomocso, Austine John P.
  - Guadiana, Sherielyn C.
+ - Fernandez, Christian Luis C.
 
 **Game Title**: Cooking Ina, Ang Sarap!
 
