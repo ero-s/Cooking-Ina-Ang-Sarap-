@@ -2,6 +2,7 @@
 
 Members:
  - Olodin, Krizza Beth M.
+ - Lomocso, Austine John P.
 
 **Game Title**: Cooking Ina, Ang Sarap!
 
