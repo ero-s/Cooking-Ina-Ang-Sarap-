@@ -1,10 +1,11 @@
 # CookingIna
 
 Members:
- - Olodin, Krizza Beth M.
- - Lomocso, Austine John P.
- - Guadiana, Sherielyn C.
  - Fernandez, Christian Luis C.
+ - Guadiana, Sherielyn C.
+ - Lomocso, Austine John P.
+ - Olodin, Krizza Beth M.
+ - Tabernero, Shervin Dale M.
 
 **Game Title**: Cooking Ina, Ang Sarap!
 
