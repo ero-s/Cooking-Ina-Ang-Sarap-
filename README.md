@@ -7,9 +7,9 @@ Members:
  - Olodin, Krizza Beth M.
  - Tabernero, Shervin Dale M.
 
-**Game Title**: Cooking Ina, Ang Sarap!
+Game Title: Cooking Ina, Ang Sarap!
 
-**Game Summary Plot: **
+Game Summary Plot: 
 
 Set in the bustling streets behind Cebu Institute of Technology – University, Nanay’s Merienda Quest follows the heartfelt story of Aling Bileth, a resilient Filipina mother determined to provide a better life for her young daughter, Libeth. After losing her husband to illness and struggling with mounting debts, Aling Bileth sets up a humble merienda stall near CIT-U’s backgate, serving classic Filipino favorites.
 
@@ -23,7 +23,7 @@ Cooking Ina, Ang Sarap! Related Games:
 1. Cooking Fever
 2. Hotdog Bush
 
-**Game Objectives:**
+Game Objectives:
 1. Number of Players:
    - 1 Player
 2. Number of Levels:
@@ -32,7 +32,7 @@ Cooking Ina, Ang Sarap! Related Games:
    - The player must earn the target income before the stall closes (when the time runs out)
 4. Losing the Level
    - Time runs out without meeting the target income
-     (Note: Patience Level of customers and inaccurate serving of food deducts thier tip, thus affecting the income.)
+     (Note: Patience's Level of customers and inaccurate serving of food deducts their tip, thus affecting the income.)
 5. Leveling Up:
   - reaching higher levels will have target income increased, number of customers increased (based on the total income obtained from the orders), patience level decreased.
    
