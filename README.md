@@ -1,5 +1,8 @@
 # CookingIna
 
+Members:
+ - Olodin, Krizza Beth M.
+
 **Game Title**: Cooking Ina, Ang Sarap!
 
 **Game Summary Plot: **
