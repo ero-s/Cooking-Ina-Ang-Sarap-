@@ -1,7 +1,8 @@
 package com.example.cookingina.objects.entity;
 
 public class StoreItem {
-    private final String resource;
+    private final String rawResource;
+    private final String cookedResource;
     private final String description;
     private final Double preparationTime;
     private final Double sellingPrice;
@@ -9,8 +10,9 @@ public class StoreItem {
     private final int status;
 
 
-    public StoreItem(String resource, String description, Double preparationTime, Double sellingPrice, Double discardCost, int status) {
-        this.resource = resource;
+    public StoreItem(String rawResource, String cookedResource, String description, Double preparationTime, Double sellingPrice, Double discardCost, int status) {
+        this.rawResource = rawResource;
+        this.cookedResource = cookedResource;
         this.description = description;
         this.preparationTime = preparationTime;
         this.sellingPrice = sellingPrice;
@@ -18,8 +20,9 @@ public class StoreItem {
         this.status = status;
     }
 
-    public String getResource() {
-        return resource;
+    public String getCookedResource() {return cookedResource;}
+    public String getRawResource() {
+        return rawResource;
     }
 
     public String getDescription() {

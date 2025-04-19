@@ -73,13 +73,14 @@ public class CookingInaMain extends GameApplication {
                 0,                                              // playend (initial value)
                 1.5,                                            // speedMultiplier (50% faster cooking)
                 500.0,                                          // cost ($500)
-                5,                                              // capacity (5 items at once)
+                4,                                              // capacity (4 items at once)
                 false,                                          // isUnlocked (initially locked)
                 "A standard fryer for basic cooking needs");    // description);
 
         QuekQuek quekquek = new QuekQuek(
-                "quekquek.png",                         // resource identifier
-                "lami",        // description
+                "quekquek.png",                      // raw resource identifier
+                "cooked_quekquek.png",                          // cooked resource
+                "lami",                                         // description
                 15.0,                                           // preparationTime (minutes)
                 12.99,                                          // sellingPrice ($)
                 2.0,                                            // discardCost ($)
@@ -88,13 +89,12 @@ public class CookingInaMain extends GameApplication {
         // your gameplay setup
         // 2a) Spawn a “station” (e.g., a pan)
         UIController.spawnEmptyStation(fryer, 400, 400);
-        UIController.spawnEmptyStation(fryer, 550, 400);
 
         // 2b) Spawn a few draggable ingredients
-        UIController.spawnIngredient(quekquek, fryer,100, 400);
-        UIController.spawnIngredient(quekquek, fryer, 200, 400);
-        UIController.spawnIngredient(quekquek, fryer, 100, 410);
-        UIController.spawnIngredient(quekquek, fryer, 200, 410);
+        UIController.spawnRawIngredient(quekquek, fryer,100, 400);
+        UIController.spawnRawIngredient(quekquek, fryer, 200, 400);
+        UIController.spawnRawIngredient(quekquek, fryer, 100, 410);
+        UIController.spawnRawIngredient(quekquek, fryer, 200, 410);
     }
 
     public static void main(String[] args) {
