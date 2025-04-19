@@ -30,6 +30,7 @@ public class UIController extends Component {
     }
 
 
+    // Method takes care of entity collision upon dragging and mouse release
     @Override
     public void onAdded() {
         draggable = entity.getComponent(DraggableComponent.class);
@@ -40,19 +41,22 @@ public class UIController extends Component {
                         .filter(e -> e.isType(CookingInaMain.EntityType.STATION_NO_USE))
                         .findFirst()
                         .ifPresent(station -> {
-                            // Get station position
-                            double stationX = station.getX();
-                            double stationY = station.getY();
+                            if(equipment.getSpaceTaken() != equipment.getCapacity()) {
+                                entity.removeComponent(DraggableComponent.class);
+                                equipment.addSpaceTaken();
+                                entity.setPosition(station.getX() + (equipment.getSpaceTaken() * 20), station.getY()+40);
 
-                            // Remove empty station
-                            station.removeFromWorld();
-
-                            // Spawn used station at the same position
-                            equipment.addSpaceTaken();
-                            spawnUsedStation(equipment, stationX, stationY);
+                                // Add cooking component with timer
+                                entity.addComponent(new CookingComponent(
+                                        storeItem.getPreparationTime(),
+                                        storeItem,
+                                        equipment
+                                ));
+                            } else {
+                                entity.removeFromWorld();
+                            }
+                            spawnRawIngredient(storeItem, equipment, originalX, originalY);
                         });
-                entity.removeFromWorld();
-                spawnIngredient(storeItem, equipment, originalX, originalY);
                 updateDebugText(debugMessage);
             }
         });
@@ -70,11 +74,21 @@ public class UIController extends Component {
                 .anyMatch(e -> e.isType(CookingInaMain.EntityType.STATION_NO_USE));
     }
 
-    public static void spawnIngredient(StoreItem storeItem, Equipment equipment, double x, double y) {
+    public static void spawnRawIngredient(StoreItem storeItem, Equipment equipment, double x, double y) {
         entityBuilder()
                 .type(CookingInaMain.EntityType.INGREDIENT)
                 .at(x, y)
-                .viewWithBBox( FXGL.texture(storeItem.getResource(), 40,40))
+                .viewWithBBox( FXGL.texture(storeItem.getRawResource(), 40,40))
+                .with(new DraggableComponent())
+                .with(new CollidableComponent(true))
+                .with(new UIController(storeItem, equipment,x, y))
+                .buildAndAttach();
+    }
+    public static void spawnCookedIngredient(StoreItem storeItem, Equipment equipment, double x, double y) {
+        entityBuilder()
+                .type(CookingInaMain.EntityType.INGREDIENT)
+                .at(x, y)
+                .viewWithBBox( FXGL.texture(storeItem.getCookedResource(), 40,40))
                 .with(new DraggableComponent())
                 .with(new CollidableComponent(true))
                 .with(new UIController(storeItem, equipment,x, y))
@@ -85,7 +99,7 @@ public class UIController extends Component {
         entityBuilder()
                 .type(CookingInaMain.EntityType.STATION_NO_USE)
                 .at(x, y)
-                .viewWithBBox(FXGL.texture(equipment.getEmptyResource(), 120, 120))
+                .viewWithBBox(FXGL.texture(equipment.getEmptyResource(), 150, 150))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
         equipment.setLayoutX((int) x);
