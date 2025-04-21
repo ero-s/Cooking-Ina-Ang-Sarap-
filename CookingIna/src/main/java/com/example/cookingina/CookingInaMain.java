@@ -7,6 +7,7 @@ import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.control.UIController;
+import com.example.cookingina.objects.entity.TrashCan;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import javafx.scene.input.KeyCode;
@@ -21,9 +22,11 @@ public class CookingInaMain extends GameApplication {
 
     public enum EntityType {
         INGREDIENT,
-        STATION_NO_USE,
-        STATION_USED,
+        EQUIPMENT,
+        CONTAINER,
+        TRASH
     }
+
     public static Text debugText;
 
     @Override
@@ -48,8 +51,8 @@ public class CookingInaMain extends GameApplication {
 
     @Override
     protected void initSettings(GameSettings settings) {
-        settings.setWidth(800);
-        settings.setHeight(600);
+        settings.setWidth(1000);
+        settings.setHeight(700);
         settings.setTitle("CookingIna");
         settings.setVersion("0.1");
         settings.setMainMenuEnabled(true);
@@ -78,6 +81,7 @@ public class CookingInaMain extends GameApplication {
                 "A standard fryer for basic cooking needs");    // description);
 
         QuekQuek quekquek = new QuekQuek(
+                "quekquek_container.png",
                 "quekquek.png",                      // raw resource identifier
                 "cooked_quekquek.png",                          // cooked resource
                 "lami",                                         // description
@@ -86,15 +90,14 @@ public class CookingInaMain extends GameApplication {
                 2.0,                                            // discardCost ($)
                 1);                                             // status (1 = available)
 
+        TrashCan trashCan = new TrashCan("trash_close.png", "trash_open.png");
+
         // your gameplay setup
         // 2a) Spawn a “station” (e.g., a pan)
-        UIController.spawnEmptyStation(fryer, 400, 400);
-
+        UIController.spawnEquipment(fryer, 535, 350);
         // 2b) Spawn a few draggable ingredients
-        UIController.spawnRawIngredient(quekquek, fryer,100, 400);
-        UIController.spawnRawIngredient(quekquek, fryer, 200, 400);
-        UIController.spawnRawIngredient(quekquek, fryer, 100, 410);
-        UIController.spawnRawIngredient(quekquek, fryer, 200, 410);
+        UIController.spawnContainer(quekquek, fryer, 590, 570);
+        UIController.spawnTrashcan(850,560);
     }
 
     public static void main(String[] args) {
