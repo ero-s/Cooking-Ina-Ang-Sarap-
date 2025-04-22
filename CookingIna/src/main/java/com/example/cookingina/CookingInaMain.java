@@ -7,6 +7,7 @@ import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.control.UIController;
+import com.example.cookingina.objects.entity.StoreItem;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
@@ -159,10 +160,46 @@ public class CookingInaMain extends GameApplication {
                 200
         );
 
+        StoreItem calamansiContainer = new StoreItem(
+                "juice_dispenser_calamansi.png",
+                "dragonfruit_juice_fillingup.png",
+                "dragonfruit_juice_done.png",
+                "dragonfruit juice",
+                10.0,
+                5.0,
+                3.0,
+                1
+        );
+        StoreItem bukoContainer = new StoreItem(
+                "juice_dispenser_buko.png",
+                "mangojuice_fillingup.png",
+                "mangojuice_done.png",
+                "mango juice",
+                10.0,
+                5.0,
+                3.0,
+                1
+        );StoreItem orangeContainer = new StoreItem(
+                "juice_dispenser_orange.png",
+                "nestea_juice_fillingup.png",
+                "nestea_juice_done.png",
+                "nesta juice",
+                10.0,
+                5.0,
+                3.0,
+                1
+        );
+
+
 
         UIController.spawnEquipment(fryer, 535, 350);
         UIController.spawnContainer(quekquek, fryer, 590, 570);
         UIController.spawnTrashcan(850,560);
+
+        UIController.spawnContainer(calamansiContainer, calamansiDispenser, 100, 250);
+        UIController.spawnContainer(quekquek, fryer, 170, 250);
+        UIController.spawnContainer(quekquek, fryer, 250, 250);
+
 
         UIController.spawnEquipment(calamansiDispenser, 100, 250);
         UIController.spawnEquipment(bukoDispenser, 170, 250);
