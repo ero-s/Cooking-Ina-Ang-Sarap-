@@ -13,10 +13,21 @@ public class Equipment {
     protected int spaceTaken;
     private int layoutX;
     private int layoutY;
+    private final int textureWidth;
+    private final int textureHeight;
+
     private final boolean[] slots;
 
+    public int getTextureHeight() {
+        return textureHeight;
+    }
+
+    public int getTextureWidth() {
+        return textureWidth;
+    }
+
     public Equipment(String emptyResource, String usedResource, int type, int playend, double speedMultiplier,
-                     double cost, int capacity, boolean isUnlocked, String description) {
+                     double cost, int capacity, boolean isUnlocked, String description, int textureWidth, int textureHeight) {
         this.emptyResource = emptyResource;
         this.usedResource = usedResource;
         this.type = type;
@@ -26,6 +37,8 @@ public class Equipment {
         this.capacity = capacity;
         this.isUnlocked = isUnlocked;
         this.description = description;
+        this.textureWidth = textureWidth;
+        this.textureHeight = textureHeight;
         this.layoutX = 0;
         this.layoutY = 0;
         this.spaceTaken = 0;

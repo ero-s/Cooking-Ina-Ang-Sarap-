@@ -107,7 +107,7 @@ public class UIController extends Component {
         entityBuilder()
                 .type(CookingInaMain.EntityType.EQUIPMENT)
                 .at(x, y)
-                .viewWithBBox(FXGL.texture(equipment.getEmptyResource(), 150, 150))
+                .viewWithBBox(FXGL.texture(equipment.getEmptyResource(), equipment.getTextureWidth(), equipment.getTextureHeight()))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
         equipment.setLayoutX((int) x);

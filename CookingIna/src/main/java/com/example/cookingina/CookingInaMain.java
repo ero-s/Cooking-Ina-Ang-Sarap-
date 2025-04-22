@@ -7,7 +7,7 @@ import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.control.UIController;
-import com.example.cookingina.objects.entity.TrashCan;
+import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import javafx.scene.input.KeyCode;
@@ -56,7 +56,6 @@ public class CookingInaMain extends GameApplication {
         settings.setTitle("CookingIna");
         settings.setVersion("0.1");
         settings.setMainMenuEnabled(true);
-
         settings.setSceneFactory(new SceneFactory() {
             @NotNull
             @Override
@@ -102,7 +101,13 @@ public class CookingInaMain extends GameApplication {
                 500.0,                                          // cost ($500)
                 4,                                              // capacity (4 items at once)
                 false,                                          // isUnlocked (initially locked)
-                "A standard fryer for basic cooking needs");    // description);
+                "A standard fryer for basic cooking needs",     // description);
+                150,
+                150
+
+
+        );
+
 
         QuekQuek quekquek = new QuekQuek(
                 "quekquek_container.png",
@@ -114,8 +119,53 @@ public class CookingInaMain extends GameApplication {
                 2.0,                                            // discardCost ($)
                 1);                                             // status (1 = available)
 
+        BeverageDispenser calamansiDispenser = new BeverageDispenser(
+                "juice_dispenser_calamansi.png",                         // name
+                "dragonfruit_juice_done.png",
+                1,
+                0,
+                1.5,
+                500.0,
+                4,
+                false,
+                "calamansi juice",
+                75,
+                200);
+
+        BeverageDispenser bukoDispenser = new BeverageDispenser(
+                "juice_dispenser_buko.png",                         // name
+                "mangojuice_done.png",
+                1,
+                0,
+                1.5,
+                500.0,
+                4,
+                false,
+                "buko juice",
+                75,
+                200);
+
+        BeverageDispenser orangeDispenser = new BeverageDispenser(
+                "juice_dispenser_orange.png",                         // name
+                "nestea_juice_done.png",
+                1,
+                0,
+                1.5,
+                500.0,
+                4,
+                false,
+                "orange juice",
+                75,
+                200
+        );
+
+
         UIController.spawnEquipment(fryer, 535, 350);
         UIController.spawnContainer(quekquek, fryer, 590, 570);
         UIController.spawnTrashcan(850,560);
+
+        UIController.spawnEquipment(calamansiDispenser, 100, 250);
+        UIController.spawnEquipment(bukoDispenser, 170, 250);
+        UIController.spawnEquipment(orangeDispenser, 250, 250);
     }
 }
