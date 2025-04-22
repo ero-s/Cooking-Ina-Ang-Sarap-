@@ -2,11 +2,7 @@ package com.example.cookingina.objects.entity;
 
 public class Equipment {
     protected String emptyResource;
-
-
-
     protected String usedResource;
-
     protected int type;
     protected int playend;
     protected double speedMultiplier;
@@ -14,14 +10,10 @@ public class Equipment {
     protected int capacity;
     protected boolean isUnlocked;
     protected String description;
-
-
-
     protected int spaceTaken;
-
-
     private int layoutX;
     private int layoutY;
+    private final boolean[] slots;
 
     public Equipment(String emptyResource, String usedResource, int type, int playend, double speedMultiplier,
                      double cost, int capacity, boolean isUnlocked, String description) {
@@ -36,7 +28,33 @@ public class Equipment {
         this.description = description;
         this.layoutX = 0;
         this.layoutY = 0;
-        spaceTaken = 0;
+        this.spaceTaken = 0;
+        this.slots = new boolean[capacity];
+    }
+
+    public String getDescription(){
+        return description;
+    }
+
+    public int getNextAvailableSlot() {
+        for (int i = 0; i < slots.length; i++) {
+            if (!slots[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void occupySlot(int index) {
+        slots[index] = true;
+    }
+
+    public void freeSlot(int index) {
+        slots[index] = false;
+    }
+
+    public boolean isSlotOccupied(int index) {
+        return slots[index];
     }
 
     public String getEmptyResource() {
