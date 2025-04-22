@@ -69,6 +69,30 @@ public class CookingInaMain extends GameApplication {
     @Override
     protected void initGame() {
         setBackground();
+        setCookingStations();
+
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    private void setBackground() {
+        double width = FXGL.getAppWidth();
+        double height = FXGL.getAppHeight();
+
+        Texture backgroundTexture = FXGL.getAssetLoader().loadTexture("background.png");
+        backgroundTexture.setFitWidth(width);
+        backgroundTexture.setFitHeight(height);
+
+        entityBuilder()
+                .at(0, 0)
+                .view(backgroundTexture)
+                .zIndex(-1)
+                .buildAndAttach();
+    }
+
+    private void setCookingStations(){
         Fryer fryer = new Fryer(
                 "emptyPan.png",                         // name
                 "usedPan.png",
@@ -90,32 +114,8 @@ public class CookingInaMain extends GameApplication {
                 2.0,                                            // discardCost ($)
                 1);                                             // status (1 = available)
 
-        TrashCan trashCan = new TrashCan("trash_close.png", "trash_open.png");
-
-        // your gameplay setup
-        // 2a) Spawn a “station” (e.g., a pan)
         UIController.spawnEquipment(fryer, 535, 350);
-        // 2b) Spawn a few draggable ingredients
         UIController.spawnContainer(quekquek, fryer, 590, 570);
         UIController.spawnTrashcan(850,560);
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    public void setBackground() {
-        double width = FXGL.getAppWidth();
-        double height = FXGL.getAppHeight();
-
-        Texture backgroundTexture = FXGL.getAssetLoader().loadTexture("background.png");
-        backgroundTexture.setFitWidth(width);
-        backgroundTexture.setFitHeight(height);
-
-        entityBuilder()
-                .at(0, 0)
-                .view(backgroundTexture)
-                .zIndex(-1)
-                .buildAndAttach();
     }
 }
