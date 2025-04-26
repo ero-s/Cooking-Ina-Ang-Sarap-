@@ -5,14 +5,11 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
-import com.almasb.fxgl.entity.Entity;
-import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.control.UIController;
-import com.example.cookingina.objects.entity.TrashCan;
+import com.example.cookingina.objects.entity.container.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
-import com.example.cookingina.objects.entity.equipment.JuiceTray;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -21,10 +18,7 @@ import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 
-import java.util.Map;
-
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
-import static com.almasb.fxgl.dsl.FXGLForKtKt.getPhysicsWorld;
 
 public class CookingInaMain extends GameApplication {
 
@@ -59,10 +53,12 @@ public class CookingInaMain extends GameApplication {
 
     @Override
     protected void initSettings(GameSettings settings) {
-        settings.setWidth(800);
-        settings.setHeight(600);
+        settings.setWidth(1920);
+        settings.setHeight(1080);
         settings.setTitle("CookingIna");
         settings.setVersion("0.1");
+        settings.setFullScreenAllowed(true);
+        settings.setFullScreenFromStart(true);
         settings.setMainMenuEnabled(true);
 
         settings.setSceneFactory(new SceneFactory() {
@@ -78,7 +74,7 @@ public class CookingInaMain extends GameApplication {
     protected void initGame() {
         setBackground();
         Fryer fryer = new Fryer(
-                "emptyPan.png",                         // name
+                "frying_pan.png",                         // name
                 "usedPan.png",
                 1,                                              // type (e.g., 1 = cooking equipment)
                 0,                                              // playend (initial value)
@@ -98,20 +94,8 @@ public class CookingInaMain extends GameApplication {
                 2.0,                                            // discardCost ($)
                 1);                                             // status (1 = available)
 
-
-        JuiceTray juiceTray = new JuiceTray(
-                "juice_tray.png",                         // name
-                "",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "juice tray");
-
         BeverageDispenser calamansiDispenser = new BeverageDispenser(
-                "juice_dispenser_calamansi.png",                         // name
+                "calamansiJuice_dispenser.png",                         // name
                 "dragonfruit_juice_done.png",
                 1,
                 0,
@@ -122,7 +106,7 @@ public class CookingInaMain extends GameApplication {
                 "calamansi juice");
 
         BeverageDispenser bukoDispenser = new BeverageDispenser(
-                "juice_dispenser_buko.png",                         // name
+                "bukoJuice_dispenser.png",                         // name
                 "mangojuice_done.png",
                 1,
                 0,
@@ -133,7 +117,7 @@ public class CookingInaMain extends GameApplication {
                 "buko juice");
 
         BeverageDispenser orangeDispenser = new BeverageDispenser(
-                "juice_dispenser_orange.png",                         // name
+                "orangeJuice_dispenser.png",                         // name
                 "nestea_juice_done.png",
                 1,
                 0,
@@ -143,24 +127,82 @@ public class CookingInaMain extends GameApplication {
                 false,
                 "orange juice");
 
-        TrashCan trashCan = new TrashCan("trashcan.png", "trashcan.png");
+        MangoBasket mangoBasket = new MangoBasket(
+                "mango_container.png",
+                "",
+                "mango basket"
+        );
 
-        // your gameplay setup
-        // 2a) Spawn a “station” (e.g., a pan)
-        UIController.spawnEquipment(fryer, 400, 400, 150, 150);
-        UIController.spawnEquipment(calamansiDispenser, 150, 20, 100, 270);
-        UIController.spawnEquipment(bukoDispenser, 250, 20, 100, 270);
-        UIController.spawnEquipment(orangeDispenser, 350, 20, 100, 270);
-        UIController.spawnEquipment(juiceTray, 480, 230, 200, 50);
+        HotdogContainer hotdogContainer = new HotdogContainer(
+                "rawHotdog_container.png",
+                "",
+                "hotdog container"
+        );
 
-        // 2b) Spawn a few draggable ingredients
-        UIController.spawnRawIngredient(quekquek, fryer,100, 400);
-        UIController.spawnRawIngredient(quekquek, fryer, 200, 400);
-        UIController.spawnRawIngredient(quekquek, fryer, 100, 410);
-        UIController.spawnRawIngredient(quekquek, fryer, 200, 410);
+        QuekquekContainer quekquekContainer = new QuekquekContainer(
+                "rawQuekquek_container.png",
+                "",
+                "Quekquek container"
+        );
 
+        TempuraContainer tempuraContainer = new TempuraContainer(
+                "rawTempura_container.png",
+                "",
+                "Tempura container"
+        );
 
-    }
+        CucumberContainer cucumberContainer = new CucumberContainer(
+                "cucumberGarnish_container.png",
+                "",
+                "cucumber garnish"
+        );
+
+        GusoContainer gusoContainer = new GusoContainer(
+                "gusoGarnish_container.png",
+                "",
+                "guso garnish"
+        );
+
+        SpicySauce spicySauce = new SpicySauce(
+                "spicy_sauce.png",
+                "",
+                "spicy sauce"
+        );
+
+        SweetSauce sweetSauce = new SweetSauce(
+                "sweet_sauce.png",
+                "",
+                "sweet sauce"
+        );
+
+        // FRYING PAN EQUIPMENT
+        UIController.spawnEquipment(fryer, 1035, 490, 180, 130);
+        UIController.spawnEquipment(fryer, 895, 490, 180, 130);
+        UIController.spawnEquipment(fryer, 755, 490, 180, 130);
+        UIController.spawnEquipment(fryer, 1045, 590, 175, 130);
+        UIController.spawnEquipment(fryer, 895, 590, 175, 130);
+        UIController.spawnEquipment(fryer, 745, 590, 175, 130);
+
+        //DISPENSER EQUIPMENT
+        UIController.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
+        UIController.spawnEquipment(bukoDispenser, 130, 400, 150, 340);
+        UIController.spawnEquipment(orangeDispenser, 30, 500, 150, 340);
+
+        //DISPENSER INVISIBLE
+        UIController.spawnInvisibleEquipment(calamansiDispenser, 230, 300, 150, 340);
+        UIController.spawnInvisibleEquipment(bukoDispenser, 130, 400, 150, 340);
+        UIController.spawnInvisibleEquipment(orangeDispenser, 30, 500, 150, 340);
+
+        //CONTAINER
+        UIController.spawnContainer(mangoBasket, 1650, 720, 230, 230);
+        UIController.spawnContainer(tempuraContainer, 650, 980, 190, 120);
+        UIController.spawnContainer(quekquekContainer, 870, 980, 190, 120);
+        UIController.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
+        UIController.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
+        UIController.spawnContainer(gusoContainer, 1390, 820, 140, 110);
+        UIController.spawnContainer(spicySauce, 1270, 460, 60, 160);
+        UIController.spawnContainer(sweetSauce, 1330, 550, 60, 160);
+    } 
 
     public static void main(String[] args) {
         launch(args);
@@ -170,7 +212,7 @@ public class CookingInaMain extends GameApplication {
         double width = FXGL.getAppWidth();
         double height = FXGL.getAppHeight();
 
-        Texture backgroundTexture = FXGL.getAssetLoader().loadTexture("background.png");
+        Texture backgroundTexture = FXGL.getAssetLoader().loadTexture("final_background.png");
         backgroundTexture.setFitWidth(width);
         backgroundTexture.setFitHeight(height);
 

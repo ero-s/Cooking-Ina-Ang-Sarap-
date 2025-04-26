@@ -5,8 +5,12 @@ import com.almasb.fxgl.dsl.components.DraggableComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.entity.components.CollidableComponent;
+import com.almasb.fxgl.physics.BoundingShape;
+import com.almasb.fxgl.physics.HitBox;
+import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.WaitingItem;
+import com.example.cookingina.objects.entity.Container;
 import com.example.cookingina.objects.entity.Equipment;
 import com.example.cookingina.objects.entity.StoreItem;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
@@ -184,52 +188,82 @@ public class UIController extends Component {
 
         equipment.setLayoutX((int) x);
         equipment.setLayoutY((int) y);
+    }
 
-        // Click listener on Juice Dispenser
-        stationEntity.getViewComponent().addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, e -> {
-            if (equipment instanceof BeverageDispenser) {
-                BeverageDispenser dispenser = (BeverageDispenser) equipment;
+    public static void spawnContainer(Container container, double x, double y, int width, int height) {
+        Entity stationEntity = FXGL.entityBuilder()
+                .type(CookingInaMain.EntityType.CONTAINER)
+                .at(x, y)
+                .viewWithBBox(FXGL.texture(container.getRawResource(), width, height))
+                .with(new CollidableComponent(true))
+                .buildAndAttach();
 
-                switch (dispenser.getDescription()) {
-                    case "calamansi juice":
-                        Calamansi_Juice calamansiJuice = new Calamansi_Juice(
-                                "none",
-                                "dragonfruit_juice_fillingup.png",
-                                "dragonfruit_juice_done.png",
-                                "calamansi juice",
-                                15.0, 12.99, 2.0, 1);
-                        spawnJuiceCup("dragonfruit_juice_fillingup.png", x + 25, y + 185, calamansiJuice, dispenser);
-                        break;
+        container.setLayoutX((int) x);
+        container.setLayoutY((int) y);
+    }
 
-                    case "buko juice":
-                        Calamansi_Juice bukoJuice = new Calamansi_Juice(
-                                "none",
-                                "mangojuice_fillingup.png",
-                                "mangojuice_done.png",
-                                "buko juice",
-                                15.0, 12.99, 2.0, 1);
-                        spawnJuiceCup("mangojuice_fillingup.png", x + 25, y + 185, bukoJuice, dispenser);
-                        break;
+    public static void spawnInvisibleEquipment(Equipment equipment, double x, double y, int width, int height) {
+        Entity invisibleEntity = FXGL.entityBuilder()
+                .at(x, y)
+                .bbox(new HitBox("CLICK_BOX", BoundingShape.box(width, height)))
+                .zIndex(1) // Optional: layer depth
+                .with(new CollidableComponent(true)) // Only if you need collision
+                .buildAndAttach();
 
-                    case "orange juice":
-                        Calamansi_Juice orangeJuice = new Calamansi_Juice(
-                                "none",
-                                "nestea_juice_fillingup.png",
-                                "nestea_juice_done.png",
-                                "orange juice",
-                                15.0, 12.99, 2.0, 1);
-                        spawnJuiceCup("nestea_juice_fillingup.png", x + 25, y + 185, orangeJuice, dispenser);
-                        break;
-                }
+            Texture texture = FXGL.texture(equipment.getEmptyResource());
+            texture.setOpacity(0.01); // Fully transparent
+            invisibleEntity.getViewComponent().addChild(texture);
+
+        texture.setFitWidth(width);
+        texture.setFitHeight(height);
+
+        // Mouse click event handler
+        texture.setMouseTransparent(false);
+        texture.setOnMouseClicked(e -> {
+            System.out.println("CLICK DETECTED on invisible entity!");
+            System.out.println("Equipment resource: " + equipment.getEmptyResource());
+            BeverageDispenser dispenser = (BeverageDispenser) equipment;
+
+            switch (dispenser.getDescription()) {
+                case "calamansi juice":
+                    Calamansi_Juice calamansiJuice = new Calamansi_Juice(
+                            "none",
+                            "calamansiJuice_finishedProduct.png",
+                            "calamansiJuice_finishedProduct.png",
+                            "calamansi juice",
+                            15.0, 12.99, 2.0, 1);
+                    spawnJuiceCup("calamansiJuice_finishedProduct.png", x + 40, y + 220, calamansiJuice, dispenser);
+                    break;
+
+                case "buko juice":
+                    Calamansi_Juice bukoJuice = new Calamansi_Juice(
+                            "none",
+                            "bukoJuice_finishedProduct.png",
+                            "bukoJuice_finishedProduct.png",
+                            "buko juice",
+                            15.0, 12.99, 2.0, 1);
+                    spawnJuiceCup("bukoJuice_finishedProduct.png", x + 40, y + 220, bukoJuice, dispenser);
+                    break;
+
+                case "orange juice":
+                    Calamansi_Juice orangeJuice = new Calamansi_Juice(
+                            "none",
+                            "orangeJuice_finishedProduct.png",
+                            "orangeJuice_finishedProduct.png",
+                            "orange juice",
+                            15.0, 12.99, 2.0, 1);
+                    spawnJuiceCup("orangeJuice_finishedProduct.png", x + 45, y + 220, orangeJuice, dispenser);
+                    break;
             }
         });
     }
+
 
     public static void spawnJuiceCup(String image, double x, double y, StoreItem juiceItem, Equipment equipment) {
         FXGL.entityBuilder()
                 .at(x, y)
                 .type(CookingInaMain.EntityType.INGREDIENT)
-                .viewWithBBox(FXGL.texture(image, 50, 70))
+                .viewWithBBox(FXGL.texture(image, 60, 110))
                 .with(new CookingComponent(
                         juiceItem.getPreparationTime(),
                         juiceItem,

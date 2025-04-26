@@ -129,8 +129,12 @@ public class CookingComponent extends Component {
         if (timer <= 0) {
             isCooked = true;
             // Only update the texture and remove from world if not discarded
-            if (!isDiscarded) {
+            if (!isDiscarded && cookedStoreItem.getDescription().contains("juice")) {
                 // Update to cooked form
+                entity.getViewComponent().clearChildren();
+                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 50, 80));
+            }
+            if(!isDiscarded && !cookedStoreItem.getDescription().contains("juice")){
                 entity.getViewComponent().clearChildren();
                 entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 40, 40));
             }
@@ -140,23 +144,6 @@ public class CookingComponent extends Component {
             }
         }
     }
-
-//    @Override
-//    public void onRemoved() {
-//        double currX = entity.getX();
-//        double currY = entity.getY();
-//        entity.getViewComponent().removeChild(progressBar);
-//
-//        if (cookedStoreItem.getDescription().contains("juice")) {
-//            double juiceX = 500 + (juiceCount * 50);
-//            double juiceY = 200;
-//
-//            UIController.spawnCookedIngredient(cookedStoreItem, equipment, juiceX, juiceY, 50, 70);
-//            juiceCount++;
-//        } else {
-//            UIController.spawnCookedIngredient(cookedStoreItem, equipment, currX, currY, 40, 40);
-//        }
-//    }
 
     @Override
     public void onRemoved() {
