@@ -5,11 +5,14 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.control.UIController;
-import com.example.cookingina.objects.entity.StoreItem;
+import com.example.cookingina.objects.entity.TrashCan;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
+import com.example.cookingina.objects.entity.equipment.JuiceTray;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -17,7 +20,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
+
+import java.util.Map;
+
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.getPhysicsWorld;
 
 public class CookingInaMain extends GameApplication {
 
@@ -52,11 +59,12 @@ public class CookingInaMain extends GameApplication {
 
     @Override
     protected void initSettings(GameSettings settings) {
-        settings.setWidth(1000);
-        settings.setHeight(700);
+        settings.setWidth(800);
+        settings.setHeight(600);
         settings.setTitle("CookingIna");
         settings.setVersion("0.1");
         settings.setMainMenuEnabled(true);
+
         settings.setSceneFactory(new SceneFactory() {
             @NotNull
             @Override
@@ -69,7 +77,88 @@ public class CookingInaMain extends GameApplication {
     @Override
     protected void initGame() {
         setBackground();
-        setCookingStations();
+        Fryer fryer = new Fryer(
+                "emptyPan.png",                         // name
+                "usedPan.png",
+                1,                                              // type (e.g., 1 = cooking equipment)
+                0,                                              // playend (initial value)
+                1.5,                                            // speedMultiplier (50% faster cooking)
+                500.0,                                          // cost ($500)
+                4,                                              // capacity (4 items at once)
+                false,                                          // isUnlocked (initially locked)
+                "A standard fryer for basic cooking needs");    // description);
+
+        QuekQuek quekquek = new QuekQuek(
+                "quekquek_container.png",
+                "quekquek.png",                      // raw resource identifier
+                "cooked_quekquek.png",                          // cooked resource
+                "lami",                                         // description
+                15.0,                                           // preparationTime (minutes)
+                12.99,                                          // sellingPrice ($)
+                2.0,                                            // discardCost ($)
+                1);                                             // status (1 = available)
+
+
+        JuiceTray juiceTray = new JuiceTray(
+                "juice_tray.png",                         // name
+                "",
+                1,
+                0,
+                1.5,
+                500.0,
+                4,
+                false,
+                "juice tray");
+
+        BeverageDispenser calamansiDispenser = new BeverageDispenser(
+                "juice_dispenser_calamansi.png",                         // name
+                "dragonfruit_juice_done.png",
+                1,
+                0,
+                1.5,
+                500.0,
+                4,
+                false,
+                "calamansi juice");
+
+        BeverageDispenser bukoDispenser = new BeverageDispenser(
+                "juice_dispenser_buko.png",                         // name
+                "mangojuice_done.png",
+                1,
+                0,
+                1.5,
+                500.0,
+                4,
+                false,
+                "buko juice");
+
+        BeverageDispenser orangeDispenser = new BeverageDispenser(
+                "juice_dispenser_orange.png",                         // name
+                "nestea_juice_done.png",
+                1,
+                0,
+                1.5,
+                500.0,
+                4,
+                false,
+                "orange juice");
+
+        TrashCan trashCan = new TrashCan("trashcan.png", "trashcan.png");
+
+        // your gameplay setup
+        // 2a) Spawn a “station” (e.g., a pan)
+        UIController.spawnEquipment(fryer, 400, 400, 150, 150);
+        UIController.spawnEquipment(calamansiDispenser, 150, 20, 100, 270);
+        UIController.spawnEquipment(bukoDispenser, 250, 20, 100, 270);
+        UIController.spawnEquipment(orangeDispenser, 350, 20, 100, 270);
+        UIController.spawnEquipment(juiceTray, 480, 230, 200, 50);
+
+        // 2b) Spawn a few draggable ingredients
+        UIController.spawnRawIngredient(quekquek, fryer,100, 400);
+        UIController.spawnRawIngredient(quekquek, fryer, 200, 400);
+        UIController.spawnRawIngredient(quekquek, fryer, 100, 410);
+        UIController.spawnRawIngredient(quekquek, fryer, 200, 410);
+
 
     }
 
@@ -77,7 +166,7 @@ public class CookingInaMain extends GameApplication {
         launch(args);
     }
 
-    private void setBackground() {
+    public void setBackground() {
         double width = FXGL.getAppWidth();
         double height = FXGL.getAppHeight();
 
@@ -90,119 +179,5 @@ public class CookingInaMain extends GameApplication {
                 .view(backgroundTexture)
                 .zIndex(-1)
                 .buildAndAttach();
-    }
-
-    private void setCookingStations(){
-        Fryer fryer = new Fryer(
-                "emptyPan.png",                         // name
-                "usedPan.png",
-                1,                                              // type (e.g., 1 = cooking equipment)
-                0,                                              // playend (initial value)
-                1.5,                                            // speedMultiplier (50% faster cooking)
-                500.0,                                          // cost ($500)
-                4,                                              // capacity (4 items at once)
-                false,                                          // isUnlocked (initially locked)
-                "A standard fryer for basic cooking needs",     // description);
-                150,
-                150
-
-
-        );
-
-
-        QuekQuek quekquek = new QuekQuek(
-                "quekquek_container.png",
-                "quekquek.png",                      // raw resource identifier
-                "cooked_quekquek.png",                          // cooked resource
-                "lami",                                         // description
-                15.0,                                           // preparationTime (minutes)
-                12.99,                                          // sellingPrice ($)
-                2.0,                                            // discardCost ($)
-                1);                                             // status (1 = available)
-
-        BeverageDispenser calamansiDispenser = new BeverageDispenser(
-                "juice_dispenser_calamansi.png",                         // name
-                "dragonfruit_juice_done.png",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "calamansi juice",
-                75,
-                200);
-
-        BeverageDispenser bukoDispenser = new BeverageDispenser(
-                "juice_dispenser_buko.png",                         // name
-                "mangojuice_done.png",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "buko juice",
-                75,
-                200);
-
-        BeverageDispenser orangeDispenser = new BeverageDispenser(
-                "juice_dispenser_orange.png",                         // name
-                "nestea_juice_done.png",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "orange juice",
-                75,
-                200
-        );
-
-        StoreItem calamansiContainer = new StoreItem(
-                "juice_dispenser_calamansi.png",
-                "dragonfruit_juice_fillingup.png",
-                "dragonfruit_juice_done.png",
-                "dragonfruit juice",
-                10.0,
-                5.0,
-                3.0,
-                1
-        );
-        StoreItem bukoContainer = new StoreItem(
-                "juice_dispenser_buko.png",
-                "mangojuice_fillingup.png",
-                "mangojuice_done.png",
-                "mango juice",
-                10.0,
-                5.0,
-                3.0,
-                1
-        );StoreItem orangeContainer = new StoreItem(
-                "juice_dispenser_orange.png",
-                "nestea_juice_fillingup.png",
-                "nestea_juice_done.png",
-                "nesta juice",
-                10.0,
-                5.0,
-                3.0,
-                1
-        );
-
-
-
-        UIController.spawnEquipment(fryer, 535, 350);
-        UIController.spawnContainer(quekquek, fryer, 590, 570);
-        UIController.spawnTrashcan(850,560);
-
-        UIController.spawnContainer(calamansiContainer, calamansiDispenser, 100, 250);
-        UIController.spawnContainer(quekquek, fryer, 170, 250);
-        UIController.spawnContainer(quekquek, fryer, 250, 250);
-
-
-        UIController.spawnEquipment(calamansiDispenser, 100, 250);
-        UIController.spawnEquipment(bukoDispenser, 170, 250);
-        UIController.spawnEquipment(orangeDispenser, 250, 250);
     }
 }
