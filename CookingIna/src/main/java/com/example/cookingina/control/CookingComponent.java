@@ -138,6 +138,14 @@ public class CookingComponent extends Component {
                 entity.getViewComponent().clearChildren();
                 entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 40, 40));
             }
+            if(!isDiscarded && cookedStoreItem.getDescription().contains("quekquek")){
+                entity.getViewComponent().clearChildren();
+                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 80, 80));
+            }
+            if(!isDiscarded && cookedStoreItem.getDescription().contains("hotdog")){
+                entity.getViewComponent().clearChildren();
+                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 80, 80));
+            }
             // After cooking is complete, don't remove it yet unless it's discarded
             if (isDiscarded) {
                 entity.removeFromWorld(); // Remove entity if discarded

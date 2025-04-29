@@ -10,6 +10,7 @@ import com.example.cookingina.control.UIController;
 import com.example.cookingina.objects.entity.container.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
+import com.example.cookingina.objects.entity.storeItem.Hotdog;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -18,9 +19,13 @@ import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 
 public class CookingInaMain extends GameApplication {
+    private final List<Fryer> fryers = new ArrayList<>();
 
     public enum EntityType {
         INGREDIENT,
@@ -49,6 +54,8 @@ public class CookingInaMain extends GameApplication {
         FXGL.onKeyDown(KeyCode.F1, "Toggle debug", () -> {
             debugText.setVisible(!debugText.isVisible());
         });
+
+        //FXGL.onKeyDown(KeyCode.Q, "Spawn QuekQuek", UIController::spawnContainerForEquipment);
     }
 
     @Override
@@ -73,26 +80,58 @@ public class CookingInaMain extends GameApplication {
     @Override
     protected void initGame() {
         setBackground();
-        Fryer fryer = new Fryer(
+
+        for(int i = 1; i <= 6; i++){
+            fryers.add(new Fryer(
                 "frying_pan.png",                         // name
                 "usedPan.png",
-                1,                                              // type (e.g., 1 = cooking equipment)
+                i,                                              // type (e.g., 1 = cooking equipment)
                 0,                                              // playend (initial value)
                 1.5,                                            // speedMultiplier (50% faster cooking)
                 500.0,                                          // cost ($500)
-                4,                                              // capacity (4 items at once)
+                1,                                              // capacity (4 items at once)
                 false,                                          // isUnlocked (initially locked)
-                "A standard fryer for basic cooking needs");    // description);
+                "A standard fryer for basic cooking needs"    // description);
+            ));
+        }
+
+        UIController.setFryers(fryers);
+
+//        Fryer fryer = new Fryer(
+//                "frying_pan.png",                         // name
+//                "usedPan.png",
+//                1,                                              // type (e.g., 1 = cooking equipment)
+//                0,                                              // playend (initial value)
+//                1.5,                                            // speedMultiplier (50% faster cooking)
+//                500.0,                                          // cost ($500)
+//                4,                                              // capacity (4 items at once)
+//                false,                                          // isUnlocked (initially locked)
+//                "A standard fryer for basic cooking needs");    // description);
+
+
+// ================= SELLING ITEMS ENTITTY =================
 
         QuekQuek quekquek = new QuekQuek(
-                "quekquek_container.png",
-                "quekquek.png",                      // raw resource identifier
-                "cooked_quekquek.png",                          // cooked resource
-                "lami",                                         // description
+                "rawQuekquek_container.png",
+                "rawQuekquek.png",                      // raw resource identifier
+                "rawQuekquek.png",                          // cooked resource
+                "quekquek",                                         // description
                 15.0,                                           // preparationTime (minutes)
                 12.99,                                          // sellingPrice ($)
                 2.0,                                            // discardCost ($)
                 1);                                             // status (1 = available)
+
+        Hotdog hotdog = new Hotdog(
+              "rawHotdog_container.png",
+                "rawHotdog.png",
+                "rawHotdog.png",
+                "hotdog",
+                15.0,
+                15.00,
+                3.0,
+                1
+        );
+// ================= CONTAINER ENTITY =================
 
         BeverageDispenser calamansiDispenser = new BeverageDispenser(
                 "calamansiJuice_dispenser.png",                         // name
@@ -175,13 +214,44 @@ public class CookingInaMain extends GameApplication {
                 "sweet sauce"
         );
 
+        Bagoong bagoong = new Bagoong(
+                "hipon_bottle.png",
+                "" ,
+                "bagoong hipon"
+        );
+
+        SaltContainer salt = new SaltContainer(
+               "salt_bottle.png",
+               "",
+               "salt"
+        );
+
+        for(Fryer fryer : fryers){
+            if(fryer.getType() == 1){
+                UIController.spawnEquipment(fryer, 1035, 490, 180, 130);
+            } else if (fryer.getType() == 2){
+                UIController.spawnEquipment(fryer, 895, 490, 180, 130);
+            } else if (fryer.getType() == 3){
+                UIController.spawnEquipment(fryer, 755, 490, 180, 130);
+            } else if (fryer.getType() == 4) {
+                UIController.spawnEquipment(fryer, 1045, 590, 175, 130);
+            } else if (fryer.getType() == 5){
+                UIController.spawnEquipment(fryer, 895, 590, 175, 130);
+            } else {
+                UIController.spawnEquipment(fryer, 745, 590, 175, 130);
+            }
+        }
+
+        UIController.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120, 80,80);
+        UIController.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120, 80,80);
+
         // FRYING PAN EQUIPMENT
-        UIController.spawnEquipment(fryer, 1035, 490, 180, 130);
-        UIController.spawnEquipment(fryer, 895, 490, 180, 130);
-        UIController.spawnEquipment(fryer, 755, 490, 180, 130);
-        UIController.spawnEquipment(fryer, 1045, 590, 175, 130);
-        UIController.spawnEquipment(fryer, 895, 590, 175, 130);
-        UIController.spawnEquipment(fryer, 745, 590, 175, 130);
+//        UIController.spawnEquipment(fryer, 1035, 490, 180, 130);
+//        UIController.spawnEquipment(fryer, 895, 490, 180, 130);
+//        UIController.spawnEquipment(fryer, 755, 490, 180, 130);
+//        UIController.spawnEquipment(fryer, 1045, 590, 175, 130);
+//        UIController.spawnEquipment(fryer, 895, 590, 175, 130);
+//        UIController.spawnEquipment(fryer, 745, 590, 175, 130);
 
         //DISPENSER EQUIPMENT
         UIController.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
@@ -196,13 +266,17 @@ public class CookingInaMain extends GameApplication {
         //CONTAINER
         UIController.spawnContainer(mangoBasket, 1650, 720, 230, 230);
         UIController.spawnContainer(tempuraContainer, 650, 980, 190, 120);
-        UIController.spawnContainer(quekquekContainer, 870, 980, 190, 120);
-        UIController.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
+        //UIController.spawnContainer(quekquekContainer, 870, 980, 190, 120);
+        //UIController.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
         UIController.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
         UIController.spawnContainer(gusoContainer, 1390, 820, 140, 110);
         UIController.spawnContainer(spicySauce, 1270, 460, 60, 160);
         UIController.spawnContainer(sweetSauce, 1330, 550, 60, 160);
-    } 
+        UIController.spawnContainer(bagoong, 1500, 650, 54, 100);
+        UIController.spawnContainer(salt, 1550, 720, 54, 100);
+
+        //UIController.spawnContainer(quekquek, fryer, 960, 980, 80,80);
+    }
 
     public static void main(String[] args) {
         launch(args);
