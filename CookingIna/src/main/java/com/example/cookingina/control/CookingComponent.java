@@ -7,9 +7,11 @@ import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.objects.entity.Equipment;
 import com.example.cookingina.objects.entity.StoreItem;
+import com.example.cookingina.objects.entity.equipment.JuiceTray;
 import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+
 
 public class CookingComponent extends Component {
     private double timer;
@@ -23,6 +25,7 @@ public class CookingComponent extends Component {
     private int slotIndex;
     private Point2D position;
 
+    private static int juiceCount = 0; // Keeps track of no. of juices
 
     public CookingComponent(double preparationTime, StoreItem cookedStoreItem, Equipment equipment, int slotIndex) {
         this.totalTime = preparationTime;
@@ -42,44 +45,6 @@ public class CookingComponent extends Component {
         progressBar.setFill(Color.LIMEGREEN);
 
         entity.getViewComponent().addChild(progressBar);
-
-        // Store pan position to return later if needed
-        position = new Point2D(entity.getX(), entity.getY());
-
-        // Pause cooking when dragging starts
-        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-            isPaused = true;
-        });
-
-        // Resume or discard based on drop target
-        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            // Check if dropped on a plate
-            boolean onPlate = false;
-//                    FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.PLATE).stream()
-//                    .anyMatch(e -> e.getBoundingBoxComponent().isCollidingWith(entity.getBoundingBoxComponent()));
-
-            // Check if dropped on a trash can
-            boolean onTrash = FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.TRASH).stream()
-                    .anyMatch(e -> e.getBoundingBoxComponent().isCollidingWith(entity.getBoundingBoxComponent()));
-
-            if (onPlate) {
-                equipment.freeSlot(slotIndex);
-                entity.removeComponent(CookingComponent.class); // Stop cooking
-                System.out.println("Ingredient placed on plate!");
-                // Optionally: Add logic to mark as served
-            } else if (onTrash) {
-                //FXGL.play("throw.wav"); // Optional: play sound
-                isDiscarded = true;
-                equipment.freeSlot(slotIndex);
-                entity.removeFromWorld(); // Remove from game
-                System.out.println("Ingredient discarded in trash!");
-            } else {
-                // Return to pan and resume cooking
-                entity.setPosition(position);
-                isPaused = false;
-                System.out.println("Returned to pan, resume cooking.");
-            }
-        });
 
         // Store pan position to return later if needed
         position = new Point2D(entity.getX(), entity.getY());
@@ -108,14 +73,12 @@ public class CookingComponent extends Component {
                 entity.removeComponent(CookingComponent.class); // Stop cooking
                 System.out.println("Ingredient placed on plate!");
                 // Optionally: Add logic to mark as served
-
             } else if (onTrash) {
                 //FXGL.play("throw.wav"); // Optional: play sound
                 isDiscarded = true;
                 equipment.freeSlot(slotIndex);
                 entity.removeFromWorld(); // Remove from game
                 System.out.println("Ingredient discarded in trash!");
-
             } else {
                 // Return to pan and resume cooking
                 entity.setPosition(position);
@@ -125,24 +88,62 @@ public class CookingComponent extends Component {
         });
     }
 
+
+//    @Override
+//    public void onUpdate(double tpf) {
+//        timer -= tpf;
+//
+//        // Update progress (reverse calculation: 1.0 -> 0.0)
+//        double progress = totalTime - timer;
+//        progressBar.setCurrentValue(progress); // If using 0-100 scale
+//        progressBar.setMinValue(0);
+//        progressBar.setMaxValue(totalTime);
+//
+//        if(timer <= 0) {
+//            // Replace texture by updating the view
+//            entity.getViewComponent().clearChildren();
+//            if(cookedStoreItem.getDescription().contains("juice")){
+//                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 40, 40));
+//            }else {
+//                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 40, 40));
+//            }
+//            // Remove raw ingredient
+//            entity.removeFromWorld();
+////            FXGL.play("cooking-done.wav");
+//        }
+//    }
+
     @Override
     public void onUpdate(double tpf) {
+        if (isPaused || isCooked || isDiscarded)
+            return;
+
         timer -= tpf;
 
-        if(timer > 0){
-            // Update progress (reverse calculation: 1.0 -> 0.0)
-            double progress = totalTime - timer;
-            progressBar.setCurrentValue(progress); // If using 0-100 scale
-            progressBar.setMinValue(0);
-            progressBar.setMaxValue(totalTime);
-        }
-        else{
-            entity.getViewComponent().removeChild(progressBar);
+        double progress = totalTime - timer;
+        progressBar.setCurrentValue(progress);
+        progressBar.setMinValue(0);
+        progressBar.setMaxValue(totalTime);
+
+        if (timer <= 0) {
+            isCooked = true;
             // Only update the texture and remove from world if not discarded
-            if (!isDiscarded) {
+            if (!isDiscarded && cookedStoreItem.getDescription().contains("juice")) {
                 // Update to cooked form
                 entity.getViewComponent().clearChildren();
+                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 50, 80));
+            }
+            if(!isDiscarded && !cookedStoreItem.getDescription().contains("juice")){
+                entity.getViewComponent().clearChildren();
                 entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 40, 40));
+            }
+            if(!isDiscarded && cookedStoreItem.getDescription().contains("quekquek")){
+                entity.getViewComponent().clearChildren();
+                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 80, 80));
+            }
+            if(!isDiscarded && cookedStoreItem.getDescription().contains("hotdog")){
+                entity.getViewComponent().clearChildren();
+                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 80, 80));
             }
             // After cooking is complete, don't remove it yet unless it's discarded
             if (isDiscarded) {
@@ -155,8 +156,9 @@ public class CookingComponent extends Component {
     public void onRemoved() {
         double currX = entity.getX();
         double currY = entity.getY();
+        entity.getViewComponent().removeChild(progressBar);
         if (!isDiscarded) {
-            UIController.spawnCookedIngredient(cookedStoreItem, equipment, currX, currY);
+            UIController.spawnCookedIngredient(cookedStoreItem, equipment, currX, currY, 40, 40);
         }
     }
 }

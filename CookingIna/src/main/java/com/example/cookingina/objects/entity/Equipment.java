@@ -9,25 +9,15 @@ public class Equipment {
     protected double cost;
     protected int capacity;
     protected boolean isUnlocked;
+    protected boolean isOccupied;
     protected String description;
     protected int spaceTaken;
     private int layoutX;
     private int layoutY;
-    private final int textureWidth;
-    private final int textureHeight;
-
     private final boolean[] slots;
 
-    public int getTextureHeight() {
-        return textureHeight;
-    }
-
-    public int getTextureWidth() {
-        return textureWidth;
-    }
-
     public Equipment(String emptyResource, String usedResource, int type, int playend, double speedMultiplier,
-                     double cost, int capacity, boolean isUnlocked, String description, int textureWidth, int textureHeight) {
+                     double cost, int capacity, boolean isUnlocked, String description) {
         this.emptyResource = emptyResource;
         this.usedResource = usedResource;
         this.type = type;
@@ -36,13 +26,16 @@ public class Equipment {
         this.cost = cost;
         this.capacity = capacity;
         this.isUnlocked = isUnlocked;
+        this.isOccupied = false;
         this.description = description;
-        this.textureWidth = textureWidth;
-        this.textureHeight = textureHeight;
         this.layoutX = 0;
         this.layoutY = 0;
         this.spaceTaken = 0;
         this.slots = new boolean[capacity];
+    }
+
+    public String getDescription(){
+        return description;
     }
 
     public int getNextAvailableSlot() {
@@ -88,4 +81,9 @@ public class Equipment {
         return layoutY;
     }
     public int getSpaceTaken() {return spaceTaken;}
+    public int getType(){return type;}
+    public void setOccupied(boolean isOccupied){this.isOccupied = isOccupied;}
+    public boolean isOccupied(){return isOccupied;}
+    public void setUnlocked(boolean set){this.isUnlocked = set;}
+    public boolean isUnlocked(){return isUnlocked;}
 }
