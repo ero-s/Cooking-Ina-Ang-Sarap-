@@ -119,7 +119,11 @@ public class CookingInaMain extends GameApplication {
                 15.0,                                           // preparationTime (minutes)
                 12.99,                                          // sellingPrice ($)
                 2.0,                                            // discardCost ($)
-                1);                                             // status (1 = available)
+                1,
+                80,
+                80
+
+                );                                             // status (1 = available)
 
         Hotdog hotdog = new Hotdog(
               "rawHotdog_container.png",
@@ -129,7 +133,9 @@ public class CookingInaMain extends GameApplication {
                 15.0,
                 15.00,
                 3.0,
-                1
+                1,
+                80,
+                80
         );
 // ================= CONTAINER ENTITY =================
 
@@ -242,8 +248,8 @@ public class CookingInaMain extends GameApplication {
             }
         }
 
-        UIController.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120, 80,80);
-        UIController.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120, 80,80);
+        UIController.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120);
+        UIController.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120);
 
         // FRYING PAN EQUIPMENT
 //        UIController.spawnEquipment(fryer, 1035, 490, 180, 130);

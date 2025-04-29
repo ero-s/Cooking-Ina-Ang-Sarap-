@@ -27,7 +27,7 @@ public class CookingComponent extends Component {
 
     private static int juiceCount = 0; // Keeps track of no. of juices
 
-    public CookingComponent(double preparationTime, StoreItem cookedStoreItem, Equipment equipment, int slotIndex) {
+    public CookingComponent(double preparationTime, StoreItem cookedStoreItem, Equipment equipment) {
         this.totalTime = preparationTime;
         this.timer = preparationTime;
         this.cookedStoreItem = cookedStoreItem;
@@ -43,7 +43,6 @@ public class CookingComponent extends Component {
         progressBar.setTranslateY(-20); // Position above entity
         progressBar.setTranslateX(-20); // Position above entity
         progressBar.setFill(Color.LIMEGREEN);
-
         entity.getViewComponent().addChild(progressBar);
 
         // Store pan position to return later if needed
@@ -115,50 +114,31 @@ public class CookingComponent extends Component {
 
     @Override
     public void onUpdate(double tpf) {
-        if (isPaused || isCooked || isDiscarded)
-            return;
-
+        if(isCooked) return;
         timer -= tpf;
-
         double progress = totalTime - timer;
         progressBar.setCurrentValue(progress);
-        progressBar.setMinValue(0);
         progressBar.setMaxValue(totalTime);
+
+
 
         if (timer <= 0) {
             isCooked = true;
             // Only update the texture and remove from world if not discarded
-            if (!isDiscarded && cookedStoreItem.getDescription().contains("juice")) {
+            if (!isDiscarded) {
                 // Update to cooked form
                 entity.getViewComponent().clearChildren();
-                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 50, 80));
-            }
-            if(!isDiscarded && !cookedStoreItem.getDescription().contains("juice")){
-                entity.getViewComponent().clearChildren();
-                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 40, 40));
-            }
-            if(!isDiscarded && cookedStoreItem.getDescription().contains("quekquek")){
-                entity.getViewComponent().clearChildren();
-                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 80, 80));
-            }
-            if(!isDiscarded && cookedStoreItem.getDescription().contains("hotdog")){
-                entity.getViewComponent().clearChildren();
-                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 80, 80));
-            }
-            // After cooking is complete, don't remove it yet unless it's discarded
-            if (isDiscarded) {
-                entity.removeFromWorld(); // Remove entity if discarded
+                entity.getViewComponent().removeChild(progressBar);
+                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), entity.getWidth(), entity.getHeight()));
             }
         }
     }
 
     @Override
     public void onRemoved() {
-        double currX = entity.getX();
-        double currY = entity.getY();
         entity.getViewComponent().removeChild(progressBar);
-        if (!isDiscarded) {
-            UIController.spawnCookedIngredient(cookedStoreItem, equipment, currX, currY, 40, 40);
-        }
+        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+            entity.setPosition(position);
+        });
     }
 }

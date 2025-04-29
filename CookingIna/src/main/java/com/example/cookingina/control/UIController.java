@@ -55,7 +55,7 @@ public class UIController extends Component {
     }
 
     // Spawing Container and container item to the equipment
-    public static void spawnContainerForEquipment(StoreItem storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight, int ingredientWidth, int ingredientHeight) {
+    public static void spawnContainerForEquipment(StoreItem storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {
         entityBuilder()
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(containerX, containerY)
@@ -74,7 +74,7 @@ public class UIController extends Component {
                             double spawnX = equipment.getLayoutX() + 20; // adjust offset if needed
                             double spawnY = equipment.getLayoutY() + 30;
 
-                            spawnRawIngredient1(storeItem, equipment, spawnX, spawnY, ingredientWidth, ingredientHeight);
+                            spawnRawIngredient1(storeItem, equipment, spawnX, spawnY);
 
                             equipment.setOccupied(true);
                             break;
@@ -83,15 +83,6 @@ public class UIController extends Component {
                 });
     }
 
-
-    @Override
-    public void onAdded() {
-        draggable = entity.getComponent(DraggableComponent.class);
-        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            String debugMessage = "Drag ended at: " + entity.getX() + ", " + entity.getY();
-            updateDebugText(debugMessage);
-        });
-    }
 
     private void updateDebugText(String message) {
         Platform.runLater(() -> CookingInaMain.debugText.setText(message));
@@ -106,46 +97,6 @@ public class UIController extends Component {
                 .buildAndAttach();
     }
 
-    public static void spawnContainer(StoreItem storeItem, Equipment equipment, double x, double y, double width, double height) {
-        entityBuilder()
-                .type(CookingInaMain.EntityType.CONTAINER)
-                .at(x, y)
-                .viewWithBBox(FXGL.texture(storeItem.getContainer(), width, height))
-                .with(new CollidableComponent(true))
-                .buildAndAttach()
-                .getViewComponent()
-                .addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.EQUIPMENT)
-                            .stream()
-                            .findFirst()
-                            .ifPresent(station -> {
-                                int slotIndex = equipment.getNextAvailableSlot();
-                                if (slotIndex != -1) {
-                                    double spawnX = station.getX() + 12 + (slotIndex * 25);
-                                    double spawnY = station.getY() + 40;
-
-                                    var ingredientEntity = entityBuilder()
-                                            .type(CookingInaMain.EntityType.INGREDIENT)
-                                            .at(spawnX, spawnY)
-                                            .viewWithBBox(FXGL.texture(storeItem.getRawResource(), width, height))
-                                            .with(new CollidableComponent(true))
-                                            .buildAndAttach();
-
-                                    ingredientEntity.addComponent(new CookingComponent(
-                                            storeItem.getPreparationTime(),
-                                            storeItem,
-                                            equipment,
-                                            slotIndex
-                                    ));
-
-                                    equipment.occupySlot(slotIndex);
-                                } else {
-                                    System.out.println("Station full!");
-                                }
-                            });
-                });
-    }
-
     public static void spawnRawIngredient(StoreItem storeItem, Equipment equipment, double x, double y) {
         entityBuilder()
                 .type(CookingInaMain.EntityType.INGREDIENT)
@@ -157,13 +108,12 @@ public class UIController extends Component {
                 .buildAndAttach();
     }
 
-    public static void spawnRawIngredient1(StoreItem storeItem, Equipment equipment, double x, double y, int width, int height) {
+    public static void spawnRawIngredient1(StoreItem storeItem, Equipment equipment, double x, double y) {
 
                     var ingredientEntity = entityBuilder()
                             .type(CookingInaMain.EntityType.INGREDIENT)
                             .at(x, y)
-                            .viewWithBBox(FXGL.texture(storeItem.getRawResource(), width, height))
-                            .with(new DraggableComponent())
+                            .viewWithBBox(FXGL.texture(storeItem.getRawResource(), storeItem.getWidth(), storeItem.getHeight()))
                             .with(new CollidableComponent(true))
                             .with(new UIController(storeItem, equipment, x, y)) // Your custom UI controller
                             .buildAndAttach();
@@ -172,31 +122,34 @@ public class UIController extends Component {
                     ingredientEntity.addComponent(new CookingComponent(
                             storeItem.getPreparationTime(),  // preparation time from StoreItem
                             storeItem,                       // the StoreItem object itself
-                            equipment,                       // equipment where it's cooked
-                            -1                                // slot index (can be -1 if you don't use slots)
+                            equipment                        // equipment where it's cooked
                     ));
 
     }
 
 
-    public static void spawnCookedIngredient(StoreItem cookedItem, Equipment equipment, double x, double y, double width, double height) {
+    public static void spawnCookedIngredient(StoreItem cookedItem, Equipment equipment, double x, double y) {
         if (cookedItem.getDescription().contains("juice")) {
             if (juiceTray.size() < MAX_JUICE_ON_TRAY) {
-                Entity juice = spawnJuiceEntity(cookedItem, equipment, x, y, width, height);
+                Entity juice = spawnJuiceEntity(cookedItem, equipment, x, y);
                 juiceTray.add(juice);
             } else {
                 System.out.println("Juice tray full! Adding juice to waiting queue.");
-                waitingJuiceQueue.add(new WaitingItem(cookedItem, equipment, x, y, width, height, null));
+                waitingJuiceQueue.add(new WaitingItem(cookedItem, equipment, x, y, cookedItem.getWidth(), cookedItem.getHeight(), null));
             }
         } else {
-            entityBuilder()
+            Entity entity = entityBuilder()
                     .type(CookingInaMain.EntityType.INGREDIENT)
                     .at(x, y)
-                    .viewWithBBox(FXGL.texture(cookedItem.getCookedResource(), 40, 40))
+                    .viewWithBBox(FXGL.texture(cookedItem.getCookedResource(), cookedItem.getWidth(), cookedItem.getHeight()))
                     .with(new DraggableComponent())
                     .with(new CollidableComponent(true))
                     .with(new UIController(cookedItem, equipment, x, y))
                     .buildAndAttach();
+            entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+                entity.setPosition(x, y);
+
+            });
         }
     }
 
@@ -204,10 +157,10 @@ public class UIController extends Component {
         return x >= 480 && x <= 640 && y >= 150 && y <= 260;
     }
 
-    private static Entity spawnJuiceEntity(StoreItem cookedItem, Equipment equipment, double x, double y, double width, double height) {
+    private static Entity spawnJuiceEntity(StoreItem cookedItem, Equipment equipment, double x, double y) {
         Entity juice = FXGL.entityBuilder()
                 .at(x, y)
-                .view(FXGL.texture(cookedItem.getCookedResource(), (int) width, (int) height))
+                .view(FXGL.texture(cookedItem.getCookedResource(), cookedItem.getWidth(), cookedItem.getHeight()))
                 .with(new DraggableComponent())
                 .buildAndAttach();
 
@@ -223,7 +176,7 @@ public class UIController extends Component {
     private static void checkJuiceQueue() {
         if (juiceTray.size() < MAX_JUICE_ON_TRAY && !waitingJuiceQueue.isEmpty()) {
             WaitingItem next = waitingJuiceQueue.poll();
-            Entity juice = spawnJuiceEntity(next.item, next.equipment, next.x, next.y, next.width, next.height);
+            Entity juice = spawnJuiceEntity(next.item, next.equipment, next.x, next.y);
             juiceTray.add(juice);
         }
     }
@@ -269,6 +222,8 @@ public class UIController extends Component {
 
         texture.setMouseTransparent(false);
         texture.setOnMouseClicked(e -> {
+            if(equipment.isOccupied()) return;
+            equipment.setOccupied(true);
             System.out.println("CLICK DETECTED on invisible entity!");
             System.out.println("Equipment resource: " + equipment.getEmptyResource());
             BeverageDispenser dispenser = (BeverageDispenser) equipment;
@@ -293,7 +248,7 @@ public class UIController extends Component {
                 resource,
                 resource,
                 description,
-                15.0, 12.99, 2.0, 1
+                15.0, 12.99, 2.0, 1, 110,60
         );
     }
 
@@ -301,15 +256,14 @@ public class UIController extends Component {
         FXGL.entityBuilder()
                 .at(x, y)
                 .type(CookingInaMain.EntityType.INGREDIENT)
-                .viewWithBBox(FXGL.texture(image, 60, 110))
-                .with(new DraggableComponent())
+                .viewWithBBox(FXGL.texture(image, juiceItem.getWidth(), juiceItem.getHeight()))
                 .with(new CollidableComponent(true))
                 .with(new CookingComponent(
                         juiceItem.getPreparationTime(),
                         juiceItem,
-                        equipment,
-                        1
+                        equipment
                 ))
+                .zIndex(100)
                 .buildAndAttach();
     }
 }
