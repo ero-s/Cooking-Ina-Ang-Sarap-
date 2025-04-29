@@ -18,6 +18,7 @@ import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.storeItem.Calamansi_Juice;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
@@ -251,6 +252,49 @@ public class UIController extends Component {
         container.setLayoutX((int) x);
         container.setLayoutY((int) y);
     }
+
+    public static void spawnContainer1(Container container, double x, double y, int width, int height) {
+        // Create the container entity
+        var entity = FXGL.entityBuilder()
+                .type(CookingInaMain.EntityType.CONTAINER)
+                .at(x, y)
+                .viewWithBBox(FXGL.texture(container.getRawResource(), width, height))
+                .with(new CollidableComponent(true))
+                .buildAndAttach();
+
+        // Store the initial position
+        final Point2D initialPosition = new Point2D(x, y);
+
+        // Add CookingComponent to the container to manage cooking and dragging behavior
+        CookingComponent cookingComponent = new CookingComponent(30.0, null, null, 0);  // Example values
+        entity.addComponent(cookingComponent);
+
+        // Add draggable component for drag functionality
+        entity.addComponent(new DraggableComponent());
+
+        // Set the container's layout position
+        container.setLayoutX((int) x);
+        container.setLayoutY((int) y);
+
+        // Logic to handle return to initial position when not clicked
+        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+            // Check if the container is clicked on a specific place (i.e., if it's dropped somewhere meaningful)
+            boolean isClicked = false;
+
+            // You can add a check here if it's dropped in a valid location or not
+            // Example: Check if it's dropped on a plate or a valid target
+
+            if (!isClicked) {
+                // Return the entity to its initial position if not clicked
+                entity.setPosition(initialPosition);
+                System.out.println("Container returned to its original position.");
+            }
+        });
+    }
+
+
+
+
 
     public static void spawnInvisibleEquipment(Equipment equipment, double x, double y, int width, int height) {
         Entity invisibleEntity = FXGL.entityBuilder()

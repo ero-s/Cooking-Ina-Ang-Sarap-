@@ -7,7 +7,6 @@ import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.objects.entity.Equipment;
 import com.example.cookingina.objects.entity.StoreItem;
-import com.example.cookingina.objects.entity.equipment.JuiceTray;
 import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -145,6 +144,10 @@ public class CookingComponent extends Component {
             if(!isDiscarded && cookedStoreItem.getDescription().contains("hotdog")){
                 entity.getViewComponent().clearChildren();
                 entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 80, 80));
+            }
+            if(!isDiscarded && cookedStoreItem.getDescription().contains("tempura")){
+                entity.getViewComponent().clearChildren();
+                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 120, 120));
             }
             // After cooking is complete, don't remove it yet unless it's discarded
             if (isDiscarded) {

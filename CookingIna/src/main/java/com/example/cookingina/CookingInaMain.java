@@ -12,6 +12,7 @@ import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.storeItem.Hotdog;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
+import com.example.cookingina.objects.entity.storeItem.Tempura;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -113,8 +114,8 @@ public class CookingInaMain extends GameApplication {
 
         QuekQuek quekquek = new QuekQuek(
                 "rawQuekquek_container.png",
-                "rawQuekquek.png",                      // raw resource identifier
-                "rawQuekquek.png",                          // cooked resource
+                "raw_quek-quek.png",                      // raw resource identifier
+                "cooked_quek-quek.png",                          // cooked resource
                 "quekquek",                                         // description
                 15.0,                                           // preparationTime (minutes)
                 12.99,                                          // sellingPrice ($)
@@ -128,6 +129,17 @@ public class CookingInaMain extends GameApplication {
                 "hotdog",
                 15.0,
                 15.00,
+                3.0,
+                1
+        );
+
+        Tempura tempura = new Tempura(
+                "rawTempura_container.png",
+                "raw_tempura.png",
+                "cooked_tempura.png",
+                "tempura",
+                12.0,
+                5.0,
                 3.0,
                 1
         );
@@ -226,32 +238,28 @@ public class CookingInaMain extends GameApplication {
                "salt"
         );
 
-        for(Fryer fryer : fryers){
+        FoodTrayContainer foodTray = new FoodTrayContainer(
+                "paper_tray.png",
+                "",
+                "foodTray"
+        );
+
+        // FRYING PAN EQUIPMENT
+      for(Fryer fryer : fryers){
             if(fryer.getType() == 1){
-                UIController.spawnEquipment(fryer, 1035, 490, 180, 130);
+                UIController.spawnEquipment(fryer, 755, 490, 180, 130);
             } else if (fryer.getType() == 2){
                 UIController.spawnEquipment(fryer, 895, 490, 180, 130);
             } else if (fryer.getType() == 3){
-                UIController.spawnEquipment(fryer, 755, 490, 180, 130);
+                UIController.spawnEquipment(fryer, 1035, 490, 180, 130);
             } else if (fryer.getType() == 4) {
-                UIController.spawnEquipment(fryer, 1045, 590, 175, 130);
+                UIController.spawnEquipment(fryer, 745, 590, 175, 130);
             } else if (fryer.getType() == 5){
                 UIController.spawnEquipment(fryer, 895, 590, 175, 130);
             } else {
-                UIController.spawnEquipment(fryer, 745, 590, 175, 130);
+                UIController.spawnEquipment(fryer, 1045, 590, 175, 130);
             }
         }
-
-        UIController.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120, 80,80);
-        UIController.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120, 80,80);
-
-        // FRYING PAN EQUIPMENT
-//        UIController.spawnEquipment(fryer, 1035, 490, 180, 130);
-//        UIController.spawnEquipment(fryer, 895, 490, 180, 130);
-//        UIController.spawnEquipment(fryer, 755, 490, 180, 130);
-//        UIController.spawnEquipment(fryer, 1045, 590, 175, 130);
-//        UIController.spawnEquipment(fryer, 895, 590, 175, 130);
-//        UIController.spawnEquipment(fryer, 745, 590, 175, 130);
 
         //DISPENSER EQUIPMENT
         UIController.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
@@ -265,7 +273,7 @@ public class CookingInaMain extends GameApplication {
 
         //CONTAINER
         UIController.spawnContainer(mangoBasket, 1650, 720, 230, 230);
-        UIController.spawnContainer(tempuraContainer, 650, 980, 190, 120);
+        //UIController.spawnContainer(tempuraContainer, 650, 980, 190, 120);
         //UIController.spawnContainer(quekquekContainer, 870, 980, 190, 120);
         //UIController.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
         UIController.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
@@ -275,6 +283,13 @@ public class CookingInaMain extends GameApplication {
         UIController.spawnContainer(bagoong, 1500, 650, 54, 100);
         UIController.spawnContainer(salt, 1550, 720, 54, 100);
 
+        UIController.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120, 80,80);
+        UIController.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120, 80,80);
+        UIController.spawnContainerForEquipment(tempura, fryers, 650, 980, 190, 120, 120,120);
+
+        UIController.spawnContainer1(foodTray, 710, 755, 120, 120);
+        UIController.spawnContainer1(foodTray, 910, 755, 120, 120);
+        UIController.spawnContainer1(foodTray, 1110, 755, 120, 120);
         //UIController.spawnContainer(quekquek, fryer, 960, 980, 80,80);
     }
 
