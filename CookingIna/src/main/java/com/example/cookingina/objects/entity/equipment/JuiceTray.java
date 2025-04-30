@@ -15,7 +15,7 @@ public class JuiceTray extends Equipment {
             boolean isUnlocked,
             String description
     ) {
-        super(emptyResource,usedResource, type, playend, speedMultiplier, cost, capacity, isUnlocked, description);
+        super(emptyResource,usedResource, type, speedMultiplier, cost, capacity, isUnlocked, description);
     }
 
     public boolean isTrayFull(){

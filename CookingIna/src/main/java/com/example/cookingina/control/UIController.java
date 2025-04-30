@@ -13,6 +13,7 @@ import com.example.cookingina.WaitingItem;
 import com.example.cookingina.objects.entity.Container;
 import com.example.cookingina.objects.entity.Equipment;
 import com.example.cookingina.objects.entity.StoreItem;
+import com.example.cookingina.objects.entity.TrashCan;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.storeItem.Calamansi_Juice;
@@ -88,11 +89,11 @@ public class UIController extends Component {
         Platform.runLater(() -> CookingInaMain.debugText.setText(message));
     }
 
-    public static void spawnTrashcan(double x, double y) {
+    public static void spawnTrashCan(double x, double y) {
         entityBuilder()
                 .type(CookingInaMain.EntityType.TRASH)
                 .at(x, y)
-                .viewWithBBox(FXGL.texture("trashcan.png", 120, 140))
+                .viewWithBBox(FXGL.texture("trash_open.png", 200, 300))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
     }

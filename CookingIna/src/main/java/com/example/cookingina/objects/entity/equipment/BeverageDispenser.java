@@ -15,6 +15,6 @@ public class BeverageDispenser extends Equipment {
         String description
     ) {
 
-        super(emptyResource,usedResource, type, playend, speedMultiplier, cost, capacity, isUnlocked, description);
+        super(emptyResource,usedResource, type, speedMultiplier, cost, capacity, isUnlocked, description);
     }
 }

@@ -32,6 +32,7 @@ public class CookingComponent extends Component {
         this.timer = preparationTime;
         this.cookedStoreItem = cookedStoreItem;
         this.equipment = equipment;
+        slotIndex = 0;
     }
 
     @Override
@@ -44,6 +45,8 @@ public class CookingComponent extends Component {
         progressBar.setTranslateX(-20); // Position above entity
         progressBar.setFill(Color.LIMEGREEN);
         entity.getViewComponent().addChild(progressBar);
+        equipment.setOccupied(true);
+
 
         // Store pan position to return later if needed
         position = new Point2D(entity.getX(), entity.getY());
@@ -68,14 +71,14 @@ public class CookingComponent extends Component {
                     .anyMatch(e -> e.getBoundingBoxComponent().isCollidingWith(entity.getBoundingBoxComponent()));
 
             if (onPlate) {
-                equipment.freeSlot(slotIndex);
+                equipment.setOccupied(false);
                 entity.removeComponent(CookingComponent.class); // Stop cooking
                 System.out.println("Ingredient placed on plate!");
                 // Optionally: Add logic to mark as served
             } else if (onTrash) {
                 //FXGL.play("throw.wav"); // Optional: play sound
                 isDiscarded = true;
-                equipment.freeSlot(slotIndex);
+                equipment.setOccupied(false);
                 entity.removeFromWorld(); // Remove from game
                 System.out.println("Ingredient discarded in trash!");
             } else {
@@ -114,7 +117,7 @@ public class CookingComponent extends Component {
 
     @Override
     public void onUpdate(double tpf) {
-        if(isCooked) return;
+        if(isCooked || isPaused) return;
         timer -= tpf;
         double progress = totalTime - timer;
         progressBar.setCurrentValue(progress);
@@ -130,6 +133,28 @@ public class CookingComponent extends Component {
                 entity.getViewComponent().clearChildren();
                 entity.getViewComponent().removeChild(progressBar);
                 entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), entity.getWidth(), entity.getHeight()));
+            }
+
+            // Check if dropped on a trash can
+            boolean onTrash = FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.TRASH).stream()
+                    .anyMatch(e -> e.getBoundingBoxComponent().isCollidingWith(entity.getBoundingBoxComponent()));
+            boolean onPlate = false;
+            if (onPlate) {
+                equipment.freeSlot(slotIndex);
+                entity.removeComponent(CookingComponent.class); // Stop cooking
+                System.out.println("Ingredient placed on plate!");
+                // Optionally: Add logic to mark as served
+            } else if (onTrash) {
+                //FXGL.play("throw.wav"); // Optional: play sound
+                isDiscarded = true;
+                equipment.freeSlot(slotIndex);
+                entity.removeFromWorld(); // Remove from game
+                System.out.println("Ingredient discarded in trash!");
+            } else {
+                // Return to pan and resume cooking
+                entity.setPosition(position);
+                isPaused = false;
+                System.out.println("Returned to pan, resume cooking.");
             }
         }
     }
