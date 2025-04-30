@@ -7,6 +7,7 @@ import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.control.UIController;
+import com.example.cookingina.objects.entity.PaperTray;
 import com.example.cookingina.objects.entity.TrashCan;
 import com.example.cookingina.objects.entity.container.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
@@ -28,12 +29,15 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 
 public class CookingInaMain extends GameApplication {
     private static final List<Fryer> fryers = new ArrayList<>();
+    private static final List<PaperTray> paperTrays = new ArrayList<>();
+
 
     public enum EntityType {
         INGREDIENT,
         EQUIPMENT,
         CONTAINER,
-        TRASH
+        TRASH,
+        PLATE
     }
 
     public static Text debugText;
@@ -117,6 +121,13 @@ public class CookingInaMain extends GameApplication {
                     1,                                              // capacity (4 items at once)
                     false,                                          // isUnlocked (initially locked)
                     "A standard fryer for basic cooking needs"    // description);
+            ));
+        }
+
+        for(int i = 0; i < 6; i++){
+            paperTrays.add(new PaperTray(
+                    "frying_pan.png",                         // name
+                    "papertray.png"
             ));
         }
 
@@ -273,6 +284,23 @@ public class CookingInaMain extends GameApplication {
                 UIController.spawnEquipment(fryer, 895, 590, 175, 130);
             } else {
                 UIController.spawnEquipment(fryer, 745, 590, 175, 130);
+            }
+        }
+
+        for(int i = 0; i < 6; i++){
+            PaperTray paperTray = paperTrays.get(i);
+            if(i == 0){
+                UIController.spawnPaperTray(paperTray, 1090, 750, 180, 130);
+            }else if(i == 1){
+                UIController.spawnPaperTray(paperTray, 895, 750, 180, 130);
+            }else if(i == 2){
+                UIController.spawnPaperTray(paperTray, 695, 750, 180, 130);
+            }else if(i == 3){
+                UIController.spawnPaperTray(paperTray, 1090, 840, 175, 130);
+            }else if(i == 4){
+                UIController.spawnPaperTray(paperTray, 895, 840, 175, 130);
+            }else if(i == 5){
+                UIController.spawnPaperTray(paperTray, 695, 840, 175, 130);
             }
         }
 

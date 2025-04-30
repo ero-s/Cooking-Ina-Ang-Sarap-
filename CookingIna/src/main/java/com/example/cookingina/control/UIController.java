@@ -10,10 +10,7 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.WaitingItem;
-import com.example.cookingina.objects.entity.Container;
-import com.example.cookingina.objects.entity.Equipment;
-import com.example.cookingina.objects.entity.StoreItem;
-import com.example.cookingina.objects.entity.TrashCan;
+import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.storeItem.Calamansi_Juice;
@@ -43,6 +40,7 @@ public class UIController extends Component {
     private static final Queue<WaitingItem> waitingJuiceQueue = new LinkedList<>();
 
     private static List<Fryer> fryers;
+    private static List<Fryer> paperTrays;
 
     public UIController(StoreItem storeItem, Equipment equipment, double originalX, double originalY) {
         this.storeItem = storeItem;
@@ -83,7 +81,6 @@ public class UIController extends Component {
                     }
                 });
     }
-
 
     private void updateDebugText(String message) {
         Platform.runLater(() -> CookingInaMain.debugText.setText(message));
@@ -146,6 +143,7 @@ public class UIController extends Component {
                     .with(new DraggableComponent())
                     .with(new CollidableComponent(true))
                     .with(new UIController(cookedItem, equipment, x, y))
+                    .with(new OvercookComponent(cookedItem, equipment))
                     .buildAndAttach();
             entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
                 entity.setPosition(x, y);
@@ -192,6 +190,19 @@ public class UIController extends Component {
 
         equipment.setLayoutX((int) x);
         equipment.setLayoutY((int) y);
+    }
+
+    public static void spawnPaperTray(PaperTray paperTray, double x, double y, int width, int height) {
+        FXGL.entityBuilder()
+                .type(CookingInaMain.EntityType.PLATE)
+                .at(x, y)
+                .viewWithBBox(FXGL.texture(paperTray.getEmptyResource(), width, height))
+                .with(new PaperTrayComponent(paperTray))
+                .zIndex(0)
+                .buildAndAttach();
+
+        paperTray.setLayoutX((int) x);
+        paperTray.setLayoutY((int) y);
     }
 
     public static void spawnContainer(Container container, double x, double y, int width, int height) {
