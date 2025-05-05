@@ -7,7 +7,6 @@ import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.objects.entity.Equipment;
 import com.example.cookingina.objects.entity.StoreItem;
-import com.example.cookingina.objects.entity.equipment.JuiceTray;
 import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -110,37 +109,54 @@ public class CookingComponent extends Component {
 //            }
 //            // Remove raw ingredient
 //            entity.removeFromWorld();
-////            FXGL.play("cooking-done.wav");
+    ////            FXGL.play("cooking-done.wav");
 //        }
 //    }
 
     @Override
     public void onUpdate(double tpf) {
+        // Don’t run if paused, already cooked, or discarded
         if (isPaused || isCooked || isDiscarded)
             return;
 
+        // Advance the timer and update the progress bar
         timer -= tpf;
-
         double progress = totalTime - timer;
-        progressBar.setCurrentValue(progress);
         progressBar.setMinValue(0);
         progressBar.setMaxValue(totalTime);
+        progressBar.setCurrentValue(progress);
 
+        // When time’s up…
         if (timer <= 0) {
             isCooked = true;
-            // Only update the texture and remove from world if not discarded
-            if (!isDiscarded && cookedStoreItem.getDescription().contains("juice")) {
-                // Update to cooked form
+
+            // If we have no cookedStoreItem or we’ve discarded it, skip the texture change
+            if (cookedStoreItem != null && !isDiscarded) {
+                String desc = cookedStoreItem.getDescription().toLowerCase();
+                int w, h;
+
+                // Pick size by description
+                if (desc.contains("quekquek") || desc.contains("hotdog")) {
+                    w = h = 80;
+                } else if (desc.contains("tempura")) {
+                    w = h = 120;
+                } else if (desc.contains("juice")) {
+                    w = 50; h = 80;
+                } else {
+                    // default cooked item size
+                    w = h = 40;
+                }
+
+                // Swap out the texture
                 entity.getViewComponent().clearChildren();
-                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 50, 80));
+                entity.getViewComponent().addChild(
+                        FXGL.texture(cookedStoreItem.getCookedResource(), w, h)
+                );
             }
-            if(!isDiscarded && !cookedStoreItem.getDescription().contains("juice")){
-                entity.getViewComponent().clearChildren();
-                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 40, 40));
-            }
-            // After cooking is complete, don't remove it yet unless it's discarded
+
+            // If it was discarded, remove it now
             if (isDiscarded) {
-                entity.removeFromWorld(); // Remove entity if discarded
+                entity.removeFromWorld();
             }
         }
     }

@@ -12,4 +12,6 @@ module com.example.cookingina {
     exports com.example.cookingina;
     exports com.example.cookingina.control;
     opens com.example.cookingina.control to javafx.fxml;
+    exports customers;
+    opens customers to javafx.fxml;
 }

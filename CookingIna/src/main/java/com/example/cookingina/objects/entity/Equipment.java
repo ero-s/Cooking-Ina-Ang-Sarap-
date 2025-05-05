@@ -9,6 +9,7 @@ public class Equipment {
     protected double cost;
     protected int capacity;
     protected boolean isUnlocked;
+    protected boolean isOccupied;
     protected String description;
     protected int spaceTaken;
     private int layoutX;
@@ -25,6 +26,7 @@ public class Equipment {
         this.cost = cost;
         this.capacity = capacity;
         this.isUnlocked = isUnlocked;
+        this.isOccupied = false;
         this.description = description;
         this.layoutX = 0;
         this.layoutY = 0;
@@ -79,4 +81,9 @@ public class Equipment {
         return layoutY;
     }
     public int getSpaceTaken() {return spaceTaken;}
+    public int getType(){return type;}
+    public void setOccupied(boolean isOccupied){this.isOccupied = isOccupied;}
+    public boolean isOccupied(){return isOccupied;}
+    public void setUnlocked(boolean set){this.isUnlocked = set;}
+    public boolean isUnlocked(){return isUnlocked;}
 }
