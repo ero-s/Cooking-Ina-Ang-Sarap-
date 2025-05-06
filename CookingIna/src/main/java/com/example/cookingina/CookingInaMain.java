@@ -127,7 +127,8 @@ public class CookingInaMain extends GameApplication {
         for(int i = 0; i < 6; i++){
             paperTrays.add(new PaperTray(
                     "frying_pan.png",                         // name
-                    "papertray.png"
+                    "papertray.png",
+                    180, 130
             ));
         }
 

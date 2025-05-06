@@ -24,7 +24,6 @@ public class PaperTrayComponent extends Component {
     @Override
     public void onAdded() {
         entity.addComponent(new CollidableComponent(true));
-        entity.addComponent(new DraggableComponent());
         paperTrayPosition = new Point2D(entity.getX(), entity.getY());
         entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             isServed = FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.CONTAINER).stream()
@@ -58,5 +57,9 @@ public class PaperTrayComponent extends Component {
 
     public void setOccupied(boolean occupied) {
         isOccupied = occupied;
+    }
+
+    public PaperTray getTray() {
+        return paperTray;
     }
 }
