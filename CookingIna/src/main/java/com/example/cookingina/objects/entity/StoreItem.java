@@ -9,9 +9,11 @@ public class StoreItem {
     private final Double sellingPrice;
     private final Double discardCost;
     private final int status;
+    private final int height;
+    private final int width;
 
 
-    public StoreItem(String container, String rawResource, String cookedResource, String description, Double preparationTime, Double sellingPrice, Double discardCost, int status) {
+    public StoreItem(String container, String rawResource, String cookedResource, String description, Double preparationTime, Double sellingPrice, Double discardCost, int status, int height, int width) {
         this.container = container;
         this.rawResource = rawResource;
         this.cookedResource = cookedResource;
@@ -20,6 +22,8 @@ public class StoreItem {
         this.sellingPrice = sellingPrice;
         this.discardCost = discardCost;
         this.status = status;
+        this.height = height;
+        this.width = width;
     }
 
     public String getCookedResource() {return cookedResource;}
@@ -49,5 +53,13 @@ public class StoreItem {
 
     public int getStatus() {
         return status;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

@@ -7,7 +7,7 @@ public class Fryer extends Equipment {
     public boolean isUnlocked = true;
     public Fryer(String emptyResource, String usedResource, int type, int playend, double speedMultiplier,
                  double cost, int capacity, boolean isUnlocked, String description) {
-        super(emptyResource, usedResource, type, playend, speedMultiplier, cost, capacity, isUnlocked, description);
+        super(emptyResource, usedResource, type, speedMultiplier, cost, capacity, isUnlocked, description);
     }
 
     public boolean isOccupied() {

@@ -16,7 +16,7 @@ public class Equipment {
     private int layoutY;
     private final boolean[] slots;
 
-    public Equipment(String emptyResource, String usedResource, int type, int playend, double speedMultiplier,
+    public Equipment(String emptyResource, String usedResource, int type, double speedMultiplier,
                      double cost, int capacity, boolean isUnlocked, String description) {
         this.emptyResource = emptyResource;
         this.usedResource = usedResource;

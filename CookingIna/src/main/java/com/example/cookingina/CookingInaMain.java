@@ -7,9 +7,12 @@ import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.control.UIController;
+import com.example.cookingina.objects.entity.PaperTray;
+import com.example.cookingina.objects.entity.TrashCan;
 import com.example.cookingina.objects.entity.container.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
+import com.example.cookingina.objects.entity.equipment.TrashBin;
 import com.example.cookingina.objects.entity.storeItem.Hotdog;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import javafx.scene.input.KeyCode;
@@ -25,13 +28,16 @@ import java.util.List;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 
 public class CookingInaMain extends GameApplication {
-    private final List<Fryer> fryers = new ArrayList<>();
+    private static final List<Fryer> fryers = new ArrayList<>();
+    private static final List<PaperTray> paperTrays = new ArrayList<>();
+
 
     public enum EntityType {
         INGREDIENT,
         EQUIPMENT,
         CONTAINER,
-        TRASH
+        TRASH,
+        PLATE
     }
 
     public static Text debugText;
@@ -80,18 +86,49 @@ public class CookingInaMain extends GameApplication {
     @Override
     protected void initGame() {
         setBackground();
+        spawnAssets();
 
+
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    private void setBackground() {
+        double width = FXGL.getAppWidth();
+        double height = FXGL.getAppHeight();
+
+        Texture backgroundTexture = FXGL.getAssetLoader().loadTexture("final_background.png");
+        backgroundTexture.setFitWidth(width);
+        backgroundTexture.setFitHeight(height);
+
+        entityBuilder()
+                .at(0, 0)
+                .view(backgroundTexture)
+                .zIndex(-1)
+                .buildAndAttach();
+    }
+    private void spawnAssets(){
         for(int i = 1; i <= 6; i++){
             fryers.add(new Fryer(
-                "frying_pan.png",                         // name
-                "usedPan.png",
-                i,                                              // type (e.g., 1 = cooking equipment)
-                0,                                              // playend (initial value)
-                1.5,                                            // speedMultiplier (50% faster cooking)
-                500.0,                                          // cost ($500)
-                1,                                              // capacity (4 items at once)
-                false,                                          // isUnlocked (initially locked)
-                "A standard fryer for basic cooking needs"    // description);
+                    "frying_pan.png",                         // name
+                    "usedPan.png",
+                    i,                                              // type (e.g., 1 = cooking equipment)
+                    0,                                              // playend (initial value)
+                    1.5,                                            // speedMultiplier (50% faster cooking)
+                    500.0,                                          // cost ($500)
+                    1,                                              // capacity (4 items at once)
+                    false,                                          // isUnlocked (initially locked)
+                    "A standard fryer for basic cooking needs"    // description);
+            ));
+        }
+
+        for(int i = 0; i < 6; i++){
+            paperTrays.add(new PaperTray(
+                    "frying_pan.png",                         // name
+                    "papertray.png",
+                    180, 130
             ));
         }
 
@@ -119,17 +156,23 @@ public class CookingInaMain extends GameApplication {
                 15.0,                                           // preparationTime (minutes)
                 12.99,                                          // sellingPrice ($)
                 2.0,                                            // discardCost ($)
-                1);                                             // status (1 = available)
+                1,
+                80,
+                80
+
+        );                                             // status (1 = available)
 
         Hotdog hotdog = new Hotdog(
-              "rawHotdog_container.png",
+                "rawHotdog_container.png",
                 "rawHotdog.png",
                 "rawHotdog.png",
                 "hotdog",
                 15.0,
                 15.00,
                 3.0,
-                1
+                1,
+                80,
+                80
         );
 // ================= CONTAINER ENTITY =================
 
@@ -221,10 +264,13 @@ public class CookingInaMain extends GameApplication {
         );
 
         SaltContainer salt = new SaltContainer(
-               "salt_bottle.png",
-               "",
-               "salt"
+                "salt_bottle.png",
+                "",
+                "salt"
         );
+
+
+
 
         for(Fryer fryer : fryers){
             if(fryer.getType() == 1){
@@ -242,21 +288,42 @@ public class CookingInaMain extends GameApplication {
             }
         }
 
-        UIController.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120, 80,80);
-        UIController.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120, 80,80);
+        for(int i = 0; i < 6; i++){
+            PaperTray paperTray = paperTrays.get(i);
+            if(i == 0){
+                UIController.spawnPaperTray(paperTray, 1090, 750, 180, 130);
+            }else if(i == 1){
+                UIController.spawnPaperTray(paperTray, 895, 750, 180, 130);
+            }else if(i == 2){
+                UIController.spawnPaperTray(paperTray, 695, 750, 180, 130);
+            }else if(i == 3){
+                UIController.spawnPaperTray(paperTray, 1090, 840, 175, 130);
+            }else if(i == 4){
+                UIController.spawnPaperTray(paperTray, 895, 840, 175, 130);
+            }else if(i == 5){
+                UIController.spawnPaperTray(paperTray, 695, 840, 175, 130);
+            }
+        }
 
-        // FRYING PAN EQUIPMENT
-//        UIController.spawnEquipment(fryer, 1035, 490, 180, 130);
-//        UIController.spawnEquipment(fryer, 895, 490, 180, 130);
-//        UIController.spawnEquipment(fryer, 755, 490, 180, 130);
-//        UIController.spawnEquipment(fryer, 1045, 590, 175, 130);
-//        UIController.spawnEquipment(fryer, 895, 590, 175, 130);
-//        UIController.spawnEquipment(fryer, 745, 590, 175, 130);
+        // Add trashCan asset
+        TrashBin trashBin = new TrashBin(
+                "trash_closed.png",                         // name
+                "trash_open.png",
+                1,
+                0,
+                0,
+                0,
+                false,
+                "orange juice");
+
+        UIController.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120);
+        UIController.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120);
 
         //DISPENSER EQUIPMENT
         UIController.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
         UIController.spawnEquipment(bukoDispenser, 130, 400, 150, 340);
         UIController.spawnEquipment(orangeDispenser, 30, 500, 150, 340);
+        UIController.spawnTrashCan(100,950);
 
         //DISPENSER INVISIBLE
         UIController.spawnInvisibleEquipment(calamansiDispenser, 230, 300, 150, 340);
@@ -266,8 +333,6 @@ public class CookingInaMain extends GameApplication {
         //CONTAINER
         UIController.spawnContainer(mangoBasket, 1650, 720, 230, 230);
         UIController.spawnContainer(tempuraContainer, 650, 980, 190, 120);
-        //UIController.spawnContainer(quekquekContainer, 870, 980, 190, 120);
-        //UIController.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
         UIController.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
         UIController.spawnContainer(gusoContainer, 1390, 820, 140, 110);
         UIController.spawnContainer(spicySauce, 1270, 460, 60, 160);
@@ -275,25 +340,6 @@ public class CookingInaMain extends GameApplication {
         UIController.spawnContainer(bagoong, 1500, 650, 54, 100);
         UIController.spawnContainer(salt, 1550, 720, 54, 100);
 
-        //UIController.spawnContainer(quekquek, fryer, 960, 980, 80,80);
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    public void setBackground() {
-        double width = FXGL.getAppWidth();
-        double height = FXGL.getAppHeight();
-
-        Texture backgroundTexture = FXGL.getAssetLoader().loadTexture("final_background.png");
-        backgroundTexture.setFitWidth(width);
-        backgroundTexture.setFitHeight(height);
-
-        entityBuilder()
-                .at(0, 0)
-                .view(backgroundTexture)
-                .zIndex(-1)
-                .buildAndAttach();
-    }
 }
