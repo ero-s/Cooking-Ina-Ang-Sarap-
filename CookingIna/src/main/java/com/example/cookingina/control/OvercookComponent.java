@@ -19,6 +19,7 @@ public class OvercookComponent extends Component {
     private static final double OVERCOOK_DURATION = 30.0;
     private double remainingTime;
     private final StoreItem cookedStoreItem;
+    private boolean isBurnt = false;
     private final Equipment equipment;
     private ProgressBar progressBar;
     private boolean isPaused = false;
@@ -73,6 +74,7 @@ public class OvercookComponent extends Component {
         if (remainingTime <= 0) {
             // Cooking done (burnt)
             isPaused = true;
+            isBurnt = true;
             entity.getViewComponent().removeChild(progressBar);
             entity.getViewComponent().clearChildren();
             entity.getViewComponent().addChild(
@@ -113,7 +115,7 @@ public class OvercookComponent extends Component {
                 PaperTrayComponent ptc = plateEnt.getComponent(PaperTrayComponent.class);
                 PaperTray tray = ptc.getTray();
 
-                if (!tray.isOccupied()) {
+                if (!tray.isOccupied() && !isBurnt) {
                     // mark equipment free
                     equipment.setOccupied(false);
 
