@@ -662,7 +662,5 @@ public class CookingInaMain extends GameApplication {
         UIController.spawnContainer(sweetSauce, 1330, 550, 60, 160);
         UIController.spawnContainer(bagoong, 1500, 650, 54, 100);
         UIController.spawnContainer(salt, 1550, 720, 54, 100);
-
     }
-
 }
