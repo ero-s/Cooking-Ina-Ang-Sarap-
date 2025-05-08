@@ -58,9 +58,9 @@
     <build>
 
         <resources>
-            <resource>
+            <closeResource>
                 <directory>src/main/resources</directory>
-            </resource>
+            </closeResource>
         </resources>
         <plugins>
             <plugin>
