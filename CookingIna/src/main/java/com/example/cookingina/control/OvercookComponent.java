@@ -150,4 +150,8 @@ public class OvercookComponent extends Component {
         return false;
     }
 
+    public boolean getIsBurnt() {
+        return isBurnt;
+    }
+
 }

@@ -11,6 +11,7 @@ public class PaperTray extends Entity {
     private final String emptyResource;
     private final String openResource;
     private boolean isOccupied;
+    private StoreItem storeItem;
     private final int width;
     private final int height;
     private int x;
@@ -42,9 +43,10 @@ public class PaperTray extends Entity {
     public void addStoreItem(StoreItem storeItem, int x, int y) {
         FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.PLATE)
-                .at(this.x, this.y)
+                .at(x, y)
                 .viewWithBBox(FXGL.texture(storeItem.getCookedResource(), storeItem.getWidth(), storeItem.getHeight()))
                 .buildAndAttach();
+        this.storeItem = storeItem;
     }
 
     public boolean isOccupied(){
@@ -52,5 +54,8 @@ public class PaperTray extends Entity {
     }
     public void setOccupied(boolean isOccupied) {
         this.isOccupied = isOccupied;
+    }
+    public StoreItem getStoreItem() {
+        return storeItem;
     }
 }

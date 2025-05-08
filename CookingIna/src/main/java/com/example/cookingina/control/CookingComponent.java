@@ -94,18 +94,10 @@ public class CookingComponent extends Component {
     }
 
     private boolean handleClickListener() {
-        boolean onPlate = FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.PLATE).stream()
-                .anyMatch(e -> e.getBoundingBoxComponent()
-                        .isCollidingWith(entity.getBoundingBoxComponent()));
         boolean onTrash = FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.TRASH).stream()
                 .anyMatch(e -> e.getBoundingBoxComponent()
                         .isCollidingWith(entity.getBoundingBoxComponent()));
-
-        if (onPlate && isCooked) {
-            equipment.setOccupied(false);
-            entity.removeFromWorld();
-            System.out.println("Ingredient placed on plate!");
-        } else if (onTrash) {
+        if (onTrash) {
             isDiscarded = true;
             equipment.setOccupied(false);
             entity.removeFromWorld();
@@ -126,5 +118,9 @@ public class CookingComponent extends Component {
         entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             entity.setPosition(position);
         });
+    }
+
+    public boolean getIsCooked(){
+        return isCooked;
     }
 }

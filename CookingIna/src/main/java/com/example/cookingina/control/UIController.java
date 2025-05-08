@@ -114,7 +114,6 @@ public class UIController extends Component {
                 .type(CookingInaMain.EntityType.INGREDIENT)
                 .at(x, y)
                 .viewWithBBox(FXGL.texture(storeItem.getRawResource(), storeItem.getWidth(), storeItem.getHeight()))
-                .with(new CollidableComponent(true))
                 .with(new UIController(storeItem, equipment, x, y)) // Your custom UI controller
                 .buildAndAttach();
                     // Add the CookingComponent (cooking time behavior)
@@ -234,16 +233,15 @@ public class UIController extends Component {
     }
 
     public static void spawnPaperTray(PaperTray paperTray, double x, double y, int width, int height) {
-        FXGL.entityBuilder()
+        Entity entity = FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.PLATE)
                 .at(x, y)
                 .viewWithBBox(FXGL.texture(paperTray.getEmptyResource(), width, height))
                 .with(new PaperTrayComponent(paperTray))
                 .zIndex(0)
                 .buildAndAttach();
+        setHighlight(entity, x, y);
 
-        paperTray.setLayoutX((int) x);
-        paperTray.setLayoutY((int) y);
     }
 
     public static void spawnContainer(Container container, double x, double y, int width, int height) {
