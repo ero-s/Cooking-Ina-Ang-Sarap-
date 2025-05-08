@@ -47,17 +47,15 @@ public class CookingComponent extends Component {
         progressBar.setTranslateY(-20); // Position above entity
         progressBar.setTranslateX(-20); // Position above entity
         progressBar.setFill(Color.LIMEGREEN);
+
         entity.getViewComponent().addChild(progressBar);
         equipment.setOccupied(true);
-
 
         // Store pan position to return later if needed
         position = new Point2D(entity.getX(), entity.getY());
 
         // Add dragging capability
         entity.addComponent(new DraggableComponent());
-
-
 
         // Pause cooking when dragging starts
         entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_PRESSED, e -> isPaused = true);
@@ -72,8 +70,10 @@ public class CookingComponent extends Component {
     public void onUpdate(double tpf) {
         if(isCooked || isPaused) return;
         timer -= tpf;
+
         double progress = totalTime - timer;
         progressBar.setCurrentValue(progress);
+        progressBar.setMinValue(0);
         progressBar.setMaxValue(totalTime);
 
         if (timer <= 0) {
@@ -109,7 +109,6 @@ public class CookingComponent extends Component {
             System.out.println("Returned to pan area.");
             return true;
         }
-        return false;
     }
 
     @Override

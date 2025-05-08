@@ -15,16 +15,15 @@ import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.storeItem.Calamansi_Juice;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
+import customers.CustomerComponent;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 
@@ -41,6 +40,10 @@ public class UIController extends Component {
     private static final int MAX_JUICE_ON_TRAY = 3;
     private static final List<Entity> juiceTray = new ArrayList<>();
     private static final Queue<WaitingItem> waitingJuiceQueue = new LinkedList<>();
+
+    private static final List<CustomerComponent> components = new ArrayList<>();
+    private static final int MAX_CUSTOMERS = 5;
+    private static final Random random = new Random();
 
     private static List<Fryer> fryers;
     private static List<Fryer> paperTrays;
@@ -113,10 +116,11 @@ public class UIController extends Component {
         var ingredientEntity = entityBuilder()
                 .type(CookingInaMain.EntityType.INGREDIENT)
                 .at(x, y)
+                .zIndex(50)
                 .viewWithBBox(FXGL.texture(storeItem.getRawResource(), storeItem.getWidth(), storeItem.getHeight()))
                 .with(new UIController(storeItem, equipment, x, y)) // Your custom UI controller
                 .buildAndAttach();
-                    // Add the CookingComponent (cooking time behavior)
+        // Add the CookingComponent (cooking time behavior)
         ingredientEntity.addComponent(new CookingComponent(
                 storeItem.getPreparationTime(),  // preparation time from StoreItem
                 storeItem,                       // the StoreItem object itself
@@ -143,6 +147,7 @@ public class UIController extends Component {
             entity = entityBuilder()
                     .type(CookingInaMain.EntityType.INGREDIENT)
                     .at(x, y)
+                    .zIndex(50)
                     .viewWithBBox(FXGL.texture(cookedItem.getCookedResource(), cookedItem.getWidth(), cookedItem.getHeight()))
                     .with(new DraggableComponent())
                     .with(new CollidableComponent(true))
@@ -224,6 +229,7 @@ public class UIController extends Component {
         FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.EQUIPMENT)
                 .at(x, y)
+                .zIndex(0)
                 .viewWithBBox(FXGL.texture(equipment.getEmptyResource(), width, height))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
@@ -236,9 +242,9 @@ public class UIController extends Component {
         Entity entity = FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.PLATE)
                 .at(x, y)
+                .zIndex(0)
                 .viewWithBBox(FXGL.texture(paperTray.getEmptyResource(), width, height))
                 .with(new PaperTrayComponent(paperTray))
-                .zIndex(0)
                 .buildAndAttach();
         setHighlight(entity, x, y);
 
@@ -248,6 +254,7 @@ public class UIController extends Component {
         FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(x, y)
+                .zIndex(-1)
                 .viewWithBBox(FXGL.texture(container.getRawResource(), width, height))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
@@ -259,9 +266,9 @@ public class UIController extends Component {
     public static void spawnInvisibleEquipment(Equipment equipment, double x, double y, int width, int height) {
         Entity invisibleEntity = FXGL.entityBuilder()
                 .at(x, y)
+                .zIndex(-1)
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .bbox(new HitBox("CLICK_BOX", BoundingShape.box(width, height)))
-                .zIndex(1)
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
@@ -332,5 +339,80 @@ public class UIController extends Component {
 
 // snap-back on release
         viewNode.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> entity.setPosition(x,y));
+    }
+
+
+    public static void spawnCustomerAtRandomIntervals() {
+        // Kick off the first scheduling
+        scheduleNextSpawn();
+    }
+
+    private static void scheduleNextSpawn() {
+        if (components.size() >= MAX_CUSTOMERS) {
+            System.out.println("At cap; pausing spawns.");
+            return;
+        }
+
+        double delay = 1 + random.nextDouble() * 2;
+        FXGL.runOnce(() -> {
+            boolean spawned = spawnCustomer("customer_image.png");
+
+            if (spawned && components.size() < MAX_CUSTOMERS) {
+                // Schedule next only if we’re still under the limit
+                scheduleNextSpawn();
+            }
+        }, Duration.seconds(delay));
+    }
+
+    public static boolean spawnCustomer(String imageName) {
+        int w = 180, h = 200;
+        double y = 320;
+        int sceneW = FXGL.getAppWidth();
+
+        if (components.size() >= MAX_CUSTOMERS) {
+            System.out.println("MAX reached (" + MAX_CUSTOMERS + "); skipping spawn.");
+            return false;
+        }
+
+        // Try to find a non-overlapping targetX
+        double targetX;
+        int maxTries = 10;
+        int attempts = 0;
+
+        do {
+            targetX = random.nextInt(sceneW - w);
+            attempts++;
+        } while (checkOverlap(targetX, w) && attempts < maxTries);
+
+        if (checkOverlap(targetX, w)) {
+            System.out.println("Could not find non-overlapping position after " + maxTries + " tries.");
+            return false;
+        }
+
+        boolean goRight = random.nextBoolean();
+        double startX = goRight ? -w : sceneW + w;
+        String dir = goRight ? "RIGHT" : "LEFT";
+
+        Texture tex = FXGL.texture(imageName, w, h);
+
+        var ent = FXGL.entityBuilder()
+                .type(CookingInaMain.EntityType.CUSTOMER)
+                .at(startX, y)
+                .viewWithBBox(tex)
+                .zIndex(-1)
+                .with(new CustomerComponent(targetX, y, dir))
+                .buildAndAttach();
+
+        CustomerComponent cc = ent.getComponent(CustomerComponent.class);
+        components.add(cc);
+
+        System.out.println("Spawned customer → targetX=" + targetX +
+                "  Active: " + components.size());
+        return true;
+    }
+
+    private static boolean checkOverlap(double x, int w) {
+        return components.stream()
+                .anyMatch(cc -> Math.abs(cc.getTargetX() - x) < w);
     }
 }

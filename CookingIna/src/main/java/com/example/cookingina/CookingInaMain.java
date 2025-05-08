@@ -37,7 +37,9 @@ public class CookingInaMain extends GameApplication {
         EQUIPMENT,
         CONTAINER,
         TRASH,
-        PLATE
+        PLATE,
+        CUSTOMER,
+        SPEECH_BUBBLE
     }
 
     public static Text debugText;
@@ -60,8 +62,6 @@ public class CookingInaMain extends GameApplication {
         FXGL.onKeyDown(KeyCode.F1, "Toggle debug", () -> {
             debugText.setVisible(!debugText.isVisible());
         });
-
-        //FXGL.onKeyDown(KeyCode.Q, "Spawn QuekQuek", UIController::spawnContainerForEquipment);
     }
 
     @Override
@@ -147,11 +147,12 @@ public class CookingInaMain extends GameApplication {
 
 
 // ================= SELLING ITEMS ENTITTY =================
+        UIController.spawnCustomerAtRandomIntervals();
 
         QuekQuek quekquek = new QuekQuek(
                 "rawQuekquek_container.png",
                 "rawQuekquek.png",                      // raw resource identifier
-                "rawQuekquek.png",                          // cooked resource
+                "cooked_quek-quek.png",                          // cooked resource
                 "quekquek",                                         // description
                 15.0,                                           // preparationTime (minutes)
                 12.99,                                          // sellingPrice ($)
@@ -159,7 +160,6 @@ public class CookingInaMain extends GameApplication {
                 1,
                 80,
                 80
-
         );                                             // status (1 = available)
 
         Hotdog hotdog = new Hotdog(
@@ -323,7 +323,6 @@ public class CookingInaMain extends GameApplication {
         UIController.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
         UIController.spawnEquipment(bukoDispenser, 130, 400, 150, 340);
         UIController.spawnEquipment(orangeDispenser, 30, 500, 150, 340);
-        UIController.spawnTrashCan(100,950);
 
         //DISPENSER INVISIBLE
         UIController.spawnInvisibleEquipment(calamansiDispenser, 230, 300, 150, 340);
@@ -333,13 +332,13 @@ public class CookingInaMain extends GameApplication {
         //CONTAINER
         UIController.spawnContainer(mangoBasket, 1650, 720, 230, 230);
         UIController.spawnContainer(tempuraContainer, 650, 980, 190, 120);
+        UIController.spawnContainer(quekquekContainer, 870, 980, 190, 120);
+        UIController.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
         UIController.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
         UIController.spawnContainer(gusoContainer, 1390, 820, 140, 110);
         UIController.spawnContainer(spicySauce, 1270, 460, 60, 160);
         UIController.spawnContainer(sweetSauce, 1330, 550, 60, 160);
         UIController.spawnContainer(bagoong, 1500, 650, 54, 100);
         UIController.spawnContainer(salt, 1550, 720, 54, 100);
-
     }
-
 }
