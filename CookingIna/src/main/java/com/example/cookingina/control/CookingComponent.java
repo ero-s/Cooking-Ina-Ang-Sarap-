@@ -109,6 +109,7 @@ public class CookingComponent extends Component {
             System.out.println("Returned to pan area.");
             return true;
         }
+        return false;
     }
 
     @Override

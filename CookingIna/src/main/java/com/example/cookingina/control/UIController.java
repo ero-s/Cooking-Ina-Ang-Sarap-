@@ -266,7 +266,7 @@ public class UIController extends Component {
     public static void spawnInvisibleEquipment(Equipment equipment, double x, double y, int width, int height) {
         Entity invisibleEntity = FXGL.entityBuilder()
                 .at(x, y)
-                .zIndex(-1)
+                .zIndex(100)
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .bbox(new HitBox("CLICK_BOX", BoundingShape.box(width, height)))
                 .with(new CollidableComponent(true))

@@ -323,6 +323,7 @@ public class CookingInaMain extends GameApplication {
         UIController.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
         UIController.spawnEquipment(bukoDispenser, 130, 400, 150, 340);
         UIController.spawnEquipment(orangeDispenser, 30, 500, 150, 340);
+        UIController.spawnTrashCan(100,950);
 
         //DISPENSER INVISIBLE
         UIController.spawnInvisibleEquipment(calamansiDispenser, 230, 300, 150, 340);
