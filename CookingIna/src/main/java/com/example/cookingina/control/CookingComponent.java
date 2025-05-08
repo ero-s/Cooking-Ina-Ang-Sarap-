@@ -12,7 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 
-
 public class CookingComponent extends Component {
     private enum State { RAW, COOKED, OVERCOOKED }
     private State state = State.RAW;
