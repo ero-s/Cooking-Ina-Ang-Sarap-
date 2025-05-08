@@ -36,7 +36,6 @@ public class CookingComponent extends Component {
         this.equipment = equipment;
         slotIndex = 0;
     }
-
     @Override
     public void onAdded() {
         // Create and attach progress bar
