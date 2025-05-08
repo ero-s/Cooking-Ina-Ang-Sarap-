@@ -48,7 +48,6 @@ public class CookingComponent extends Component {
         entity.getViewComponent().addChild(progressBar);
         equipment.setOccupied(true);
 
-
         // Store pan position to return later if needed
         position = new Point2D(entity.getX(), entity.getY());
 
@@ -117,7 +116,6 @@ public class CookingComponent extends Component {
             entity.setPosition(position);
         });
     }
-
     public boolean getIsCooked(){
         return isCooked;
     }
