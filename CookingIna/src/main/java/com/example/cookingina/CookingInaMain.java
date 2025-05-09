@@ -56,7 +56,7 @@ public class CookingInaMain extends GameApplication {
     public static Text debugText;
     private ProgressBar timerBar;
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 10.0; // seconds
+    private static final double TOTAL_TIME = 60.0; // seconds
 
     @Override
     protected void initUI() {
@@ -111,7 +111,6 @@ public class CookingInaMain extends GameApplication {
         setBackground();
         spawnAssets();
         startTimer();
-        startTimer();
     }
 
     @Override
@@ -119,9 +118,6 @@ public class CookingInaMain extends GameApplication {
         vars.put("income", 0); // initialize 'income' to avoid crash
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 
     private void setBackground() {
         double width = FXGL.getAppWidth();
