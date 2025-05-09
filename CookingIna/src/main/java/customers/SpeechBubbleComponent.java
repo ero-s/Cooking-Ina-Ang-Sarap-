@@ -4,12 +4,16 @@ package customers;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.dsl.FXGL;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.util.HashMap;
@@ -49,17 +53,23 @@ public class SpeechBubbleComponent extends Component {
         bubbleRoot.getChildren().addAll(bg, pointer);
 
         // icons
+        // in SpeechBubbleComponent constructor:
         for (int i = 0; i < orders.size(); i++) {
             Order o = orders.get(i);
-            Image img = FXGL.image(o.getItem().toLowerCase() + ".png");
+            String base = o.getItem();                    // e.g. "hotdog"
+            String key  = base + "_" + i;                 // e.g. "hotdog_0", "hotdog_1"
+
+            Image img  = FXGL.image(base.toLowerCase() + ".png");
             ImageView iv = new ImageView(img);
             iv.setFitWidth(56);
             iv.setFitHeight(56);
             iv.setLayoutX(10);
             iv.setLayoutY(10 + i * 50);
-            icons.put(o.getItem(), iv);
+
+            icons.put(key, iv);
             bubbleRoot.getChildren().add(iv);
         }
+
     }
 
     @Override
@@ -73,10 +83,42 @@ public class SpeechBubbleComponent extends Component {
     }
 
     /** Removes the icon for a served item */
-    public void markServed(String itemName) {
-        ImageView iv = icons.remove(itemName);
-        if (iv != null) {
+    /** Removes one icon for a served base item (e.g. "hotdog") */
+    public void markServed(String baseItem) {
+        // Find a key that starts with "baseItem_"
+        String matchKey = icons.keySet().stream()
+                .filter(k -> k.startsWith(baseItem + "_"))
+                .findFirst()
+                .orElse(null);
+
+        if (matchKey != null) {
+            ImageView iv = icons.remove(matchKey);
             bubbleRoot.getChildren().remove(iv);
         }
+    }
+
+    public void showPricePopup(int price) {
+        String text = "+" + price;
+        Text popup = new Text(text);
+        popup.setFont(Font.font(32));
+        popup.setFill(javafx.scene.paint.Color.YELLOW);
+        // position above the bubble
+        popup.setTranslateX(bubbleRoot.getBoundsInLocal().getWidth() / 2 - 10);
+        popup.setTranslateY(-20);
+
+        bubbleRoot.getChildren().add(popup);
+
+        // move up and fade
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(0.8), popup);
+        tt.setByY(-30);
+
+        FadeTransition ft = new FadeTransition(Duration.seconds(0.8), popup);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+
+        tt.play();
+        ft.play();
+
+        ft.setOnFinished(e -> bubbleRoot.getChildren().remove(popup));
     }
 }

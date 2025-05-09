@@ -11,9 +11,14 @@ import com.example.cookingina.objects.entity.StoreItem;
 import customers.CustomerComponent;
 import customers.Order;
 import customers.SpeechBubbleComponent;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.paint.Color;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
@@ -98,7 +103,7 @@ public class PaperTrayComponent extends Component {
         String foodType = storeItem.getDescription().toLowerCase().trim();
 
         switch (foodType) {
-            case "quekquek": return "assets/textures/papertray_quekquek.png";
+            case "quekquek": return "assets/textures/papertray_cooked_quekquek.png";
             case "hotdog": return "assets/textures/papertray_hotdog.png";
             case "tempura": return "assets/textures/papertray_tempura.png";
             case "calamansi juice": return "assets/textures/papertray_calamansi_juice.png";
@@ -120,6 +125,7 @@ public class PaperTrayComponent extends Component {
         for (Entity customer : FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.CUSTOMER)) {
             if (customer.isColliding(entity) && textureChanged) {
                 served = true;
+                serveCustomer(customer);
                 String servedItem = getServedItemFromTexture();
 
                 CustomerComponent customerComponent = customer.getComponent(CustomerComponent.class);
@@ -155,10 +161,12 @@ public class PaperTrayComponent extends Component {
             entity.setPosition(trayOriginalPos);
         }
 
+        // restore collidability
         if (collidableComponent != null) {
             entity.addComponent(collidableComponent);
         }
 
+        // remove bound item after a short delay
         FXGL.getGameTimer().runOnceAfter(() -> {
             if (boundItem != null) {
                 boundItem.removeFromWorld();
@@ -166,6 +174,35 @@ public class PaperTrayComponent extends Component {
             }
         }, Duration.seconds(0.2));
     }
+
+    private void serveCustomer(Entity customer) {
+        String servedItem = getServedItemFromTexture();
+        CustomerComponent cc = customer.getComponent(CustomerComponent.class);
+
+        customer.getComponentOptional(SpeechBubbleComponent.class).ifPresent(sb -> {
+            Order toHandle = cc.getOrders().stream()
+                    .filter(o -> o.getItem().equals(servedItem))
+                    .findFirst().orElse(null);
+
+            if (toHandle != null) {
+                if (toHandle.getQuantity() > 1) {
+                    toHandle.decrement();
+                } else {
+                    cc.getOrders().remove(toHandle);
+                }
+
+                sb.markServed(servedItem);
+
+                int price = getPrice(servedItem);
+                FXGL.inc("income", price);
+                sb.showPricePopup(price);
+
+                // only here do we reset texture
+                resetTrayTexture();
+            }
+        });
+    }
+
 
     private int getPrice(String itemName) {
         switch (itemName) {
@@ -177,22 +214,25 @@ public class PaperTrayComponent extends Component {
         }
     }
 
+
     private String getServedItemFromTexture() {
         if (!textureChanged) return "";
 
-        ImageView iv = (ImageView) entity.getViewComponent().getChildren().get(0);
+        ImageView iv = (ImageView)entity.getViewComponent().getChildren().get(0);
         String url = iv.getImage().getUrl();
 
-        if (url.contains("quekquek")) return "cooked_kwek-kwek";
-        if (url.contains("hotdog")) return "cooked_hotdog";
-        if (url.contains("tempura")) return "cooked_tempura";
+        if (url.contains("quekquek"))      return "cooked_kwek-kwek";
+        if (url.contains("hotdog"))        return "cooked_hotdog";
+        if (url.contains("tempura"))       return "cooked_tempura";
         if (url.contains("calamansi_juice")) return "calamansi_juice";
+
         return "";
     }
 
+
     private void resetTrayTexture() {
         if (textureChanged) {
-            changeTrayTexture("assets/textures/papertray.png");
+            changeTrayTexture("/assets/textures/papertray.png");
             textureChanged = false;
         }
     }

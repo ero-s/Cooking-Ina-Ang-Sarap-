@@ -140,6 +140,7 @@ public class OvercookComponent extends Component {
             System.out.println("🗑  Discarded in trash");
             return true;
         }
+
         return false;
     }
 

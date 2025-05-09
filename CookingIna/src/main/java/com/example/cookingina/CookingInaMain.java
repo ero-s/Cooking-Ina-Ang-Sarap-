@@ -25,6 +25,8 @@ import com.example.cookingina.objects.entity.storeItem.Tempura;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -33,11 +35,14 @@ import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppWidth;
 
 public class CookingInaMain extends GameApplication {
 
@@ -62,6 +67,37 @@ public class CookingInaMain extends GameApplication {
     private Timeline timerTimeline;
     private static final double TOTAL_TIME = 60.0; // seconds
 
+//    @Override
+//    protected void initUI() {
+//        // Create debug text element
+//        debugText = new Text();
+//        debugText.setFont(Font.font(14));
+//        debugText.setFill(Color.WHITE);
+//        debugText.setTranslateX(10);
+//        debugText.setTranslateY(20);
+//        setProgressBar();
+//
+//        // Add to game scene
+//        FXGL.getGameScene().addUINode(debugText);
+//
+//        ProgressBar incomeBar = new ProgressBar();
+//        incomeBar.setWidth(200);
+//        incomeBar.setHeight(20);
+//        incomeBar.setTranslateX(getAppWidth() - 220); // 20px from right edge
+//        incomeBar.setTranslateY(20);                 // 20px from top
+//
+//        // Assume you have a “goal” or “level target” constant:
+//        int levelTarget = 100;
+//
+//        // Bind progress to income / levelTarget
+//        DoubleBinding progressBinding = FXGL.getWorldProperties()
+//                .intProperty("income")
+//                .divide((double) levelTarget);
+//        incomeBar.currentValueProperty().bind(progressBinding);
+//        // Add to UI
+//        FXGL.getGameScene().addUINode(incomeBar);
+//    }
+
     @Override
     protected void initUI() {
         // Create debug text element
@@ -74,6 +110,24 @@ public class CookingInaMain extends GameApplication {
 
         // Add to game scene
         FXGL.getGameScene().addUINode(debugText);
+
+        // --- FXGL income bar ---
+        ProgressBar incomeBar = new ProgressBar();
+        incomeBar.setWidth(200);
+        incomeBar.setHeight(20);
+        incomeBar.setTranslateX(getAppWidth() - 220); // 20px from right edge
+        incomeBar.setTranslateY(20);                 // 20px from top
+
+        incomeBar.setMinValue(0);
+        incomeBar.setMaxValue(100);
+
+        // Bind world property 'income' -> bar value
+        FXGL.getWorldProperties().intProperty("income")
+                .addListener((obs, oldVal, newVal) -> {
+                    incomeBar.setCurrentValue(newVal.doubleValue());
+                });
+
+        FXGL.getGameScene().addUINode(incomeBar);
     }
 
     @Override
