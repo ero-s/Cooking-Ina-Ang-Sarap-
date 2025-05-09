@@ -115,7 +115,7 @@ public class OvercookComponent extends Component {
                 PaperTrayComponent ptc = plateEnt.getComponent(PaperTrayComponent.class);
                 PaperTray tray = ptc.getTray();
 
-                if (!tray.isOccupied() && !isBurnt) {
+                if (!tray.isOccupied()) {
                     // mark equipment free
                     equipment.setOccupied(false);
 

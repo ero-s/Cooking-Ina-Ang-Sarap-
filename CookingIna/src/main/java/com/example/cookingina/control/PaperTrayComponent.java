@@ -121,54 +121,46 @@ public class PaperTrayComponent extends Component {
     }
 
     private void onRelease(MouseEvent event) {
-        boolean served = false;
+        boolean handled = false;
 
-        for (Entity customer : FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.CUSTOMER)) {
+        // 1) Serve to Customer
+        for (Entity customer :
+                FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.CUSTOMER)) {
             if (customer.isColliding(entity) && textureChanged) {
-                served = true;
-
-                String servedItem = getServedItemFromTexture();  // e.g. "cooked_hotdog"
-                CustomerComponent cc = customer.getComponent(CustomerComponent.class);
-
-                customer.getComponentOptional(SpeechBubbleComponent.class).ifPresent(sb -> {
-                    // single order handling
-                    Order toHandle = cc.getOrders().stream()
-                            .filter(o -> o.getItem().equals(servedItem))
-                            .findFirst().orElse(null);
-
-                    if (toHandle != null) {
-                        if (toHandle.getQuantity() > 1) {
-                            toHandle.decrement();
-                        } else {
-                            cc.getOrders().remove(toHandle);
-                        }
-
-                        // remove one icon
-                        sb.markServed(servedItem);
-
-                        // add income & show popup
-                        int price = getPrice(servedItem);
-                        FXGL.inc("income", price);
-                        sb.showPricePopup(price);
-
-                        // reset tray
-                        resetTrayTexture();
-                    }
-                });
-
+                handled = true;
+                serveCustomer(customer);
                 break;
             }
         }
 
-        if (!served) {
+        // 2) If not served, check Equipment or Container
+        if (!handled) {
+            boolean onEquipment = FXGL.getGameWorld()
+                    .getEntitiesByType(CookingInaMain.EntityType.EQUIPMENT)
+                    .stream().anyMatch(e -> e.isColliding(entity));
+            boolean onContainer = FXGL.getGameWorld()
+                    .getEntitiesByType(CookingInaMain.EntityType.CONTAINER)
+                    .stream().anyMatch(e -> e.isColliding(entity));
+
+            if (onEquipment || onContainer) {
+                // Snap back but do NOT reset texture
+                entity.setPosition(trayOriginalPos);
+                handled = true;
+            }
+        }
+
+        // 3) Anything else: snap back AND reset
+        if (!handled) {
             entity.setPosition(trayOriginalPos);
             resetTrayTexture();
         }
 
+        // restore collidability
         if (collidableComponent != null) {
             entity.addComponent(collidableComponent);
         }
 
+        // remove bound item after a short delay
         FXGL.getGameTimer().runOnceAfter(() -> {
             if (boundItem != null) {
                 boundItem.removeFromWorld();
@@ -176,6 +168,35 @@ public class PaperTrayComponent extends Component {
             }
         }, Duration.seconds(0.2));
     }
+
+    private void serveCustomer(Entity customer) {
+        String servedItem = getServedItemFromTexture();
+        CustomerComponent cc = customer.getComponent(CustomerComponent.class);
+
+        customer.getComponentOptional(SpeechBubbleComponent.class).ifPresent(sb -> {
+            Order toHandle = cc.getOrders().stream()
+                    .filter(o -> o.getItem().equals(servedItem))
+                    .findFirst().orElse(null);
+
+            if (toHandle != null) {
+                if (toHandle.getQuantity() > 1) {
+                    toHandle.decrement();
+                } else {
+                    cc.getOrders().remove(toHandle);
+                }
+
+                sb.markServed(servedItem);
+
+                int price = getPrice(servedItem);
+                FXGL.inc("income", price);
+                sb.showPricePopup(price);
+
+                // only here do we reset texture
+                resetTrayTexture();
+            }
+        });
+    }
+
 
     private int getPrice(String itemName) {
         switch (itemName) {
