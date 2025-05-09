@@ -55,7 +55,7 @@ public class CookingInaMain extends GameApplication {
     public static Text debugText;
     private ProgressBar timerBar;
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 60.0; // seconds
+    private static final double TOTAL_TIME = 10.0; // seconds
 
     @Override
     protected void initUI() {
@@ -69,9 +69,6 @@ public class CookingInaMain extends GameApplication {
 
         // Add to game scene
         FXGL.getGameScene().addUINode(debugText);
-
-
-
     }
 
     @Override
@@ -113,100 +110,8 @@ public class CookingInaMain extends GameApplication {
         setBackground();
         spawnAssets();
         startTimer();
-
-
-    }
-    private void resetGameState() {
-        // Reset any scores, timers, or game state variables
-        FXGL.getWorldProperties().setValue("score", 0);
-
-        if (timerTimeline != null) {
-            timerTimeline.stop();
-        }
     }
 
-
-    private void startTimer() {
-        // Configure your bar
-
-        // Build a Timeline that fires every 1 second
-        timerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            // Step the bar by +1 each second
-            double next = timerBar.getCurrentValue() + 1;
-            timerBar.setCurrentValue(next);
-        }));
-
-        // After 60 ticks (i.e. bar reaches 60) stop and end game
-        timerTimeline.setCycleCount((int) TOTAL_TIME);
-            timerTimeline.setOnFinished(e -> endGame());
-
-        // Start ticking
-        timerTimeline.play();
-    }
-
-    private void setProgressBar(){
-        // Timer progress bar
-        timerBar = new ProgressBar();
-        timerBar.setWidth(400);
-        timerBar.setHeight(20);  // Make bar visible
-        timerBar.setTranslateX((FXGL.getAppWidth() - 400) / 2.0);
-        timerBar.setTranslateY(10);
-        timerBar.setCurrentValue(0);
-        timerBar.setMinValue(0);
-        timerBar.setMaxValue(10);
-
-        // Ensure single color progression
-        timerBar.setFill(Color.LIME);         // Progress color
-        timerBar.setBackgroundFill(Color.GRAY);  // Background color
-        timerBar.setHeight(30);               // Make clearly visible
-    }
-
-    @Override
-    protected void initPhysics() {
-        // existing collision handlers...
-
-        // New handler: when an INGREDIENT collides with a CUSTOMER
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(
-                CookingInaMain.EntityType.INGREDIENT,
-                CookingInaMain.EntityType.CUSTOMER) {
-
-            @Override
-            protected void onCollisionBegin(Entity ingredient, Entity customer) {
-                // 1) Find the SpeechBubbleComponent
-                if (!customer.hasComponent(SpeechBubbleComponent.class)) {
-                    return; // no bubble to update
-                }
-                SpeechBubbleComponent bubble = customer.getComponent(SpeechBubbleComponent.class);
-
-        FXGL.getGameScene().addUINode(timerBar);
-    }
-                // 2) Determine which Order this ingredient matches
-                //    Assumes your ingredient entity has a UserData or component exposing its name
-                String servedName = ingredient.getString("itemName");
-                // or: ingredient.getComponent(SomeComponent.class).getStoreItem().getDescription();
-
-    private void endGame() {
-        if (timerTimeline != null) {
-            timerTimeline.stop();
-        }
-
-        // Show game over menu
-        FXGL.getSceneService().pushSubScene(new GameOverMenu());
-
-        // Optional: Pause the game engine if needed
-        FXGL.getGameController().pauseEngine();
-                // 3) Remove the ingredient from the world
-                ingredient.removeFromWorld();
-
-                // 4) Update the bubble UI
-                bubble.markServed(servedName);
-            }
-        });
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
 
     private void setBackground() {
         double width = FXGL.getAppWidth();
@@ -444,18 +349,93 @@ public class CookingInaMain extends GameApplication {
         uc.spawnContainer(bagoong, 1500, 650, 54, 100);
         uc.spawnContainer(salt, 1550, 720, 54, 100);
     }
+    private void resetGameState() {
+        // Reset any scores, timers, or game state variables
+        FXGL.getWorldProperties().setValue("score", 0);
 
-    public void hardReset() {
-        // Clear any persistent static data
-        fryers.clear();
-        paperTrays.clear();
-        uc = null;
+        if (timerTimeline != null) {
+            timerTimeline.stop();
+        }
+    }
 
-        // Force garbage collection
-        System.gc();
 
-        // Reinitialize core components
-        initGame();
-        initUI();
+    private void startTimer() {
+        // Configure your bar
+
+        // Build a Timeline that fires every 1 second
+        timerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            // Step the bar by +1 each second
+            double next = timerBar.getCurrentValue() + 1;
+            timerBar.setCurrentValue(next);
+        }));
+
+        // After 60 ticks (i.e. bar reaches 60) stop and end game
+        timerTimeline.setCycleCount((int) TOTAL_TIME);
+        timerTimeline.setOnFinished(e -> endGame());
+
+        // Start ticking
+        timerTimeline.play();
+    }
+
+    private void endGame() {
+        if (timerTimeline != null) {
+            timerTimeline.stop();
+        }
+
+        // Show game over menu
+        FXGL.getSceneService().pushSubScene(new GameOverMenu());
+
+        // Optional: Pause the game engine if needed
+        FXGL.getGameController().pauseEngine();
+    }
+
+    private void setProgressBar() {
+        // Timer progress bar
+        timerBar = new ProgressBar();
+        timerBar.setWidth(800);
+        timerBar.setHeight(40);
+        // Center horizontally
+        timerBar.setTranslateX((FXGL.getAppWidth() - 800) / 2.0);
+        timerBar.setTranslateY(10);
+        timerBar.setCurrentValue(0);
+        timerBar.setMinValue(0);
+        timerBar.setMaxValue(TOTAL_TIME);
+
+        // Visual styling
+        timerBar.setFill(Color.LIME);
+        timerBar.setBackgroundFill(Color.GRAY);
+        timerBar.setLabelFill(Color.WHITE);
+
+        // Add to game scene
+        FXGL.getGameScene().addUINode(timerBar);
+    }
+
+    @Override
+    protected void initPhysics() {
+        // existing collision handlers...
+
+        // New handler: when an INGREDIENT collides with a CUSTOMER
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(
+                CookingInaMain.EntityType.INGREDIENT,
+                CookingInaMain.EntityType.CUSTOMER) {
+
+            @Override
+            protected void onCollisionBegin(Entity ingredient, Entity customer) {
+                // 1) Find the SpeechBubbleComponent
+                if (!customer.hasComponent(SpeechBubbleComponent.class)) {
+                    return; // no bubble to update
+                }
+                SpeechBubbleComponent bubble = customer.getComponent(SpeechBubbleComponent.class);
+                // 2) Determine which Order this ingredient matches
+                //    Assumes your ingredient entity has a UserData or component exposing its name
+                String servedName = ingredient.getString("itemName");
+                // or: ingredient.getComponent(SomeComponent.class).getStoreItem().getDescription();
+                FXGL.getGameScene().addUINode(timerBar);
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
