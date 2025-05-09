@@ -26,6 +26,7 @@ public class CookingComponent extends Component {
     private boolean isDiscarded = false;
     private int slotIndex;
     private Point2D position;
+    private UIController uc = new UIController();
 
     private static int juiceCount = 0; // Keeps track of no. of juices
 
@@ -80,7 +81,7 @@ public class CookingComponent extends Component {
             isCooked = true;
             entity.getViewComponent().removeChild(progressBar);
             entity.getViewComponent().clearChildren();
-            UIController.spawnCookedIngredient(cookedStoreItem,equipment, position.getX(), position.getY());
+            uc.spawnCookedIngredient(cookedStoreItem,equipment, position.getX(), position.getY());
 
             // Attempt placement onto tray or trash immediately
             boolean placed = handleClickListener();
