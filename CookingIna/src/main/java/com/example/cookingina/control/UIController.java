@@ -13,6 +13,7 @@ import com.example.cookingina.WaitingItem;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
+import com.example.cookingina.objects.entity.equipment.MangoTray;
 import com.example.cookingina.objects.entity.storeItem.Calamansi_Juice;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import customers.CustomerComponent;
@@ -46,12 +47,18 @@ public class UIController extends Component {
     private final List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
     private static final Random random = new Random();
+    private static int mangoCount = 0;
+    private static final int MAX_MANGO = 3;
 
     private static List<Fryer> fryers;
-    private static List<Fryer> paperTrays;
+    private static List<MangoTray>  mangoTray;
 
     public static void setFryers(List<Fryer> fryerList) {
         fryers = fryerList;
+    }
+
+    public static void setMangoTray(List<MangoTray> mangoTrayList) {
+        mangoTray = mangoTrayList;
     }
 
     // Spawing Container and container item to the equipment

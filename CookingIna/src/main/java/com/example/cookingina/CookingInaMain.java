@@ -16,9 +16,12 @@ import com.example.cookingina.objects.entity.TrashCan;
 import com.example.cookingina.objects.entity.container.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
+import com.example.cookingina.objects.entity.equipment.MangoTray;
 import com.example.cookingina.objects.entity.equipment.TrashBin;
 import com.example.cookingina.objects.entity.storeItem.Hotdog;
+import com.example.cookingina.objects.entity.storeItem.Mango;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
+import com.example.cookingina.objects.entity.storeItem.Tempura;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
@@ -40,6 +43,7 @@ public class CookingInaMain extends GameApplication {
 
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
+    private final List<MangoTray> mangoTrays = new ArrayList<>();
     public UIController uc = new UIController();
 
 
@@ -135,6 +139,7 @@ public class CookingInaMain extends GameApplication {
     }
     private void spawnAssets(){
         uc = new UIController();
+
         for(int i = 1; i <= 6; i++){
             fryers.add(new Fryer(
                     "frying_pan.png",                         // name
@@ -149,6 +154,20 @@ public class CookingInaMain extends GameApplication {
             ));
         }
 
+        for(int i = 1; i <= 3; i++){
+            mangoTrays.add(new MangoTray(
+                    "assets.png",
+                    "usedPan.png",
+                    i,
+                    0,
+                    2.5,
+                    0.0,
+                    1,
+                    false,
+                    "A tray for mango"
+            ));
+        }
+
         for(int i = 0; i < 6; i++){
             paperTrays.add(new PaperTray(
                     "frying_pan.png",                         // name
@@ -157,7 +176,8 @@ public class CookingInaMain extends GameApplication {
             ));
         }
 
-        UIController.setFryers(fryers);
+        uc.setFryers(fryers);
+        uc.setMangoTray(mangoTrays);
 
 // ================= SELLING ITEMS ENTITTY =================
         uc.spawnCustomerAtRandomIntervals();
@@ -186,6 +206,32 @@ public class CookingInaMain extends GameApplication {
                 1,
                 80,
                 80
+        );
+
+        Tempura tempura = new Tempura(
+                "rawTempura_container.png",
+                "raw_tempura.png",
+                "cooked_tempura.png",
+                "tempura",
+                10.0,
+                5.0,
+                3.0,
+                1,
+                80,
+                80
+        );
+
+        Mango mango = new Mango(
+                "manga_basket.png",
+                "raw_mango.png",
+                "mango_ready.png",
+                "mango",
+                5.0,
+                30.0,
+                20.0,
+                1,
+                120,
+                120
         );
 // ================= CONTAINER ENTITY =================
 
@@ -282,42 +328,6 @@ public class CookingInaMain extends GameApplication {
                 "salt"
         );
 
-
-
-
-        for(Fryer fryer : fryers){
-            if(fryer.getType() == 1){
-                uc.spawnEquipment(fryer, 1035, 490, 180, 130);
-            } else if (fryer.getType() == 2){
-                uc.spawnEquipment(fryer, 895, 490, 180, 130);
-            } else if (fryer.getType() == 3){
-                uc.spawnEquipment(fryer, 755, 490, 180, 130);
-            } else if (fryer.getType() == 4) {
-                uc.spawnEquipment(fryer, 1045, 590, 175, 130);
-            } else if (fryer.getType() == 5){
-                uc.spawnEquipment(fryer, 895, 590, 175, 130);
-            } else {
-                uc.spawnEquipment(fryer, 745, 590, 175, 130);
-            }
-        }
-
-        for(int i = 0; i < 6; i++){
-            PaperTray paperTray = paperTrays.get(i);
-            if(i == 0){
-                uc.spawnPaperTray(paperTray, 1090, 750, 180, 130);
-            }else if(i == 1){
-                uc.spawnPaperTray(paperTray, 895, 750, 180, 130);
-            }else if(i == 2){
-                uc.spawnPaperTray(paperTray, 695, 750, 180, 130);
-            }else if(i == 3){
-                uc.spawnPaperTray(paperTray, 1090, 840, 175, 130);
-            }else if(i == 4){
-                uc.spawnPaperTray(paperTray, 895, 840, 175, 130);
-            }else if(i == 5){
-                uc.spawnPaperTray(paperTray, 695, 840, 175, 130);
-            }
-        }
-
         // Add trashCan asset
         TrashBin trashBin = new TrashBin(
                 "trash_closed.png",                         // name
@@ -327,10 +337,52 @@ public class CookingInaMain extends GameApplication {
                 0,
                 0,
                 false,
-                "orange juice");
+                "orange juice"
+        );
+
+        // MANGO TRAY POSITIONS
+        int[][] mangoTrayPositions = {
+                {1540, 430}, {1640, 500}, {1740, 570}, // Position of 1, 2, and 3.
+        };
+
+        for (int i = 0; i < mangoTrays.size(); i++) {
+            MangoTray tray = mangoTrays.get(i);
+            int[] pos = mangoTrayPositions[i];
+            uc.spawnEquipment(tray, pos[0], pos[1], 150, 130);
+        }
+
+        // FRYER POSITIONS
+        int[][] fryerPositions = {
+                {1035, 505}, {895, 505}, {755, 505}, // Position of 1, 2, and 3.
+                {1045, 605}, {895, 605}, {745, 605} // Position of 4, 5, and 6.
+        };
+
+        for (int i = 0; i < fryers.size(); i++) {
+            Fryer fryer = fryers.get(i);
+            int[] pos = fryerPositions[i];
+            uc.spawnEquipment(fryer, pos[0], pos[1], 190, 140);
+        }
+
+        // PAPER TRAY POSITIONS
+        int[][] trayPositions = {
+                {1090, 750, 180, 130},
+                {895, 750, 180, 130},
+                {695, 750, 180, 130},
+                {1090, 840, 175, 130},
+                {895, 840, 175, 130},
+                {695, 840, 175, 130}
+        };
+
+        for (int i = 0; i < paperTrays.size(); i++) {
+            PaperTray tray = paperTrays.get(i);
+            int[] pos = trayPositions[i];
+            uc.spawnPaperTray(tray, pos[0], pos[1], pos[2], pos[3]);
+        }
 
         uc.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120);
         uc.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120);
+        uc.spawnContainerForEquipment(tempura, fryers, 650, 980, 190, 120);
+        uc.spawnContainerForEquipment(mango, mangoTrays, 1630, 720, 270, 250);
 
         //DISPENSER EQUIPMENT
         uc.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
@@ -344,10 +396,6 @@ public class CookingInaMain extends GameApplication {
         uc.spawnInvisibleEquipment(orangeDispenser, 30, 500, 150, 340);
 
         //CONTAINER
-        uc.spawnContainer(mangoBasket, 1650, 720, 230, 230);
-        uc.spawnContainer(tempuraContainer, 650, 980, 190, 120);
-        uc.spawnContainer(quekquekContainer, 870, 980, 190, 120);
-        uc.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
         uc.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
         uc.spawnContainer(gusoContainer, 1390, 820, 140, 110);
         uc.spawnContainer(spicySauce, 1270, 460, 60, 160);
@@ -355,6 +403,8 @@ public class CookingInaMain extends GameApplication {
         uc.spawnContainer(bagoong, 1500, 650, 54, 100);
         uc.spawnContainer(salt, 1550, 720, 54, 100);
     }
+
+
     private void resetGameState() {
         // Reset any scores, timers, or game state variables
         FXGL.getWorldProperties().setValue("score", 0);
@@ -400,6 +450,7 @@ public class CookingInaMain extends GameApplication {
         timerBar = new ProgressBar();
         timerBar.setWidth(800);
         timerBar.setHeight(40);
+
         // Center horizontally
         timerBar.setTranslateX((FXGL.getAppWidth() - 800) / 2.0);
         timerBar.setTranslateY(10);
