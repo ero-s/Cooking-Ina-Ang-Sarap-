@@ -1,3 +1,4 @@
+
 package com.example.cookingina;
 
 import com.almasb.fxgl.app.GameApplication;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 
@@ -122,6 +124,11 @@ public class CookingInaMain extends GameApplication {
                 bubble.markServed(servedName);
             }
         });
+    }
+
+    @Override
+    protected void initGameVars(Map<String, Object> vars) {
+        vars.put("income", 0); // initialize 'income' to avoid crash
     }
 
     public static void main(String[] args) {

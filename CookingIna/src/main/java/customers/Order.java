@@ -55,4 +55,9 @@ public class Order {
     public int hashCode() {
         return Objects.hash(item, quantity);
     }
+
+    public void decrement() {
+        if (quantity > 0)
+            quantity--;
+    }
 }
