@@ -13,8 +13,10 @@ import com.example.cookingina.WaitingItem;
 import com.example.cookingina.objects.entity.Container;
 import com.example.cookingina.objects.entity.Equipment;
 import com.example.cookingina.objects.entity.StoreItem;
+import com.example.cookingina.objects.entity.container.MangoContainer;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
+import com.example.cookingina.objects.entity.equipment.MangoDisplayer;
 import com.example.cookingina.objects.entity.storeItem.Calamansi_Juice;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import javafx.application.Platform;
@@ -43,6 +45,7 @@ public class UIController extends Component {
     private static final Queue<WaitingItem> waitingJuiceQueue = new LinkedList<>();
 
     private static List<Fryer> fryers;
+    private static List<MangoDisplayer> mangoDisplayer;
 
     public UIController(StoreItem storeItem, Equipment equipment, double originalX, double originalY) {
         this.storeItem = storeItem;
@@ -53,6 +56,8 @@ public class UIController extends Component {
 
     public static void setFryers(List<Fryer> fryerList) {
         fryers = fryerList;
+    }
+    public static void setMangoDisplayer(List<MangoDisplayer> mangoDisplayerList) { mangoDisplayer = mangoDisplayerList;
     }
 
     // Spawing Container and container item to the equipment
@@ -83,7 +88,6 @@ public class UIController extends Component {
                     }
                 });
     }
-
 
     @Override
     public void onAdded() {
@@ -266,8 +270,8 @@ public class UIController extends Component {
         final Point2D initialPosition = new Point2D(x, y);
 
         // Add CookingComponent to the container to manage cooking and dragging behavior
-        CookingComponent cookingComponent = new CookingComponent(30.0, null, null, 0);  // Example values
-        entity.addComponent(cookingComponent);
+        //CookingComponent cookingComponent = new CookingComponent(30.0, null, null, 0);  // Example values
+        //entity.addComponent(cookingComponent);
 
         // Add draggable component for drag functionality
         entity.addComponent(new DraggableComponent());

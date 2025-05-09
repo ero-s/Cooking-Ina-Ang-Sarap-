@@ -88,31 +88,6 @@ public class CookingComponent extends Component {
         });
     }
 
-
-//    @Override
-//    public void onUpdate(double tpf) {
-//        timer -= tpf;
-//
-//        // Update progress (reverse calculation: 1.0 -> 0.0)
-//        double progress = totalTime - timer;
-//        progressBar.setCurrentValue(progress); // If using 0-100 scale
-//        progressBar.setMinValue(0);
-//        progressBar.setMaxValue(totalTime);
-//
-//        if(timer <= 0) {
-//            // Replace texture by updating the view
-//            entity.getViewComponent().clearChildren();
-//            if(cookedStoreItem.getDescription().contains("juice")){
-//                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 40, 40));
-//            }else {
-//                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 40, 40));
-//            }
-//            // Remove raw ingredient
-//            entity.removeFromWorld();
-////            FXGL.play("cooking-done.wav");
-//        }
-//    }
-
     @Override
     public void onUpdate(double tpf) {
         if (isPaused || isCooked || isDiscarded)
@@ -149,6 +124,11 @@ public class CookingComponent extends Component {
                 entity.getViewComponent().clearChildren();
                 entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 120, 120));
             }
+            if (!isDiscarded && cookedStoreItem.getDescription().contains("mango")) {
+                entity.getViewComponent().clearChildren();
+                entity.getViewComponent().addChild(FXGL.texture(cookedStoreItem.getCookedResource(), 70, 70));
+            }
+
             // After cooking is complete, don't remove it yet unless it's discarded
             if (isDiscarded) {
                 entity.removeFromWorld(); // Remove entity if discarded

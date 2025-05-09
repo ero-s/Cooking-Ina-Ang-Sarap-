@@ -10,7 +10,9 @@ import com.example.cookingina.control.UIController;
 import com.example.cookingina.objects.entity.container.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
+import com.example.cookingina.objects.entity.equipment.MangoDisplayer;
 import com.example.cookingina.objects.entity.storeItem.Hotdog;
+import com.example.cookingina.objects.entity.storeItem.Mango;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import com.example.cookingina.objects.entity.storeItem.Tempura;
 import javafx.scene.input.KeyCode;
@@ -27,7 +29,7 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 
 public class CookingInaMain extends GameApplication {
     private final List<Fryer> fryers = new ArrayList<>();
-
+    private final List<MangoDisplayer> mangoDisplayer = new ArrayList<>();
     public enum EntityType {
         INGREDIENT,
         EQUIPMENT,
@@ -98,17 +100,19 @@ public class CookingInaMain extends GameApplication {
 
         UIController.setFryers(fryers);
 
-//        Fryer fryer = new Fryer(
-//                "frying_pan.png",                         // name
-//                "usedPan.png",
-//                1,                                              // type (e.g., 1 = cooking equipment)
-//                0,                                              // playend (initial value)
-//                1.5,                                            // speedMultiplier (50% faster cooking)
-//                500.0,                                          // cost ($500)
-//                4,                                              // capacity (4 items at once)
-//                false,                                          // isUnlocked (initially locked)
-//                "A standard fryer for basic cooking needs");    // description);
-
+        for(int i = 1; i <= 3; i++){
+            mangoDisplayer.add(new MangoDisplayer(
+                    "paper_tray.png",                         // name
+                    "usedPan.png",
+                    i,                                              // type (e.g., 1 = cooking equipment)
+                    0,                                              // playend (initial value)
+                    1.5,                                            // speedMultiplier (50% faster cooking)
+                    500.0,                                          // cost ($500)
+                    1,                                              // capacity (4 items at once)
+                    false,                                          // isUnlocked (initially locked)
+                    "A displayer for mango"    // description);
+            ));
+        }
 
 // ================= SELLING ITEMS ENTITTY =================
 
@@ -141,6 +145,17 @@ public class CookingInaMain extends GameApplication {
                 12.0,
                 5.0,
                 3.0,
+                1
+        );
+
+        Mango mango = new Mango(
+                "mango_container.png",
+                "mango.png",
+                "mango.png",
+                "mango",
+                5.0,
+                30.0,
+                25.0,
                 1
         );
 // ================= CONTAINER ENTITY =================
@@ -261,6 +276,18 @@ public class CookingInaMain extends GameApplication {
             }
         }
 
+      // MANGO DISPLAYER
+
+        for(MangoDisplayer displayer : mangoDisplayer){
+            if(displayer.getType() == 1){
+                UIController.spawnEquipment(displayer, 1550, 470, 120, 120);
+            } else if (displayer.getType() == 2){
+                UIController.spawnEquipment(displayer, 1640, 540, 120, 120);
+            } else {
+                UIController.spawnEquipment(displayer, 1750, 610, 120, 120);
+            }
+        }
+
         //DISPENSER EQUIPMENT
         UIController.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
         UIController.spawnEquipment(bukoDispenser, 130, 400, 150, 340);
@@ -272,10 +299,6 @@ public class CookingInaMain extends GameApplication {
         UIController.spawnInvisibleEquipment(orangeDispenser, 30, 500, 150, 340);
 
         //CONTAINER
-        UIController.spawnContainer(mangoBasket, 1650, 720, 230, 230);
-        //UIController.spawnContainer(tempuraContainer, 650, 980, 190, 120);
-        //UIController.spawnContainer(quekquekContainer, 870, 980, 190, 120);
-        //UIController.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
         UIController.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
         UIController.spawnContainer(gusoContainer, 1390, 820, 140, 110);
         UIController.spawnContainer(spicySauce, 1270, 460, 60, 160);
@@ -286,11 +309,11 @@ public class CookingInaMain extends GameApplication {
         UIController.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120, 80,80);
         UIController.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120, 80,80);
         UIController.spawnContainerForEquipment(tempura, fryers, 650, 980, 190, 120, 120,120);
+        UIController.spawnContainerForEquipment(mango, mangoDisplayer, 1650, 720, 230, 230, 70,70);
 
         UIController.spawnContainer1(foodTray, 710, 755, 120, 120);
         UIController.spawnContainer1(foodTray, 910, 755, 120, 120);
         UIController.spawnContainer1(foodTray, 1110, 755, 120, 120);
-        //UIController.spawnContainer(quekquek, fryer, 960, 980, 80,80);
     }
 
     public static void main(String[] args) {
