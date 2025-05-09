@@ -19,6 +19,8 @@ import com.example.cookingina.objects.entity.equipment.TrashBin;
 import com.example.cookingina.objects.entity.storeItem.Hotdog;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import customers.SpeechBubbleComponent;
+import javafx.beans.binding.DoubleBinding;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppWidth;
 
 public class CookingInaMain extends GameApplication {
     private static final List<Fryer> fryers = new ArrayList<>();
@@ -60,6 +63,24 @@ public class CookingInaMain extends GameApplication {
 
         // Add to game scene
         FXGL.getGameScene().addUINode(debugText);
+
+        ProgressBar incomeBar = new ProgressBar(0);
+        incomeBar.setPrefWidth(200);
+        incomeBar.setPrefHeight(20);
+        incomeBar.setTranslateX(getAppWidth() - 220); // 20px from right edge
+        incomeBar.setTranslateY(20);                 // 20px from top
+
+        // Assume you have a “goal” or “level target” constant:
+        int levelTarget = 100;
+
+        // Bind progress to income / levelTarget
+        DoubleBinding progressBinding = FXGL.getWorldProperties()
+                .intProperty("income")
+                .divide((double) levelTarget);
+        incomeBar.progressProperty().bind(progressBinding);
+
+        // Add to UI
+        FXGL.getGameScene().addUINode(incomeBar);
     }
 
     @Override
