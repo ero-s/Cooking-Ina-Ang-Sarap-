@@ -7,3 +7,4 @@ public class Hotdog extends StoreItem {
         super(container, rawResource, cookedResource, description, preparationTime, sellingPrice, discardCost, status, height, width);
     }
 }
+

@@ -1,15 +1,40 @@
 package customers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+/**
+ * Factory for generating customer orders.
+ */
 public class OrderFactory {
 
-    private static final String[] menuItems = {"Cake", "Muffin", "Cupcake", "Cookie", "Brownie"};
+    private static final String[] MENU_ITEMS = {"cooked_hotdog", "cooked_kwek-kwek", "cooked_tempura"};
+    private static final int MAX_QUANTITY = 3;
+    private static final int MAX_ORDERS_PER_CUSTOMER = 3;
+    private static final Random RANDOM = new Random();
+
+    /**
+     * Create a single random Order.
+     */
 
     public static Order createRandomOrder() {
-        Random random = new Random();
-        String item = menuItems[random.nextInt(menuItems.length)];
-        int quantity = random.nextInt(5) + 1; // Random quantity between 1 and 5
+        String item = MENU_ITEMS[RANDOM.nextInt(MENU_ITEMS.length)];
+        int quantity = RANDOM.nextInt(MAX_QUANTITY) + 1;
         return new Order(item, quantity);
+    }
+
+    /**
+     * Create a list of orders for a new customer.
+     * Each customer gets between 1 and MAX_ORDERS_PER_CUSTOMER orders.
+     */
+
+    public static List<Order> createForNewCustomer() {
+        int count = RANDOM.nextInt(MAX_ORDERS_PER_CUSTOMER) + 1;
+        List<Order> orders = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            orders.add(createRandomOrder());
+        }
+        return orders;
     }
 }

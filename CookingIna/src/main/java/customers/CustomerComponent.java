@@ -1,13 +1,18 @@
 package customers;
 
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.component.Component;
 import com.example.cookingina.control.UIController;
+import javafx.util.Duration;
+
+import java.util.List;
 
 public class CustomerComponent extends Component {
     private boolean hasArrived = false;
     private final double targetX;
     private final String direction;
     private int customerNo;
+    private final List<Order> myOrders;
 
     /**
      * Only store the targetX and direction here.
@@ -17,6 +22,7 @@ public class CustomerComponent extends Component {
         this.targetX  = targetX;
         this.direction = direction;
         // NO entity.setY(...) here!
+        this.myOrders = OrderFactory.createForNewCustomer();
     }
 
     /** Expose for overlap checking */
@@ -35,6 +41,13 @@ public class CustomerComponent extends Component {
         if (Math.abs(entity.getX() - targetX) < 1) {
             entity.setX(targetX);
             hasArrived = true;
+
+            FXGL.getGameTimer().runOnceAfter(this::onArrived, Duration.seconds(0));
         }
+    }
+
+    private void onArrived() {
+        // instead of UIController.showOrderBubble(...)
+        entity.addComponent(new SpeechBubbleComponent(myOrders));
     }
 }
