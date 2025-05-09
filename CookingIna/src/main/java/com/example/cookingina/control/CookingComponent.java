@@ -31,7 +31,6 @@ public class CookingComponent extends Component {
     private static int juiceCount = 0; // Keeps track of no. of juices
 
     public CookingComponent(double preparationTime, StoreItem cookedStoreItem, Equipment equipment ) {
-
         this.totalTime = preparationTime;
         this.timer = preparationTime;
         this.cookedStoreItem = cookedStoreItem;
