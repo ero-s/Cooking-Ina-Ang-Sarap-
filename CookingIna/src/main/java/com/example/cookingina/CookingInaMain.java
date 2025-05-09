@@ -43,6 +43,7 @@ public class CookingInaMain extends GameApplication {
 
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
+    private final List<MangoTray> mangoTrays = new ArrayList<>();
     public UIController uc = new UIController();
 
 
@@ -393,10 +394,6 @@ public class CookingInaMain extends GameApplication {
         uc.spawnInvisibleEquipment(orangeDispenser, 30, 500, 150, 340);
 
         //CONTAINER
-        uc.spawnContainer(mangoBasket, 1650, 720, 230, 230);
-//        uc.spawnContainer(tempuraContainer, 650, 980, 190, 120);
-//        uc.spawnContainer(quekquekContainer, 870, 980, 190, 120);
-//        uc.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
         uc.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
         uc.spawnContainer(gusoContainer, 1390, 820, 140, 110);
         uc.spawnContainer(spicySauce, 1270, 460, 60, 160);
