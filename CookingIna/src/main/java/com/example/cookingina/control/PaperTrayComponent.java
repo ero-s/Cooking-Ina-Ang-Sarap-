@@ -1,6 +1,7 @@
 package com.example.cookingina.control;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.components.DraggableComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.entity.components.CollidableComponent;
@@ -23,21 +24,23 @@ public class PaperTrayComponent extends Component {
     private Point2D itemOffset;
     private Point2D dragOffset;
     private Entity boundItem;
+    private boolean isOccupied = false;
 
     private boolean textureChanged = false;
     private CollidableComponent collidableComponent;
 
     public PaperTrayComponent(PaperTray paperTray) {
         this.paperTray = paperTray;
+        this.isOccupied = false; // Default to unoccupied
     }
 
     @Override
     public void onAdded() {
         entity.addComponent(new CollidableComponent(true));
+        entity.addComponent(new DraggableComponent());
         trayOriginalPos = entity.getPosition();
 
         entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_PRESSED, this::onPress);
-        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_DRAGGED, this::onDrag);
         entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, this::onRelease);
     }
 
@@ -47,18 +50,8 @@ public class PaperTrayComponent extends Component {
         entity.removeComponent(CollidableComponent.class);
     }
 
-    private void onDrag(MouseEvent e) {
-        Point2D newPos = new Point2D(e.getSceneX(), e.getSceneY()).subtract(dragOffset);
-        entity.setPosition(newPos);
-
-        if (boundItem != null && itemOffset != null) {
-            boundItem.setPosition(newPos.add(itemOffset));
-        }
-    }
-
     @Override
     public void onUpdate(double tpf) {
-        // Only check for new items if no item is bound and texture hasn't been changed
         if (boundItem == null && !textureChanged) {
             FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.INGREDIENT).stream()
                     .filter(e -> e.isColliding(entity))
@@ -81,19 +74,24 @@ public class PaperTrayComponent extends Component {
         itemOriginalPos = item.getPosition();
         itemOffset = itemOriginalPos.subtract(entity.getPosition());
 
-        if (!textureChanged) {
-            String texturePath = getTextureForItem(item);
-            changeTrayTexture(texturePath);
-            textureChanged = true;
-        }
+        String texturePath = getTextureForItem(item);
+        changeTrayTexture(texturePath);
 
+        setIsOccupied(true);
+        paperTray.setOccupied(true);
+        textureChanged = true;
+
+        if (item.hasComponent(OvercookComponent.class)) {
+            OvercookComponent oc = item.getComponent(OvercookComponent.class);
+            oc.getEquipment().setOccupied(false);
+        }
         FXGL.getGameWorld().removeEntity(item);
     }
 
     private String getTextureForItem(Entity item) {
         if (!item.hasComponent(StoreItemComponent.class)) {
             System.err.println("Item missing StoreItemComponent: " + item);
-            return "assets/textures/papertray.png"; // fallback texture
+            return "assets/textures/papertray.png";
         }
 
         StoreItem storeItem = item.getComponent(StoreItemComponent.class).getStoreItem();
@@ -122,11 +120,8 @@ public class PaperTrayComponent extends Component {
         for (Entity customer : FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.CUSTOMER)) {
             if (customer.isColliding(entity) && textureChanged) {
                 served = true;
-
-                // Identify the item served
                 String servedItem = getServedItemFromTexture();
 
-                // Access customer component and orders
                 CustomerComponent customerComponent = customer.getComponent(CustomerComponent.class);
                 SpeechBubbleComponent speechBubble = customer.getComponent(SpeechBubbleComponent.class);
 
@@ -146,26 +141,18 @@ public class PaperTrayComponent extends Component {
                         speechBubble.markServed(servedItem);
                     }
 
-                    // Revert tray texture
                     resetTrayTexture();
+                    setIsOccupied(false);
+                    paperTray.setOccupied(false);
 
-                    // ✅ Increment income for served item
                     FXGL.inc("income", getPrice(servedItem));
-
-                    // Optional: remove customer or mark as done
-                    if (customerComponent.getOrders().isEmpty()) {
-                        // FXGL.getGameWorld().removeEntity(customer); // if needed
-                    }
-
-                    break; // only serve one customer per release
+                    break;
                 }
             }
         }
 
         if (!served) {
-            // Snap back to original position and reset texture
             entity.setPosition(trayOriginalPos);
-//            resetTrayTexture();
         }
 
         if (collidableComponent != null) {
@@ -182,19 +169,13 @@ public class PaperTrayComponent extends Component {
 
     private int getPrice(String itemName) {
         switch (itemName) {
-            case "cooked_kwek-kwek":
-                return 10;
-            case "cooked_hotdog":
-                return 15;
-            case "cooked_tempura":
-                return 12;
-            case "calamansi_juice":
-                return 8;
-            default:
-                return 0;
+            case "cooked_kwek-kwek": return 10;
+            case "cooked_hotdog": return 15;
+            case "cooked_tempura": return 12;
+            case "calamansi_juice": return 8;
+            default: return 0;
         }
     }
-
 
     private String getServedItemFromTexture() {
         if (!textureChanged) return "";
@@ -206,10 +187,8 @@ public class PaperTrayComponent extends Component {
         if (url.contains("hotdog")) return "cooked_hotdog";
         if (url.contains("tempura")) return "cooked_tempura";
         if (url.contains("calamansi_juice")) return "calamansi_juice";
-
         return "";
     }
-
 
     private void resetTrayTexture() {
         if (textureChanged) {
@@ -220,5 +199,13 @@ public class PaperTrayComponent extends Component {
 
     public PaperTray getTray() {
         return paperTray;
+    }
+
+    public boolean getIsOccupied() {
+        return isOccupied;
+    }
+
+    public void setIsOccupied(boolean isOccupied) {
+        this.isOccupied = isOccupied;
     }
 }

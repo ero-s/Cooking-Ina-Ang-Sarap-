@@ -101,6 +101,7 @@ public class CookingComponent extends Component {
         if (onTrash) {
             isDiscarded = true;
             equipment.setOccupied(false);
+            isCooked = false;
             entity.removeFromWorld();
             System.out.println("Ingredient discarded in trash!");
         } else {
@@ -119,6 +120,7 @@ public class CookingComponent extends Component {
         entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             entity.setPosition(position);
         });
+        isCooked = false;
     }
 
     public boolean getIsCooked(){

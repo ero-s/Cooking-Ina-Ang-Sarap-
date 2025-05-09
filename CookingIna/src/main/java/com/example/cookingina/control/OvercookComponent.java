@@ -48,7 +48,7 @@ public class OvercookComponent extends Component {
 
         // Enable dragging
         entity.addComponent(new DraggableComponent());
-
+        entity.removeComponent(CookingComponent.class);
         // Pause on drag start
         entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_PRESSED, e -> isPaused = true);
 
@@ -113,18 +113,12 @@ public class OvercookComponent extends Component {
                     .isCollidingWith(entity.getBoundingBoxComponent())) {
 
                 PaperTrayComponent ptc = plateEnt.getComponent(PaperTrayComponent.class);
-                PaperTray tray = ptc.getTray();
+                PaperTray pt = ptc.getTray();
 
-                if (!tray.isOccupied() && !isBurnt) {
+                if (!pt.isOccupied()) {
                     // mark equipment free
+                    pt.setOccupied(true);
                     equipment.setOccupied(false);
-
-                    // spawn the cooked item at *this* plate's coordinates
-                    int spawnX = (int) plateEnt.getX() + (int)(plateEnt.getWidth()  - cookedStoreItem.getWidth())  / 2;
-                    int spawnY = (int) plateEnt.getY() + (int)(plateEnt.getHeight() - cookedStoreItem.getHeight()) / 2;
-
-                    tray.addStoreItem(cookedStoreItem, spawnX, spawnY);
-                    tray.setOccupied(true);
 
                     entity.removeFromWorld();
                     System.out.println("✔ Placed on plate at (" + plateEnt.getX() + "," + plateEnt.getY() + ")");
@@ -146,12 +140,15 @@ public class OvercookComponent extends Component {
             System.out.println("🗑  Discarded in trash");
             return true;
         }
-
         return false;
     }
 
     public boolean getIsBurnt() {
         return isBurnt;
+    }
+
+    public Equipment getEquipment() {
+        return equipment;
     }
 
 }
