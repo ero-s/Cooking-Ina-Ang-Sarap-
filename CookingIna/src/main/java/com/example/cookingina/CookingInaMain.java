@@ -43,7 +43,6 @@ public class CookingInaMain extends GameApplication {
 
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
-    private final List<MangoTray> mangoTrays = new ArrayList<>();
     public UIController uc = new UIController();
 
 
@@ -139,7 +138,6 @@ public class CookingInaMain extends GameApplication {
     }
     private void spawnAssets(){
         uc = new UIController();
-
         for(int i = 1; i <= 6; i++){
             fryers.add(new Fryer(
                     "frying_pan.png",                         // name
@@ -176,8 +174,7 @@ public class CookingInaMain extends GameApplication {
             ));
         }
 
-        uc.setFryers(fryers);
-        uc.setMangoTray(mangoTrays);
+        UIController.setFryers(fryers);
 
 // ================= SELLING ITEMS ENTITTY =================
         uc.spawnCustomerAtRandomIntervals();
@@ -396,6 +393,10 @@ public class CookingInaMain extends GameApplication {
         uc.spawnInvisibleEquipment(orangeDispenser, 30, 500, 150, 340);
 
         //CONTAINER
+        uc.spawnContainer(mangoBasket, 1650, 720, 230, 230);
+//        uc.spawnContainer(tempuraContainer, 650, 980, 190, 120);
+//        uc.spawnContainer(quekquekContainer, 870, 980, 190, 120);
+//        uc.spawnContainer(hotdogContainer, 1080, 980, 190, 120);
         uc.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
         uc.spawnContainer(gusoContainer, 1390, 820, 140, 110);
         uc.spawnContainer(spicySauce, 1270, 460, 60, 160);
@@ -403,8 +404,6 @@ public class CookingInaMain extends GameApplication {
         uc.spawnContainer(bagoong, 1500, 650, 54, 100);
         uc.spawnContainer(salt, 1550, 720, 54, 100);
     }
-
-
     private void resetGameState() {
         // Reset any scores, timers, or game state variables
         FXGL.getWorldProperties().setValue("score", 0);
@@ -450,7 +449,6 @@ public class CookingInaMain extends GameApplication {
         timerBar = new ProgressBar();
         timerBar.setWidth(800);
         timerBar.setHeight(40);
-
         // Center horizontally
         timerBar.setTranslateX((FXGL.getAppWidth() - 800) / 2.0);
         timerBar.setTranslateY(10);
