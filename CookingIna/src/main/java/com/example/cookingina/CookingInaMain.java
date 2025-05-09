@@ -177,7 +177,6 @@ public class CookingInaMain extends GameApplication {
 //                false,                                          // isUnlocked (initially locked)
 //                "A standard fryer for basic cooking needs");    // description);
 
-
 // ================= SELLING ITEMS ENTITTY =================
         UIController.spawnCustomerAtRandomIntervals();
 
