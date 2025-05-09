@@ -49,17 +49,23 @@ public class SpeechBubbleComponent extends Component {
         bubbleRoot.getChildren().addAll(bg, pointer);
 
         // icons
+        // in SpeechBubbleComponent constructor:
         for (int i = 0; i < orders.size(); i++) {
             Order o = orders.get(i);
-            Image img = FXGL.image(o.getItem().toLowerCase() + ".png");
+            String base = o.getItem();                    // e.g. "hotdog"
+            String key  = base + "_" + i;                 // e.g. "hotdog_0", "hotdog_1"
+
+            Image img  = FXGL.image(base.toLowerCase() + ".png");
             ImageView iv = new ImageView(img);
             iv.setFitWidth(56);
             iv.setFitHeight(56);
             iv.setLayoutX(10);
             iv.setLayoutY(10 + i * 50);
-            icons.put(o.getItem(), iv);
+
+            icons.put(key, iv);
             bubbleRoot.getChildren().add(iv);
         }
+
     }
 
     @Override
@@ -73,9 +79,16 @@ public class SpeechBubbleComponent extends Component {
     }
 
     /** Removes the icon for a served item */
-    public void markServed(String itemName) {
-        ImageView iv = icons.remove(itemName);
-        if (iv != null) {
+    /** Removes one icon for a served base item (e.g. "hotdog") */
+    public void markServed(String baseItem) {
+        // Find a key that starts with "baseItem_"
+        String matchKey = icons.keySet().stream()
+                .filter(k -> k.startsWith(baseItem + "_"))
+                .findFirst()
+                .orElse(null);
+
+        if (matchKey != null) {
+            ImageView iv = icons.remove(matchKey);
             bubbleRoot.getChildren().remove(iv);
         }
     }

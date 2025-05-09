@@ -16,6 +16,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PaperTrayComponent extends Component {
     private final PaperTray paperTray;
     private Point2D trayOriginalPos;
@@ -100,7 +103,7 @@ public class PaperTrayComponent extends Component {
         String foodType = storeItem.getDescription().toLowerCase().trim();
 
         switch (foodType) {
-            case "quekquek": return "assets/textures/papertray_quekquek.png";
+            case "quekquek": return "assets/textures/papertray_cooked_quekquek.png";
             case "hotdog": return "assets/textures/papertray_hotdog.png";
             case "tempura": return "assets/textures/papertray_tempura.png";
             case "calamansi juice": return "assets/textures/papertray_calamansi_juice.png";
@@ -128,44 +131,43 @@ public class PaperTrayComponent extends Component {
 
                 // Access customer component and orders
                 CustomerComponent customerComponent = customer.getComponent(CustomerComponent.class);
-                SpeechBubbleComponent speechBubble = customer.getComponent(SpeechBubbleComponent.class);
 
-                Order matchedOrder = null;
-                for (Order order : customerComponent.getOrders()) {
-                    if (order.getItem().equals(servedItem)) {
-                        matchedOrder = order;
-                        break;
+                // Use getComponentOptional to safely access the SpeechBubbleComponent
+                customer.getComponentOptional(SpeechBubbleComponent.class).ifPresent(speechBubble -> {
+                    // find and handle a single matching Order
+                    Order toHandle = null;
+                    for (Order order : customerComponent.getOrders()) {
+                        if (order.getItem().equals(servedItem)) {
+                            toHandle = order;
+                            break;
+                        }
                     }
-                }
 
-                if (matchedOrder != null) {
-                    if (matchedOrder.getQuantity() > 1) {
-                        matchedOrder.decrement();
-                    } else {
-                        customerComponent.getOrders().remove(matchedOrder);
+                    if (toHandle != null) {
+                        // decrement or remove from the data model
+                        if (toHandle.getQuantity() > 1) {
+                            toHandle.decrement();
+                        } else {
+                            customerComponent.getOrders().remove(toHandle);
+                        }
+
+                        // —👉 only ONE call to markServed
                         speechBubble.markServed(servedItem);
+
+                        // revert texture & income update…
+                        resetTrayTexture();
+                        FXGL.inc("income", getPrice(servedItem));
                     }
+                });
 
-                    // Revert tray texture
-                    resetTrayTexture();
-
-                    // ✅ Increment income for served item
-                    FXGL.inc("income", getPrice(servedItem));
-
-                    // Optional: remove customer or mark as done
-                    if (customerComponent.getOrders().isEmpty()) {
-                        // FXGL.getGameWorld().removeEntity(customer); // if needed
-                    }
-
-                    break; // only serve one customer per release
-                }
+                break; // Only serve one customer per release
             }
         }
 
         if (!served) {
             // Snap back to original position and reset texture
             entity.setPosition(trayOriginalPos);
-//            resetTrayTexture();
+            resetTrayTexture();
         }
 
         if (collidableComponent != null) {
@@ -179,6 +181,7 @@ public class PaperTrayComponent extends Component {
             }
         }, Duration.seconds(0.2));
     }
+
 
     private int getPrice(String itemName) {
         switch (itemName) {
