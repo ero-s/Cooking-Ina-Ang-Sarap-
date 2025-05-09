@@ -29,11 +29,6 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 
 public class UIController extends Component {
 
-    public final StoreItem storeItem;
-    public final Equipment equipment;
-    public final double originalX;
-    public final double originalY;
-
     public DraggableComponent draggable;
     public boolean wasDragging = false;
 
@@ -41,26 +36,19 @@ public class UIController extends Component {
     private static final List<Entity> juiceTray = new ArrayList<>();
     private static final Queue<WaitingItem> waitingJuiceQueue = new LinkedList<>();
 
-    private static final List<CustomerComponent> components = new ArrayList<>();
+    private final List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
     private static final Random random = new Random();
 
     private static List<Fryer> fryers;
     private static List<Fryer> paperTrays;
 
-    public UIController(StoreItem storeItem, Equipment equipment, double originalX, double originalY) {
-        this.storeItem = storeItem;
-        this.equipment = equipment;
-        this.originalX = originalX;
-        this.originalY = originalY;
-    }
-
     public static void setFryers(List<Fryer> fryerList) {
         fryers = fryerList;
     }
 
     // Spawing Container and container item to the equipment
-    public static void spawnContainerForEquipment(StoreItem storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {
+    public void spawnContainerForEquipment(StoreItem storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {
         entityBuilder()
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(containerX, containerY)
@@ -92,23 +80,12 @@ public class UIController extends Component {
         Platform.runLater(() -> CookingInaMain.debugText.setText(message));
     }
 
-    public static void spawnTrashCan(double x, double y) {
+    public void spawnTrashCan(double x, double y) {
         entityBuilder()
                 .type(CookingInaMain.EntityType.TRASH)
                 .at(x, y)
                 .viewWithBBox(FXGL.texture("trash_open.png", 200, 300))
                 .with(new CollidableComponent(true))
-                .buildAndAttach();
-    }
-
-    public static void spawnRawIngredient(StoreItem storeItem, Equipment equipment, double x, double y) {
-        entityBuilder()
-                .type(CookingInaMain.EntityType.INGREDIENT)
-                .at(x, y)
-                .viewWithBBox(FXGL.texture(storeItem.getRawResource(), 40, 40))
-                .with(new DraggableComponent())
-                .with(new CollidableComponent(true))
-                .with(new UIController(storeItem, equipment, x, y))
                 .buildAndAttach();
     }
 
@@ -118,7 +95,6 @@ public class UIController extends Component {
                 .at(x, y)
                 .zIndex(50)
                 .viewWithBBox(FXGL.texture(storeItem.getRawResource(), storeItem.getWidth(), storeItem.getHeight()))
-                .with(new UIController(storeItem, equipment, x, y)) // Your custom UI controller
                 .buildAndAttach();
         // Add the CookingComponent (cooking time behavior)
         ingredientEntity.addComponent(new CookingComponent(
@@ -132,7 +108,7 @@ public class UIController extends Component {
     }
 
 
-    public static void spawnCookedIngredient(StoreItem cookedItem, Equipment equipment, double x, double y) {
+    public void spawnCookedIngredient(StoreItem cookedItem, Equipment equipment, double x, double y) {
         Entity entity;
         if (cookedItem.getDescription().contains("juice")) {
             if (juiceTray.size() < MAX_JUICE_ON_TRAY) {
@@ -151,7 +127,6 @@ public class UIController extends Component {
                     .viewWithBBox(FXGL.texture(cookedItem.getCookedResource(), cookedItem.getWidth(), cookedItem.getHeight()))
                     .with(new DraggableComponent())
                     .with(new CollidableComponent(true))
-                    .with(new UIController(cookedItem, equipment, x, y))
                     .with(new OvercookComponent(cookedItem, equipment))
                     .buildAndAttach();
         }
@@ -167,7 +142,7 @@ public class UIController extends Component {
         return x >= 480 && x <= 640 && y >= 150 && y <= 260;
     }
 
-    private static Entity spawnJuiceEntity(StoreItem cookedItem,
+    private Entity spawnJuiceEntity(StoreItem cookedItem,
                                            Equipment equipment,
                                            double x, double y) {
         // Build at (x,y)…
@@ -217,15 +192,15 @@ public class UIController extends Component {
     }
 
 
-    private static void checkJuiceQueue() {
+    private void checkJuiceQueue() {
         if (juiceTray.size() < MAX_JUICE_ON_TRAY && !waitingJuiceQueue.isEmpty()) {
             WaitingItem next = waitingJuiceQueue.poll();
-            Entity juice = spawnJuiceEntity(next.item, next.equipment, next.x, next.y);
+            Entity juice = this.spawnJuiceEntity(next.item, next.equipment, next.x, next.y);
             juiceTray.add(juice);
         }
     }
 
-    public static void spawnEquipment(Equipment equipment, double x, double y, int width, int height) {
+    public void spawnEquipment(Equipment equipment, double x, double y, int width, int height) {
         FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.EQUIPMENT)
                 .at(x, y)
@@ -238,7 +213,7 @@ public class UIController extends Component {
         equipment.setLayoutY((int) y);
     }
 
-    public static void spawnPaperTray(PaperTray paperTray, double x, double y, int width, int height) {
+    public void spawnPaperTray(PaperTray paperTray, double x, double y, int width, int height) {
         Entity entity = FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.PLATE)
                 .at(x, y)
@@ -250,7 +225,7 @@ public class UIController extends Component {
 
     }
 
-    public static void spawnContainer(Container container, double x, double y, int width, int height) {
+    public void spawnContainer(Container container, double x, double y, int width, int height) {
         FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(x, y)
@@ -263,7 +238,7 @@ public class UIController extends Component {
         container.setLayoutY((int) y);
     }
 
-    public static void spawnInvisibleEquipment(Equipment equipment, double x, double y, int width, int height) {
+    public void spawnInvisibleEquipment(Equipment equipment, double x, double y, int width, int height) {
         Entity invisibleEntity = FXGL.entityBuilder()
                 .at(x, y)
                 .zIndex(100)
@@ -311,7 +286,7 @@ public class UIController extends Component {
         );
     }
 
-    public static void spawnJuiceCup(double x, double y, StoreItem juiceItem, Equipment equipment) {
+    public void spawnJuiceCup(double x, double y, StoreItem juiceItem, Equipment equipment) {
         Entity juice = FXGL.entityBuilder()
                 .at(x, y)
                 .type(CookingInaMain.EntityType.INGREDIENT)
@@ -342,12 +317,12 @@ public class UIController extends Component {
     }
 
 
-    public static void spawnCustomerAtRandomIntervals() {
+    public void spawnCustomerAtRandomIntervals() {
         // Kick off the first scheduling
         scheduleNextSpawn();
     }
 
-    private static void scheduleNextSpawn() {
+    private void scheduleNextSpawn() {
         if (components.size() >= MAX_CUSTOMERS) {
             System.out.println("At cap; pausing spawns.");
             return;
@@ -355,7 +330,7 @@ public class UIController extends Component {
 
         double delay = 1 + random.nextDouble() * 2;
         FXGL.runOnce(() -> {
-            boolean spawned = spawnCustomer("customer_image.png");
+            boolean spawned = this.spawnCustomer("customer_image.png");
 
             if (spawned && components.size() < MAX_CUSTOMERS) {
                 // Schedule next only if we’re still under the limit
@@ -364,7 +339,7 @@ public class UIController extends Component {
         }, Duration.seconds(delay));
     }
 
-    public static boolean spawnCustomer(String imageName) {
+    public boolean spawnCustomer(String imageName) {
         int w = 180, h = 200;
         double y = 320;
         int sceneW = FXGL.getAppWidth();
@@ -395,7 +370,7 @@ public class UIController extends Component {
 
         Texture tex = FXGL.texture(imageName, w, h);
 
-        var ent = FXGL.entityBuilder()
+        Entity ent = FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.CUSTOMER)
                 .at(startX, y)
                 .viewWithBBox(tex)
@@ -411,8 +386,8 @@ public class UIController extends Component {
         return true;
     }
 
-    private static boolean checkOverlap(double x, int w) {
-        return components.stream()
+    private boolean checkOverlap(double x, int w) {
+        return this.components.stream()
                 .anyMatch(cc -> Math.abs(cc.getTargetX() - x) < w);
     }
 }
