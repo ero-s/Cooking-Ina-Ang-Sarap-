@@ -78,7 +78,6 @@ public class CookingInaMain extends GameApplication {
                 .intProperty("income")
                 .divide((double) levelTarget);
         incomeBar.progressProperty().bind(progressBinding);
-
         // Add to UI
         FXGL.getGameScene().addUINode(incomeBar);
     }
