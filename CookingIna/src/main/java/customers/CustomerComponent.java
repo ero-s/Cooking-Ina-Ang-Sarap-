@@ -50,4 +50,9 @@ public class CustomerComponent extends Component {
         // instead of UIController.showOrderBubble(...)
         entity.addComponent(new SpeechBubbleComponent(myOrders));
     }
+
+    public List<Order> getOrders() {
+        return myOrders;
+    }
+
 }
