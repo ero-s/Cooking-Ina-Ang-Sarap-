@@ -103,7 +103,7 @@ public class PaperTrayComponent extends Component {
         String foodType = storeItem.getDescription().toLowerCase().trim();
 
         switch (foodType) {
-            case "quekquek": return "assets/textures/papertray_quekquek.png";
+            case "quekquek": return "assets/textures/papertray_cooked_quekquek.png";
             case "hotdog": return "assets/textures/papertray_hotdog.png";
             case "tempura": return "assets/textures/papertray_tempura.png";
             case "calamansi juice": return "assets/textures/papertray_calamansi_juice.png";
@@ -125,6 +125,7 @@ public class PaperTrayComponent extends Component {
         for (Entity customer : FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.CUSTOMER)) {
             if (customer.isColliding(entity) && textureChanged) {
                 served = true;
+                serveCustomer(customer);
                 String servedItem = getServedItemFromTexture();
 
                 CustomerComponent customerComponent = customer.getComponent(CustomerComponent.class);
