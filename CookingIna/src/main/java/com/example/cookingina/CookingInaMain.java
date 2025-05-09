@@ -6,19 +6,18 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
-import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
 import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.control.UIController;
+
+import com.example.cookingina.objects.entity.BeverageFactory;
+import com.example.cookingina.objects.entity.Container;
+import com.example.cookingina.objects.entity.ContainerFactory;
 import com.example.cookingina.objects.entity.PaperTray;
-import com.example.cookingina.objects.entity.TrashCan;
-import com.example.cookingina.objects.entity.container.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.equipment.TrashBin;
-import com.example.cookingina.objects.entity.storeItem.Hotdog;
-import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
@@ -35,6 +34,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
+import static com.example.cookingina.objects.entity.BeverageFactory.TYPE.*;
+import static com.example.cookingina.objects.entity.ContainerFactory.TYPE.*;
+import static com.example.cookingina.objects.entity.ContainerFactory.TYPE.SALT;
 
 public class CookingInaMain extends GameApplication {
 
@@ -88,9 +90,6 @@ public class CookingInaMain extends GameApplication {
         settings.setFullScreenAllowed(true);
         settings.setFullScreenFromStart(true);
         settings.setMainMenuEnabled(true);
-
-
-
         settings.setSceneFactory(new SceneFactory() {
             @NotNull
             @Override
@@ -157,133 +156,25 @@ public class CookingInaMain extends GameApplication {
             ));
         }
 
-        UIController.setFryers(fryers);
-
+        uc.setFryers(fryers);
 // ================= SELLING ITEMS ENTITTY =================
         uc.spawnCustomerAtRandomIntervals();
 
-        QuekQuek quekquek = new QuekQuek(
-                "rawQuekquek_container.png",
-                "rawQuekquek.png",                      // raw resource identifier
-                "cooked_quek-quek.png",                          // cooked resource
-                "quekquek",                                         // description
-                15.0,                                           // preparationTime (minutes)
-                12.99,                                          // sellingPrice ($)
-                2.0,                                            // discardCost ($)
-                1,
-                80,
-                80
-        );                                             // status (1 = available)
-
-        Hotdog hotdog = new Hotdog(
-                "rawHotdog_container.png",
-                "rawHotdog.png",
-                "rawHotdog.png",
-                "hotdog",
-                15.0,
-                15.00,
-                3.0,
-                1,
-                80,
-                80
-        );
 // ================= CONTAINER ENTITY =================
+        BeverageDispenser orangeDispenser = BeverageFactory.create(ORANGE_JUICE);
+        BeverageDispenser calamansiDispenser = BeverageFactory.create(CALAMANSI_JUICE);
+        BeverageDispenser bukoDispenser = BeverageFactory.create(BUKO_JUICE);
 
-        BeverageDispenser calamansiDispenser = new BeverageDispenser(
-                "calamansiJuice_dispenser.png",                         // name
-                "dragonfruit_juice_done.png",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "calamansi juice");
-
-        BeverageDispenser bukoDispenser = new BeverageDispenser(
-                "bukoJuice_dispenser.png",                         // name
-                "mangojuice_done.png",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "buko juice");
-
-        BeverageDispenser orangeDispenser = new BeverageDispenser(
-                "orangeJuice_dispenser.png",                         // name
-                "nestea_juice_done.png",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "orange juice");
-
-        MangoBasket mangoBasket = new MangoBasket(
-                "mango_container.png",
-                "",
-                "mango basket"
-        );
-
-        HotdogContainer hotdogContainer = new HotdogContainer(
-                "rawHotdog_container.png",
-                "",
-                "hotdog container"
-        );
-
-        QuekquekContainer quekquekContainer = new QuekquekContainer(
-                "rawQuekquek_container.png",
-                "",
-                "Quekquek container"
-        );
-
-        TempuraContainer tempuraContainer = new TempuraContainer(
-                "rawTempura_container.png",
-                "",
-                "Tempura container"
-        );
-
-        CucumberContainer cucumberContainer = new CucumberContainer(
-                "cucumberGarnish_container.png",
-                "",
-                "cucumber garnish"
-        );
-
-        GusoContainer gusoContainer = new GusoContainer(
-                "gusoGarnish_container.png",
-                "",
-                "guso garnish"
-        );
-
-        SpicySauce spicySauce = new SpicySauce(
-                "spicy_sauce.png",
-                "",
-                "spicy sauce"
-        );
-
-        SweetSauce sweetSauce = new SweetSauce(
-                "sweet_sauce.png",
-                "",
-                "sweet sauce"
-        );
-
-        Bagoong bagoong = new Bagoong(
-                "hipon_bottle.png",
-                "" ,
-                "bagoong hipon"
-        );
-
-        SaltContainer salt = new SaltContainer(
-                "salt_bottle.png",
-                "",
-                "salt"
-        );
-
-
-
+        Container mangoBasket = ContainerFactory.create(MANGO);
+        Container hotdogContainer = ContainerFactory.create(HOTDOG);
+        Container quekquekContainer = ContainerFactory.create(QUEKQUEK);
+        Container tempuraContainer = ContainerFactory.create(TEMPURA);
+        Container cucumberContainer = ContainerFactory.create(CUCUMBER);
+        Container gusoContainer = ContainerFactory.create(GUSO);
+        Container spicySauce = ContainerFactory.create(SPICY_SAUCE);
+        Container sweetSauce = ContainerFactory.create(SWEET_SAUCE);
+        Container bagoong = ContainerFactory.create(BAGOONG);
+        Container salt = ContainerFactory.create(SALT);
 
         for(Fryer fryer : fryers){
             if(fryer.getType() == 1){
@@ -313,7 +204,7 @@ public class CookingInaMain extends GameApplication {
                 uc.spawnPaperTray(paperTray, 1090, 840, 175, 130);
             }else if(i == 4){
                 uc.spawnPaperTray(paperTray, 895, 840, 175, 130);
-            }else if(i == 5){
+            }else {
                 uc.spawnPaperTray(paperTray, 695, 840, 175, 130);
             }
         }
@@ -329,8 +220,8 @@ public class CookingInaMain extends GameApplication {
                 false,
                 "orange juice");
 
-        uc.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120);
-        uc.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120);
+        uc.spawnContainerForEquipment(quekquekContainer, fryers, 870, 980, 190, 120);
+        uc.spawnContainerForEquipment(hotdogContainer, fryers, 1080, 980, 190, 120);
 
         //DISPENSER EQUIPMENT
         uc.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);

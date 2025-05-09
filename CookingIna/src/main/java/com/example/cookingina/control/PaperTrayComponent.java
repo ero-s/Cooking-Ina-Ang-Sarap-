@@ -97,13 +97,12 @@ public class PaperTrayComponent extends Component {
         }
 
         StoreItem storeItem = item.getComponent(StoreItemComponent.class).getStoreItem();
-        String foodType = storeItem.getDescription().toLowerCase().trim();
 
-        switch (foodType) {
+        switch (storeItem.getName()) {
             case "quekquek": return "assets/textures/papertray_quekquek.png";
             case "hotdog": return "assets/textures/papertray_hotdog.png";
             case "tempura": return "assets/textures/papertray_tempura.png";
-            case "calamansi juice": return "assets/textures/papertray_calamansi_juice.png";
+            case "calamansi_juice": return "assets/textures/papertray_calamansi_juice.png";
             default: return "assets/textures/papertray.png";
         }
     }

@@ -13,21 +13,14 @@ import com.example.cookingina.WaitingItem;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
-import com.example.cookingina.objects.entity.storeItem.Calamansi_Juice;
-import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import customers.CustomerComponent;
 import customers.Order;
 import customers.SpeechBubbleComponent;
 import javafx.application.Platform;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.util.*;
@@ -50,16 +43,16 @@ public class UIController extends Component {
     private static List<Fryer> fryers;
     private static List<Fryer> paperTrays;
 
-    public static void setFryers(List<Fryer> fryerList) {
+    public void setFryers(List<Fryer> fryerList) {
         fryers = fryerList;
     }
 
     // Spawing Container and container item to the equipment
-    public void spawnContainerForEquipment(StoreItem storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {
+    public void spawnContainerForEquipment(Container storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {
         entityBuilder()
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(containerX, containerY)
-                .viewWithBBox(FXGL.texture(storeItem.getContainer(), containerWidth, containerHeight))
+                .viewWithBBox(FXGL.texture(storeItem.getContainerResource(), containerWidth, containerHeight))
                 .with(new CollidableComponent(true))
                 .buildAndAttach()
                 .getViewComponent()
@@ -74,7 +67,7 @@ public class UIController extends Component {
                             double spawnX = equipment.getLayoutX() + 20; // adjust offset if needed
                             double spawnY = equipment.getLayoutY() + 30;
 
-                            spawnRawIngredient1(storeItem, equipment, spawnX, spawnY);
+                            spawnRawIngredient1(storeItem.getItem(), equipment, spawnX, spawnY);
 
                             equipment.setOccupied(true);
                             break;
@@ -127,27 +120,27 @@ public class UIController extends Component {
     }
 
 
-    public void spawnCookedIngredient(StoreItem cookedItem, Equipment equipment, double x, double y) {
+    public void spawnReadyIngredient(StoreItem item, Equipment equipment, double x, double y) {
         Entity entity;
-        if (cookedItem.getDescription().contains("juice")) {
+        if (item.getIsJuice()) {
             if (juiceTray.size() < MAX_JUICE_ON_TRAY) {
-                entity = spawnJuiceEntity(cookedItem, equipment, x, y);
+                entity = spawnJuiceEntity(item, equipment, x, y);
                 juiceTray.add(entity);
             } else {
                 entity = null;
                 System.out.println("Juice tray full! Adding juice to waiting queue.");
-                waitingJuiceQueue.add(new WaitingItem(cookedItem, equipment, x, y, cookedItem.getWidth(), cookedItem.getHeight(), null));
+                waitingJuiceQueue.add(new WaitingItem(item, equipment, x, y, item.getWidth(), item.getHeight(), null));
             }
         } else {
             entity = entityBuilder()
                     .type(CookingInaMain.EntityType.INGREDIENT)
                     .at(x, y)
                     .zIndex(50)
-                    .viewWithBBox(FXGL.texture(cookedItem.getCookedResource(), cookedItem.getWidth(), cookedItem.getHeight()))
+                    .viewWithBBox(FXGL.texture(item.getCookedResource(), item.getWidth(), item.getHeight()))
                     .with(new DraggableComponent())
                     .with(new CollidableComponent(true))
-                    .with(new OvercookComponent(cookedItem, equipment))
-                    .with(new StoreItemComponent(cookedItem))
+                    .with(new OvercookComponent(item, equipment))
+                    .with(new StoreItemComponent(item))
                     .buildAndAttach();
         }
         assert entity != null;
@@ -250,7 +243,7 @@ public class UIController extends Component {
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(x, y)
                 .zIndex(-1)
-                .viewWithBBox(FXGL.texture(container.getRawResource(), width, height))
+                .viewWithBBox(FXGL.texture(container.getContainerResource(), width, height))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
@@ -258,16 +251,17 @@ public class UIController extends Component {
         container.setLayoutY((int) y);
     }
 
-    public void spawnInvisibleEquipment(Equipment equipment, double x, double y, int width, int height) {
+    public void spawnInvisibleEquipment(BeverageDispenser dispenser, double x, double y, int width, int height) {
         Entity invisibleEntity = FXGL.entityBuilder()
                 .at(x, y)
+                .zIndex(100)
                 .zIndex(100)
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .bbox(new HitBox("CLICK_BOX", BoundingShape.box(width, height)))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
-        Texture texture = FXGL.texture(equipment.getEmptyResource());
+        Texture texture = FXGL.texture(dispenser.getEmptyResource());
         texture.setOpacity(0.01);
         invisibleEntity.getViewComponent().addChild(texture);
 
@@ -276,34 +270,12 @@ public class UIController extends Component {
 
         texture.setMouseTransparent(false);
         texture.setOnMouseClicked(e -> {
-            if(equipment.isOccupied()) return;
-            equipment.setOccupied(true);
+            if(dispenser.isOccupied()) return;
+            dispenser.setOccupied(true);
             System.out.println("CLICK DETECTED on invisible entity!");
-            System.out.println("Equipment resource: " + equipment.getEmptyResource());
-            BeverageDispenser dispenser = (BeverageDispenser) equipment;
-
-            switch (dispenser.getDescription()) {
-                case "calamansi juice":
-                    spawnJuiceCup(x + 40, y + 220, createJuiceItem("calamansi juice", "calamansiJuice_finishedProduct.png"), dispenser);
-                    break;
-                case "buko juice":
-                    spawnJuiceCup(x + 40, y + 220, createJuiceItem("buko juice", "bukoJuice_finishedProduct.png"), dispenser);
-                    break;
-                case "orange juice":
-                    spawnJuiceCup(x + 45, y + 220, createJuiceItem("orange juice", "orangeJuice_finishedProduct.png"), dispenser);
-                    break;
-            }
+            System.out.println("Equipment resource: " + dispenser.getEmptyResource());
+            spawnJuiceCup(x + 40, y + 220, dispenser.getItem(), dispenser);
         });
-    }
-
-    private static Calamansi_Juice createJuiceItem(String description, String resource) {
-        return new Calamansi_Juice(
-                "none",
-                resource,
-                resource,
-                description,
-                15.0, 12.99, 2.0, 1, 110,60
-        );
     }
 
     public void spawnJuiceCup(double x, double y, StoreItem juiceItem, Equipment equipment) {

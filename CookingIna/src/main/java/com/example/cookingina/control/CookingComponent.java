@@ -7,7 +7,6 @@ import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.objects.entity.Equipment;
 import com.example.cookingina.objects.entity.StoreItem;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -81,7 +80,7 @@ public class CookingComponent extends Component {
             isCooked = true;
             entity.getViewComponent().removeChild(progressBar);
             entity.getViewComponent().clearChildren();
-            uc.spawnCookedIngredient(cookedStoreItem,equipment, position.getX(), position.getY());
+            uc.spawnReadyIngredient(cookedStoreItem,equipment, position.getX(), position.getY());
 
             // Attempt placement onto tray or trash immediately
             boolean placed = handleClickListener();
