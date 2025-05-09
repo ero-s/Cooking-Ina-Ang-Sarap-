@@ -16,12 +16,21 @@ import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.storeItem.Calamansi_Juice;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import customers.CustomerComponent;
+import customers.Order;
+import customers.SpeechBubbleComponent;
 import javafx.application.Platform;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
+
+import java.util.List;
 
 import java.util.*;
 
@@ -109,6 +118,7 @@ public class UIController extends Component {
                 .with(new DraggableComponent())
                 .with(new CollidableComponent(true))
                 .with(new UIController(storeItem, equipment, x, y))
+                .with(new StoreItemComponent(storeItem))
                 .buildAndAttach();
     }
 
@@ -119,6 +129,7 @@ public class UIController extends Component {
                 .zIndex(50)
                 .viewWithBBox(FXGL.texture(storeItem.getRawResource(), storeItem.getWidth(), storeItem.getHeight()))
                 .with(new UIController(storeItem, equipment, x, y)) // Your custom UI controller
+                .with(new StoreItemComponent(storeItem))
                 .buildAndAttach();
         // Add the CookingComponent (cooking time behavior)
         ingredientEntity.addComponent(new CookingComponent(
@@ -130,7 +141,6 @@ public class UIController extends Component {
         setHighlight(ingredientEntity, x, y);
 
     }
-
 
     public static void spawnCookedIngredient(StoreItem cookedItem, Equipment equipment, double x, double y) {
         Entity entity;
@@ -153,6 +163,7 @@ public class UIController extends Component {
                     .with(new CollidableComponent(true))
                     .with(new UIController(cookedItem, equipment, x, y))
                     .with(new OvercookComponent(cookedItem, equipment))
+                    .with(new StoreItemComponent(cookedItem))
                     .buildAndAttach();
         }
         assert entity != null;
@@ -266,7 +277,7 @@ public class UIController extends Component {
     public static void spawnInvisibleEquipment(Equipment equipment, double x, double y, int width, int height) {
         Entity invisibleEntity = FXGL.entityBuilder()
                 .at(x, y)
-                .zIndex(-1)
+                .zIndex(100)
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .bbox(new HitBox("CLICK_BOX", BoundingShape.box(width, height)))
                 .with(new CollidableComponent(true))
@@ -322,6 +333,7 @@ public class UIController extends Component {
                         juiceItem,
                         equipment
                 ))
+                .with(new StoreItemComponent(juiceItem))
                 .zIndex(100)
                 .buildAndAttach();
 
@@ -414,5 +426,15 @@ public class UIController extends Component {
     private static boolean checkOverlap(double x, int w) {
         return components.stream()
                 .anyMatch(cc -> Math.abs(cc.getTargetX() - x) < w);
+    }
+
+    public static void showOrderBubble(Entity customer, List<Order> orders) {
+        // If the customer already has one, remove it first:
+        if (customer.hasComponent(SpeechBubbleComponent.class)) {
+            customer.removeComponent(SpeechBubbleComponent.class);
+        }
+
+        // Attach a fresh bubble component with the current orders:
+        customer.addComponent(new SpeechBubbleComponent(orders));
     }
 }

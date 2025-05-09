@@ -5,6 +5,8 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.control.UIController;
 import com.example.cookingina.objects.entity.PaperTray;
@@ -15,6 +17,7 @@ import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.equipment.TrashBin;
 import com.example.cookingina.objects.entity.storeItem.Hotdog;
 import com.example.cookingina.objects.entity.storeItem.QuekQuek;
+import customers.SpeechBubbleComponent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -30,7 +33,6 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 public class CookingInaMain extends GameApplication {
     private static final List<Fryer> fryers = new ArrayList<>();
     private static final List<PaperTray> paperTrays = new ArrayList<>();
-
 
     public enum EntityType {
         INGREDIENT,
@@ -62,7 +64,6 @@ public class CookingInaMain extends GameApplication {
         FXGL.onKeyDown(KeyCode.F1, "Toggle debug", () -> {
             debugText.setVisible(!debugText.isVisible());
         });
-
         //FXGL.onKeyDown(KeyCode.Q, "Spawn QuekQuek", UIController::spawnContainerForEquipment);
     }
 
@@ -89,8 +90,37 @@ public class CookingInaMain extends GameApplication {
     protected void initGame() {
         setBackground();
         spawnAssets();
+    }
 
+    @Override
+    protected void initPhysics() {
+        // existing collision handlers...
 
+        // New handler: when an INGREDIENT collides with a CUSTOMER
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(
+                CookingInaMain.EntityType.INGREDIENT,
+                CookingInaMain.EntityType.CUSTOMER) {
+
+            @Override
+            protected void onCollisionBegin(Entity ingredient, Entity customer) {
+                // 1) Find the SpeechBubbleComponent
+                if (!customer.hasComponent(SpeechBubbleComponent.class)) {
+                    return; // no bubble to update
+                }
+                SpeechBubbleComponent bubble = customer.getComponent(SpeechBubbleComponent.class);
+
+                // 2) Determine which Order this ingredient matches
+                //    Assumes your ingredient entity has a UserData or component exposing its name
+                String servedName = ingredient.getString("itemName");
+                // or: ingredient.getComponent(SomeComponent.class).getStoreItem().getDescription();
+
+                // 3) Remove the ingredient from the world
+                ingredient.removeFromWorld();
+
+                // 4) Update the bubble UI
+                bubble.markServed(servedName);
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -270,9 +300,6 @@ public class CookingInaMain extends GameApplication {
                 "",
                 "salt"
         );
-
-
-
 
         for(Fryer fryer : fryers){
             if(fryer.getType() == 1){

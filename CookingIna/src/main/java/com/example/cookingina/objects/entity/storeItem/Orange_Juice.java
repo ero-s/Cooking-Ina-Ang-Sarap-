@@ -7,3 +7,4 @@ public class Orange_Juice extends StoreItem {
         super(container, rawResource, cookedResource, description, preparationTime, sellingPrice, discardCost, status, height, width);
     }
 }
+

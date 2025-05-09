@@ -116,6 +116,7 @@ public class CookingComponent extends Component {
             entity.setPosition(position);
         });
     }
+
     public boolean getIsCooked(){
         return isCooked;
     }
