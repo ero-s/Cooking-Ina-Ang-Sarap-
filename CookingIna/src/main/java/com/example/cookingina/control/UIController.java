@@ -29,13 +29,7 @@ import java.util.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 
 public class UIController extends Component {
-
-    public DraggableComponent draggable;
-    public boolean wasDragging = false;
-
-    private static final int MAX_JUICE_ON_TRAY = 3;
     private static final List<Entity> juiceTray = new ArrayList<>();
-
     public final static List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
     private static final Random random = new Random();
@@ -127,12 +121,8 @@ public class UIController extends Component {
     public void spawnReadyIngredient(StoreItem item, Equipment equipment, double x, double y) {
         Entity entity;
         if (item.getIsJuice() ) {
-            if (juiceTray.size() < MAX_JUICE_ON_TRAY) {
-                entity = spawnJuiceEntity(item, equipment, x, y);
-                juiceTray.add(entity);
-            } else {
-                entity = null;
-            }
+            entity = spawnJuiceEntity(item, equipment, x, y);
+
         }else if(item.getName().equals("mango")){
             entity = entityBuilder()
                     .type(CookingInaMain.EntityType.INGREDIENT)
@@ -210,7 +200,6 @@ public class UIController extends Component {
                             trash.getBoundingBoxComponent()
                                     .isCollidingWith(juice.getBoundingBoxComponent())
                     );
-
             if (onTrash) {
                 // Remove from world & tray
                 juice.removeFromWorld();
@@ -219,10 +208,8 @@ public class UIController extends Component {
                 // Snap back home
                 juice.setPosition(homeX, homeY);
             }
-
             e.consume();
         });
-
         return juice;
     }
 

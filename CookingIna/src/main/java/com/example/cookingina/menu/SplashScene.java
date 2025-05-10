@@ -10,8 +10,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import static com.almasb.fxgl.dsl.FXGL.getAppWidth;
 import static com.almasb.fxgl.dsl.FXGL.getAppHeight;
+import static com.almasb.fxgl.dsl.FXGL.getAppWidth;
 import static com.almasb.fxgl.dsl.FXGL.getSceneService;
 
 /**
@@ -21,11 +21,10 @@ public class SplashScene extends FXGLMenu {
     public SplashScene() {
         super(MenuType.MAIN_MENU);
 
-        // Full-screen black background
+        // Build static UI (background + splash image or fallback)
         Rectangle background = new Rectangle(getAppWidth(), getAppHeight(), Color.BLACK);
         getContentRoot().getChildren().add(background);
 
-        // Display splash image or fallback text
         try {
             ImageView splashImage = new ImageView(new Image(
                     getClass().getResourceAsStream("/assets/textures/splash_scene.png")
@@ -34,15 +33,16 @@ public class SplashScene extends FXGLMenu {
             splashImage.setFitHeight(getAppHeight());
             getContentRoot().getChildren().add(splashImage);
         } catch (Exception e) {
-            // If image fails to load, show text placeholder
             getContentRoot().getChildren().add(new Text("Loading..."));
         }
+    }
 
-        // Schedule always going to LoginMenu after 3 seconds
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // Schedule transition every time the scene is created or re-entered
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
-        delay.setOnFinished(evt -> {
-            getSceneService().pushSubScene(new LoginMenu());
-        });
+        delay.setOnFinished(evt -> getSceneService().pushSubScene(new LoginMenu()));
         delay.play();
     }
 }

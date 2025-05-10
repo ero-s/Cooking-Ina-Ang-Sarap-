@@ -84,7 +84,7 @@ public class SpeechBubbleComponent extends Component {
         entity.getViewComponent().addChild(bubbleRoot);
         double bubbleW = bubbleRoot.getBoundsInLocal().getWidth();
         bubbleRoot.setTranslateX(-bubbleW / 2 + 50);
-        bubbleRoot.setTranslateY(-entity.getHeight() + 5);
+        bubbleRoot.setTranslateY(entity.getHeight()-100);
     }
 
     @Override
@@ -95,10 +95,10 @@ public class SpeechBubbleComponent extends Component {
 
         // Remove customer if patience has fully run out
         if (progress <= 0) {
-            // Customer leaves
+            // Remove from spawner list
             UIController.components.remove(entity.getComponent(CustomerComponent.class));
-            System.out.println(UIController.components.size());
-            FXGL.getGameWorld().removeEntity(entity);
+            // Remove entity
+            entity.removeFromWorld();
             return;
         }
 
@@ -111,8 +111,9 @@ public class SpeechBubbleComponent extends Component {
         );
     }
 
-    /** Removes the icon for a served item */
+    /** Removes the icon for a served item and checks if all orders are done */
     public void markServed(String baseItem) {
+        // Remove one icon
         String matchKey = icons.keySet().stream()
                 .filter(k -> k.startsWith(baseItem + "_"))
                 .findFirst().orElse(null);
@@ -121,11 +122,23 @@ public class SpeechBubbleComponent extends Component {
             ImageView iv = icons.remove(matchKey);
             bubbleRoot.getChildren().remove(iv);
         }
+
+        // If all orders served, remove customer
+        if (icons.isEmpty() && entity != null) {
+            // Remove from spawner list
+            UIController.components.remove(entity.getComponent(CustomerComponent.class));
+            // Optionally play a fade-out
+            FadeTransition ft = new FadeTransition(Duration.seconds(0.5), entity.getViewComponent().getParent());
+            ft.setFromValue(1.0);
+            ft.setToValue(0.0);
+            ft.setOnFinished(e -> entity.removeFromWorld());
+            ft.play();
+        }
     }
 
     /** Shows a popup with earned price based on remaining patience */
     public void showPricePopup(int basePrice) {
-        int adjustedPrice = (int)(basePrice * patience);
+        int adjustedPrice = (int) (basePrice * patience);
         FXGL.inc("income", adjustedPrice);
 
         Text popup = new Text("+" + adjustedPrice);
@@ -141,7 +154,8 @@ public class SpeechBubbleComponent extends Component {
         ft.setFromValue(1.0);
         ft.setToValue(0.0);
 
-        tt.play(); ft.play();
+        tt.play();
+        ft.play();
         ft.setOnFinished(e -> bubbleRoot.getChildren().remove(popup));
     }
 
@@ -161,7 +175,8 @@ public class SpeechBubbleComponent extends Component {
         ft.setFromValue(1.0);
         ft.setToValue(0.0);
 
-        tt.play(); ft.play();
+        tt.play();
+        ft.play();
         ft.setOnFinished(e -> bubbleRoot.getChildren().remove(popup));
     }
 }
