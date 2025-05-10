@@ -3,9 +3,11 @@ package com.example.cookingina;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
+import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
+import static com.almasb.fxgl.dsl.FXGL.*;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
 import com.almasb.fxgl.ui.ProgressBar;
@@ -20,6 +22,9 @@ import com.example.cookingina.objects.entity.equipment.MangoTray;
 import com.example.cookingina.objects.entity.equipment.TrashBin;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
+import javafx.application.Platform;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -62,7 +67,7 @@ public class CookingInaMain extends GameApplication {
     private static final int MAX_CUSTOMERS = 10;
 
     @Override
-    public void initUI() {
+    protected void initUI() {
         // Create debug text element
         debugText = new Text();
         debugText.setFont(Font.font(14));
