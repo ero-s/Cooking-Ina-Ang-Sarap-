@@ -28,6 +28,13 @@ public class SpeechBubbleComponent extends Component {
     private final Group bubbleRoot = new Group();
     private final Map<String, ImageView> icons = new HashMap<>();
 
+    private Rectangle patienceBar;
+    private double patience = 1.0; // from 1.0 (full) to 0.0 (empty)
+    private static final double DURATION_SECONDS = 20.0;
+    private long startTime;
+    private int basePrice = 100; // Default base price, can be adjusted per customer
+
+
     public SpeechBubbleComponent(List<Order> orders) {
         double height = 60 + orders.size() * 40;
         double width = 80;
@@ -51,6 +58,22 @@ public class SpeechBubbleComponent extends Component {
         pointer.setStroke(javafx.scene.paint.Color.BLACK);
 
         bubbleRoot.getChildren().addAll(bg, pointer);
+
+        // Patience bar background (gray)
+        Rectangle barBG = new Rectangle(width, 6);
+        barBG.setFill(javafx.scene.paint.Color.GRAY);
+        barBG.setTranslateY(-12);
+
+// Patience bar foreground (green, dynamic width)
+        patienceBar = new Rectangle(width, 6);
+        patienceBar.setFill(javafx.scene.paint.Color.LIMEGREEN);
+        patienceBar.setTranslateY(-12);
+
+        bubbleRoot.getChildren().addAll(barBG, patienceBar);
+
+// Start time
+        startTime = System.currentTimeMillis();
+
 
         // icons
         // in SpeechBubbleComponent constructor:
@@ -82,6 +105,19 @@ public class SpeechBubbleComponent extends Component {
         bubbleRoot.setTranslateY(-entity.getHeight() + 10);
     }
 
+    @Override
+    public void onUpdate(double tpf) {
+        double elapsed = (System.currentTimeMillis() - startTime) / 1000.0;
+        double progress = Math.max(0, 1.0 - elapsed / DURATION_SECONDS);
+        patience = progress;
+
+        double width = bubbleRoot.getBoundsInLocal().getWidth();
+        patienceBar.setWidth(width * progress);
+        patienceBar.setFill(progress > 0.5 ? javafx.scene.paint.Color.LIMEGREEN :
+                progress > 0.2 ? javafx.scene.paint.Color.ORANGE :
+                        javafx.scene.paint.Color.RED);
+    }
+
     /** Removes the icon for a served item */
     /** Removes one icon for a served base item (e.g. "hotdog") */
     public void markServed(String baseItem) {
@@ -97,18 +133,26 @@ public class SpeechBubbleComponent extends Component {
         }
     }
 
-    public void showPricePopup(int price) {
-        String text = "+" + price;
+    public void showPricePopup(int basePrice) {
+        int adjustedPrice = (int)(basePrice * patience);
+
+        // Update income world property
+        int currentIncome = FXGL.geti("income");
+        int newIncome = currentIncome + adjustedPrice;
+        FXGL.set("income", newIncome);
+
+        // Print total income to console
+        System.out.println("Total Income: " + newIncome);
+
+        String text = "+" + adjustedPrice;
         Text popup = new Text(text);
         popup.setFont(Font.font(32));
         popup.setFill(javafx.scene.paint.Color.YELLOW);
-        // position above the bubble
         popup.setTranslateX(bubbleRoot.getBoundsInLocal().getWidth() / 2 - 10);
-        popup.setTranslateY(-20);
+        popup.setTranslateY(-40); // above the patience bar
 
         bubbleRoot.getChildren().add(popup);
 
-        // move up and fade
         TranslateTransition tt = new TranslateTransition(Duration.seconds(0.8), popup);
         tt.setByY(-30);
 

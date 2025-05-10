@@ -51,7 +51,6 @@ public class CookingInaMain extends GameApplication {
     private final List<MangoTray> mangoTrays = new ArrayList<>();
     public UIController uc = new UIController();
 
-
     public enum EntityType {
         INGREDIENT,
         EQUIPMENT,

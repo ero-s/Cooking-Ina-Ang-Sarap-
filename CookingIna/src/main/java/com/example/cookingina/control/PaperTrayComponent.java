@@ -194,7 +194,6 @@ public class PaperTrayComponent extends Component {
                 sb.markServed(servedItem);
 
                 int price = getPrice(servedItem);
-                FXGL.inc("income", price);
                 sb.showPricePopup(price);
 
                 // only here do we reset texture
