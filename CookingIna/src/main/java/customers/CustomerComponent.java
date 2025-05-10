@@ -35,10 +35,9 @@ public class CustomerComponent extends Component {
                     double dx = 100 * tpf * (direction.equals("RIGHT") ? 1 : -1);
 
                     Platform.runLater(() -> {
-                        if (!hasArrived) {
-                            if(entity != null){
-                                entity.translateX(dx);
-                            }
+                        if (!hasArrived && entity != null) {
+                            entity.translateX(dx);
+
                             if (Math.abs(entity.getX() - targetX) < 1) {
                                 entity.setX(targetX);
                                 hasArrived = true;

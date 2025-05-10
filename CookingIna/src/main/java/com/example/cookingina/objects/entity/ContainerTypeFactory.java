@@ -19,9 +19,9 @@ public class ContainerTypeFactory {
                         15.0,
                         15.00,
                         3.0,
-                        1,
                         80,
-                        80) ,
+                        80 ,
+                        1),
                         "rawHotdog_container.png");
             case QUEKQUEK: //DONE
                 return new Food(new StoreItem(
@@ -32,9 +32,9 @@ public class ContainerTypeFactory {
                         15.0,
                         12.99,
                         2.0,
-                        1,
                         80,
-                        80) ,
+                        80,
+                        1) ,
                         "rawQuekquek_container.png");
             case TEMPURA:
                 return new Food(new StoreItem(
@@ -45,18 +45,18 @@ public class ContainerTypeFactory {
                         10.0,
                         5.0,
                         3.0,
-                        1 ,
                         80,
-                        80),
+                        80,
+                        1),
                         "rawTempura_container.png");
             case CUCUMBER:
-                return new Food(new StoreItem("cucumber","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek.png",15.0,12.99, 2.0, 1 ,80, 80),"cucumberGarnish_container.png");
+                return new Food(new StoreItem("cucumber","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek.png",15.0,12.99, 2.0 ,1, 80,80),"cucumberGarnish_container.png");
             case GUSO:
-                return new Food(new StoreItem("guso","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",15.0,12.99, 2.0, 1 ,80, 80),"gusoGarnish_container.png");
+                return new Food(new StoreItem("guso","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",15.0,12.99, 2.0, 80, 1,80),"gusoGarnish_container.png");
             case SPICY_SAUCE:
-                return new Food(new StoreItem("spicy_sauce","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",15.0,12.99, 2.0, 1 ,80, 80),"spicy_sauce.png");
+                return new Food(new StoreItem("spicy_sauce","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",15.0,12.99, 2.0, 1, 80,80),"spicy_sauce.png");
             case SWEET_SAUCE:
-                return new Food(new StoreItem("sweet_sauce","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",12.99, 2.0, 2.0, 1, 80, 80),"sweet_sauce.png");
+                return new Food(new StoreItem("sweet_sauce","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",12.99, 2.0, 2.0,  1, 80,80),"sweet_sauce.png");
             case MANGO: // DONE
                 return new Food(new StoreItem(
                         "mango",
@@ -133,7 +133,6 @@ public class ContainerTypeFactory {
                         "bukoJuice_finishedProduct.png",
                         "bukoJuice_finishedProduct.png",
                         "bukoJuice_finishedProduct.png",
-
                         15.0,
                         12.99,
                         2.0,
