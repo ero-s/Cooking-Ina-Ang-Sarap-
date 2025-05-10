@@ -6,26 +6,19 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
-import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
 import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.control.UIController;
 
-import com.example.cookingina.objects.entity.BeverageFactory;
-import com.example.cookingina.objects.entity.Container;
-import com.example.cookingina.objects.entity.ContainerFactory;
-import com.example.cookingina.objects.entity.PaperTray;
+import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.equipment.MangoTray;
 import com.example.cookingina.objects.entity.equipment.TrashBin;
-import com.example.cookingina.objects.entity.storeItem.Mango;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
-import javafx.beans.binding.DoubleBinding;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -34,17 +27,14 @@ import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppWidth;
-import static com.example.cookingina.objects.entity.BeverageFactory.TYPE.*;
-import static com.example.cookingina.objects.entity.ContainerFactory.TYPE.*;
-import static com.example.cookingina.objects.entity.ContainerFactory.TYPE.SALT;
+import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
+import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.SALT;
 
 public class CookingInaMain extends GameApplication {
 
@@ -232,20 +222,19 @@ public class CookingInaMain extends GameApplication {
 // ================= SELLING ITEMS ENTITTY =================
         uc.spawnCustomerAtRandomIntervals();
 // ================= CONTAINER ENTITY =================
-        BeverageDispenser orangeDispenser = BeverageFactory.create(ORANGE_JUICE);
-        BeverageDispenser calamansiDispenser = BeverageFactory.create(CALAMANSI_JUICE);
-        BeverageDispenser bukoDispenser = BeverageFactory.create(BUKO_JUICE);
-
-        Container mangoBasket = ContainerFactory.create(MANGO);
-        Container hotdogContainer = ContainerFactory.create(HOTDOG);
-        Container quekquekContainer = ContainerFactory.create(QUEKQUEK);
-        Container tempuraContainer = ContainerFactory.create(TEMPURA);
-        Container cucumberContainer = ContainerFactory.create(CUCUMBER);
-        Container gusoContainer = ContainerFactory.create(GUSO);
-        Container spicySauce = ContainerFactory.create(SPICY_SAUCE);
-        Container sweetSauce = ContainerFactory.create(SWEET_SAUCE);
-        Container bagoong = ContainerFactory.create(BAGOONG);
-        Container salt = ContainerFactory.create(SALT);
+        ContainerType orangeDispenser = ContainerTypeFactory.create(ORANGE_JUICE);
+        ContainerType calamansiDispenser = ContainerTypeFactory.create(CALAMANSI_JUICE);
+        ContainerType bukoDispenser = ContainerTypeFactory.create(BUKO_JUICE);
+        ContainerType mangoBasket = ContainerTypeFactory.create(MANGO);
+        ContainerType hotdogFood = ContainerTypeFactory.create(HOTDOG);
+        ContainerType quekquekFood = ContainerTypeFactory.create(QUEKQUEK);
+        ContainerType tempuraFood = ContainerTypeFactory.create(TEMPURA);
+        ContainerType cucumberFood = ContainerTypeFactory.create(CUCUMBER);
+        ContainerType gusoFood = ContainerTypeFactory.create(GUSO);
+        ContainerType spicySauce = ContainerTypeFactory.create(SPICY_SAUCE);
+        ContainerType sweetSauce = ContainerTypeFactory.create(SWEET_SAUCE);
+        ContainerType bagoong = ContainerTypeFactory.create(BAGOONG);
+        ContainerType salt = ContainerTypeFactory.create(SALT);
 
         for(int i = 0; i < 6; i++){
             PaperTray paperTray = paperTrays.get(i);
@@ -315,29 +304,29 @@ public class CookingInaMain extends GameApplication {
             uc.spawnPaperTray(tray, pos[0], pos[1], pos[2], pos[3]);
         }
 
-        uc.spawnContainerForEquipment(quekquekContainer, fryers, 870, 980, 190, 120);
-        uc.spawnContainerForEquipment(hotdogContainer, fryers, 1080, 980, 190, 120);
-        uc.spawnContainerForEquipment(tempuraContainer, fryers, 650, 980, 190, 120);
-        uc.spawnContainerForEquipment(mangoBasket, mangoTrays, 1630, 720, 270, 250);
+        uc.spawnContainerForEquipment((Food) quekquekFood, fryers, 870, 980, 190, 120);
+        uc.spawnContainerForEquipment((Food) hotdogFood, fryers, 1080, 980, 190, 120);
+        uc.spawnContainerForEquipment((Food) tempuraFood, fryers, 650, 980, 190, 120);
+        uc.spawnContainerForEquipment((Food) mangoBasket, mangoTrays, 1630, 720, 270, 250);
 
         //DISPENSER EQUIPMENT
-        uc.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
-        uc.spawnEquipment(bukoDispenser, 130, 400, 150, 340);
-        uc.spawnEquipment(orangeDispenser, 30, 500, 150, 340);
+        uc.spawnEquipment((Equipment) calamansiDispenser, 230, 300, 150, 340);
+        uc.spawnEquipment((Equipment) bukoDispenser, 130, 400, 150, 340);
+        uc.spawnEquipment((Equipment) orangeDispenser, 30, 500, 150, 340);
         uc.spawnTrashCan(100,950);
 
         //DISPENSER INVISIBLE
-        uc.spawnInvisibleEquipment(calamansiDispenser, 230, 300, 150, 340);
-        uc.spawnInvisibleEquipment(bukoDispenser, 130, 400, 150, 340);
-        uc.spawnInvisibleEquipment(orangeDispenser, 30, 500, 150, 340);
+        uc.spawnInvisibleEquipment((BeverageDispenser) calamansiDispenser, 230, 300, 150, 340);
+        uc.spawnInvisibleEquipment((BeverageDispenser) bukoDispenser, 130, 400, 150, 340);
+        uc.spawnInvisibleEquipment((BeverageDispenser) orangeDispenser, 30, 500, 150, 340);
 
         //CONTAINER
-        uc.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
-        uc.spawnContainer(gusoContainer, 1390, 820, 140, 110);
-        uc.spawnContainer(spicySauce, 1270, 460, 60, 160);
-        uc.spawnContainer(sweetSauce, 1330, 550, 60, 160);
-        uc.spawnContainer(bagoong, 1500, 650, 54, 100);
-        uc.spawnContainer(salt, 1550, 720, 54, 100);
+        uc.spawnContainer((Food) cucumberFood, 1340, 720, 130, 100);
+        uc.spawnContainer((Food) gusoFood, 1390, 820, 140, 110);
+        uc.spawnContainer((Food) spicySauce, 1270, 460, 60, 160);
+        uc.spawnContainer((Food) sweetSauce, 1330, 550, 60, 160);
+        uc.spawnContainer((Food) bagoong, 1500, 650, 54, 100);
+        uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
     }
     private void resetGameState() {
         // Reset any scores, timers, or game state variables
