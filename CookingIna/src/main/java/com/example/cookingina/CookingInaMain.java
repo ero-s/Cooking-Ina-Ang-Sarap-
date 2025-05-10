@@ -330,27 +330,21 @@ public class CookingInaMain extends GameApplication {
         // Reset UI controller
         uc = new UIController();
         // Flag game state
-        isGameActive = false;
     }
 
 
     private void startTimer() {
-        isGameActive = true;
-
         FXGL.getGameTimer().runAtInterval(() -> {
-            if (isGameActive) {
-                double next = timerBar.getCurrentValue() + 1;
-                timerBar.setCurrentValue(next);
+            double next = timerBar.getCurrentValue() + 1;
+            timerBar.setCurrentValue(next);
 
-                if (next >= TOTAL_TIME) {
-                    endGame();
-                }
+            if (next >= TOTAL_TIME) {
+                endGame();
             }
         }, Duration.seconds(1));
     }
 
     private void endGame() {
-        isGameActive = false;
 
         // Show game over menu
         FXGL.getSceneService().pushSubScene(new GameOverMenu());

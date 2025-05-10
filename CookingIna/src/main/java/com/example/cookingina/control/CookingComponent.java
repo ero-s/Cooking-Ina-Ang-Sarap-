@@ -79,7 +79,7 @@ public class CookingComponent extends Component {
             isCooked = true;
             entity.getViewComponent().removeChild(progressBar);
             entity.getViewComponent().clearChildren();
-            uc.spawnCookedIngredient(cookedStoreItem,equipment, position.getX(), position.getY());
+            uc.spawnReadyIngredient(storeItem,equipment, position.getX(), position.getY());
 
             // Attempt placement onto tray or trash immediately
             boolean placed = handleClickListener();

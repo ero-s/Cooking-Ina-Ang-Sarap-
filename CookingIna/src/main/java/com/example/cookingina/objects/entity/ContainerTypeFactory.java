@@ -13,8 +13,9 @@ public class ContainerTypeFactory {
             case HOTDOG: //DONE
                 return new Food(new StoreItem(
                         "hotdog",
-                        "rawHotdog.png",
-                        "rawHotdog.png",
+                        "raw_hotdog.png",
+                        "cooked_hotdog.png",
+                        "overcooked_hotdog.png",
                         15.0,
                         15.00,
                         3.0,
@@ -25,8 +26,9 @@ public class ContainerTypeFactory {
             case QUEKQUEK: //DONE
                 return new Food(new StoreItem(
                         "quekquek",
-                        "rawQuekquek.png",
-                        "cooked_quek-quek.png",
+                        "raw_quekquek.png",
+                        "cooked_quekquek.png",
+                        "overcooked_quekquek.png",
                         15.0,
                         12.99,
                         2.0,
@@ -39,6 +41,7 @@ public class ContainerTypeFactory {
                         "tempura",
                         "raw_tempura.png",
                         "cooked_tempura.png",
+                        "overcooked_tempura.png",
                         10.0,
                         5.0,
                         3.0,
@@ -47,17 +50,18 @@ public class ContainerTypeFactory {
                         80),
                         "rawTempura_container.png");
             case CUCUMBER:
-                return new Food(new StoreItem("cucumber","rawQuekquek_container.png", "rawQuekquek.png",15.0,12.99, 2.0, 1 ,80, 80),"cucumberGarnish_container.png");
+                return new Food(new StoreItem("cucumber","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek.png",15.0,12.99, 2.0, 1 ,80, 80),"cucumberGarnish_container.png");
             case GUSO:
-                return new Food(new StoreItem("guso","rawQuekquek_container.png", "rawQuekquek.png",15.0,12.99, 2.0, 1 ,80, 80),"gusoGarnish_container.png");
+                return new Food(new StoreItem("guso","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",15.0,12.99, 2.0, 1 ,80, 80),"gusoGarnish_container.png");
             case SPICY_SAUCE:
-                return new Food(new StoreItem("spicy_sauce","rawQuekquek_container.png", "rawQuekquek.png", 15.0,12.99, 2.0, 1 ,80, 80),"spicy_sauce.png");
+                return new Food(new StoreItem("spicy_sauce","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",15.0,12.99, 2.0, 1 ,80, 80),"spicy_sauce.png");
             case SWEET_SAUCE:
-                return new Food(new StoreItem("sweet_sauce","rawQuekquek_container.png", "rawQuekquek.png",12.99, 2.0, 2.0, 1, 80, 80),"sweet_sauce.png");
+                return new Food(new StoreItem("sweet_sauce","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",12.99, 2.0, 2.0, 1, 80, 80),"sweet_sauce.png");
             case MANGO: // DONE
                 return new Food(new StoreItem(
                         "mango",
                         "raw_mango.png",
+                        "mango_ready.png",
                         "mango_ready.png",
                         5.0,
                         30.0,
@@ -66,12 +70,13 @@ public class ContainerTypeFactory {
                         120,
                         120) , "manga_basket.png");
             case BAGOONG:
-                return new Food(new StoreItem("bagoong","rawQuekquek_container.png", "rawQuekquek.png", 15.0,12.99, 2.0, 1 ,80, 80),"hipon_bottle.png");
+                return new Food(new StoreItem("bagoong","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",15.0,12.99, 2.0, 1 ,80, 80),"hipon_bottle.png");
             case SALT:
-                return new Food(new StoreItem("salt","rawQuekquek_container.png", "rawQuekquek.png",15.0,12.99, 2.0, 1 ,80, 80),"salt_bottle.png");
+                return new Food(new StoreItem("salt","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",15.0,12.99, 2.0, 1 ,80, 80),"salt_bottle.png");
             case ORANGE_JUICE:
                 return new BeverageDispenser(new StoreItem(
                         "orange_juice",
+                        "orangeJuice_finishedProduct.png",
                         "orangeJuice_finishedProduct.png",
                         "orangeJuice_finishedProduct.png",
                         15.0,
@@ -94,6 +99,7 @@ public class ContainerTypeFactory {
                         "calamansi_juice",
                         "calamansiJuice_finishedProduct.png",
                         "calamansiJuice_finishedProduct.png",
+                        "calamansiJuice_finishedProduct.png",
                         15.0,
                         12.99,
                         2.0,
@@ -114,7 +120,8 @@ public class ContainerTypeFactory {
                         "buko_juice",
                         "bukoJuice_finishedProduct.png",
                         "bukoJuice_finishedProduct.png",
-                        15.0,
+                        "bukoJuice_finishedProduct.png",
+                        5.0,
                         12.99,
                         2.0,
                         1,

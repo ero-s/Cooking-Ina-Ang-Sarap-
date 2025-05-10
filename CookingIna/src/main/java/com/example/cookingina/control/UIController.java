@@ -34,7 +34,6 @@ public class UIController extends Component {
 
     private static final int MAX_JUICE_ON_TRAY = 3;
     private static final List<Entity> juiceTray = new ArrayList<>();
-    private static final Queue<WaitingItem> waitingJuiceQueue = new LinkedList<>();
 
     private final List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
@@ -106,18 +105,18 @@ public class UIController extends Component {
                 .buildAndAttach();
     }
 
-    public static void spawnRawIngredient1(StoreItem storeItem, Equipment equipment, double x, double y) {
+    public static void spawnRawIngredient1(Food storeItem, Equipment equipment, double x, double y) {
         var ingredientEntity = entityBuilder()
                 .type(CookingInaMain.EntityType.INGREDIENT)
                 .at(x, y)
                 .zIndex(50)
-                .viewWithBBox(FXGL.texture(storeItem.getRawResource(), storeItem.getWidth(), storeItem.getHeight()))
-                .with(new StoreItemComponent(storeItem))
+                .viewWithBBox(FXGL.texture(storeItem.getItem().getRawResource(), storeItem.getItem().getWidth(), storeItem.getItem().getHeight()))
+                .with(new StoreItemComponent(storeItem.getItem()))
                 .buildAndAttach();
         // Add the CookingComponent (cooking time behavior)
         ingredientEntity.addComponent(new CookingComponent(
-                storeItem.getPreparationTime(),  // preparation time from StoreItem
-                storeItem,                       // the StoreItem object itself
+                storeItem.getItem().getPreparationTime(),  // preparation time from StoreItem
+                storeItem.getItem(),                       // the StoreItem object itself
                 equipment                        // equipment where it's cooked
         ));
 
@@ -268,16 +267,6 @@ public class UIController extends Component {
             System.out.println("Equipment resource: " + dispenser.getEmptyResource());
             spawnJuiceCup(x + 40, y + 220, dispenser.getItem(), dispenser);
         });
-    }
-
-    private static Calamansi_Juice createJuiceItem(String description, String resource) {
-        return new Calamansi_Juice(
-                "none",
-                resource,
-                resource,
-                description,
-                15.0, 12.99, 2.0, 1, 110,60
-        );
     }
 
     public void spawnJuiceCup(double x, double y, StoreItem juiceItem, Equipment equipment) {
