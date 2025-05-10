@@ -256,7 +256,6 @@
 //            textureChanged = false;
 //        }
 //    }
-//
 //    private void setIsOccupied(boolean isOccupied) {
 //        this.isOccupied = isOccupied;
 //    }
