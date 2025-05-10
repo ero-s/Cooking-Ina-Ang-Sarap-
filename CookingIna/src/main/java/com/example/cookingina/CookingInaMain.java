@@ -57,8 +57,8 @@ public class CookingInaMain extends GameApplication {
     public static Text debugText;
     private ProgressBar timerBar;
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 120; // seconds
-    public static final double MAX_QUOTA = 60.0; // seconds
+    private static final double TOTAL_TIME = 300; // seconds
+    public static final double MAX_QUOTA = 100.0; // seconds
 
     @Override
     public void initUI() {
@@ -145,7 +145,7 @@ public class CookingInaMain extends GameApplication {
 
         incomeBar.setCurrentValue(0);
         incomeBar.setMinValue(0);
-        incomeBar.setMaxValue(TOTAL_TIME);
+        incomeBar.setMaxValue(MAX_QUOTA);
 
         // Bind world property 'income' -> bar value
         FXGL.getWorldProperties().intProperty("income")

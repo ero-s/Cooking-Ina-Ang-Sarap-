@@ -157,7 +157,6 @@ public class PaperTrayComponent extends Component {
         if (url.contains("quekquek"))         return "cooked_quekquek";
         if (url.contains("hotdog"))           return "cooked_hotdog";
         if (url.contains("tempura"))          return "cooked_tempura";
-        if (url.contains("calamansi_juice"))  return "calamansi_juice";
         return "";
     }
 
@@ -166,7 +165,6 @@ public class PaperTrayComponent extends Component {
             case "cooked_quekquek": return 10;
             case "cooked_hotdog":   return 15;
             case "cooked_tempura":  return 12;
-            case "mango_ready":     return 8;
             default:                return 0;
         }
     }
