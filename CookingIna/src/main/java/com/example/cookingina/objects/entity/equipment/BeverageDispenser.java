@@ -1,9 +1,14 @@
 package com.example.cookingina.objects.entity.equipment;
 
+import com.example.cookingina.objects.entity.ContainerType;
 import com.example.cookingina.objects.entity.Equipment;
+import com.example.cookingina.objects.entity.StoreItem;
 
-public class BeverageDispenser extends Equipment {
+public class BeverageDispenser extends Equipment implements ContainerType {
+    private final StoreItem item;
+
     public BeverageDispenser(
+            StoreItem item,
             String emptyResource,
             String usedResource,
             int type,
@@ -16,5 +21,16 @@ public class BeverageDispenser extends Equipment {
     ) {
 
         super(emptyResource,usedResource, type, speedMultiplier, cost, capacity, isUnlocked, description);
+        this.item = item;
+        item.setIsJuice(isJuice());
+    }
+
+    public StoreItem getItem(){
+        return item;
+    }
+
+    @Override
+    public boolean isJuice() {
+        return true;
     }
 }

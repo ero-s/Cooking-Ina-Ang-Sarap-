@@ -6,27 +6,20 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
-import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
 import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.control.UIController;
-import com.example.cookingina.objects.entity.PaperTray;
-import com.example.cookingina.objects.entity.TrashCan;
-import com.example.cookingina.objects.entity.container.*;
+
+import com.example.cookingina.menu.GameOverMenu;
+import com.example.cookingina.menu.MainMenu;
+import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.equipment.MangoTray;
 import com.example.cookingina.objects.entity.equipment.TrashBin;
-import com.example.cookingina.objects.entity.storeItem.Hotdog;
-import com.example.cookingina.objects.entity.storeItem.Mango;
-import com.example.cookingina.objects.entity.storeItem.QuekQuek;
-import com.example.cookingina.objects.entity.storeItem.Tempura;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
-import javafx.beans.binding.DoubleBinding;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -35,20 +28,21 @@ import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAppWidth;
+import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
+import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.SALT;
 
 public class CookingInaMain extends GameApplication {
 
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
+    private boolean isGameActive = false;
     public UIController uc = new UIController();
 
     public enum EntityType {
@@ -64,41 +58,10 @@ public class CookingInaMain extends GameApplication {
     public static Text debugText;
     private ProgressBar timerBar;
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 60.0; // seconds
-
-//    @Override
-//    protected void initUI() {
-//        // Create debug text element
-//        debugText = new Text();
-//        debugText.setFont(Font.font(14));
-//        debugText.setFill(Color.WHITE);
-//        debugText.setTranslateX(10);
-//        debugText.setTranslateY(20);
-//        setProgressBar();
-//
-//        // Add to game scene
-//        FXGL.getGameScene().addUINode(debugText);
-//
-//        ProgressBar incomeBar = new ProgressBar();
-//        incomeBar.setWidth(200);
-//        incomeBar.setHeight(20);
-//        incomeBar.setTranslateX(getAppWidth() - 220); // 20px from right edge
-//        incomeBar.setTranslateY(20);                 // 20px from top
-//
-//        // Assume you have a “goal” or “level target” constant:
-//        int levelTarget = 100;
-//
-//        // Bind progress to income / levelTarget
-//        DoubleBinding progressBinding = FXGL.getWorldProperties()
-//                .intProperty("income")
-//                .divide((double) levelTarget);
-//        incomeBar.currentValueProperty().bind(progressBinding);
-//        // Add to UI
-//        FXGL.getGameScene().addUINode(incomeBar);
-//    }
+    private static final double TOTAL_TIME = 10.0; // seconds
 
     @Override
-    protected void initUI() {
+    public void initUI() {
         // Create debug text element
         debugText = new Text();
         debugText.setFont(Font.font(14));
@@ -145,9 +108,6 @@ public class CookingInaMain extends GameApplication {
         settings.setFullScreenAllowed(true);
         settings.setFullScreenFromStart(true);
         settings.setMainMenuEnabled(true);
-
-
-
         settings.setSceneFactory(new SceneFactory() {
             @NotNull
             @Override
@@ -194,15 +154,15 @@ public class CookingInaMain extends GameApplication {
         uc = new UIController();
         for(int i = 1; i <= 6; i++){
             fryers.add(new Fryer(
-                    "frying_pan.png",                         // name
-                    "usedPan.png",
-                    i,                                              // type (e.g., 1 = cooking equipment)
-                    0,                                              // playend (initial value)
-                    1.5,                                            // speedMultiplier (50% faster cooking)
-                    500.0,                                          // cost ($500)
-                    1,                                              // capacity (4 items at once)
-                    false,                                          // isUnlocked (initially locked)
-                    "A standard fryer for basic cooking needs"    // description);
+               "frying_pan.png",
+               "usedPan.png",
+               i,
+                    0,
+                    1.5,
+                    500.0,
+                    1,
+                    false,
+                    "A standard fryer for basic cooking needs"
             ));
         }
 
@@ -228,156 +188,23 @@ public class CookingInaMain extends GameApplication {
             ));
         }
 
-        UIController.setFryers(fryers);
-
+        uc.setFryers(fryers);
 // ================= SELLING ITEMS ENTITTY =================
         uc.spawnCustomerAtRandomIntervals();
-
-        QuekQuek quekquek = new QuekQuek(
-                "rawQuekquek_container.png",
-                "rawQuekquek.png",                      // raw resource identifier
-                "cooked_quek-quek.png",                          // cooked resource
-                "quekquek",                                         // description
-                15.0,                                           // preparationTime (minutes)
-                12.99,                                          // sellingPrice ($)
-                2.0,                                            // discardCost ($)
-                1,
-                80,
-                80
-        );                                             // status (1 = available)
-
-        Hotdog hotdog = new Hotdog(
-                "rawHotdog_container.png",
-                "rawHotdog.png",
-                "rawHotdog.png",
-                "hotdog",
-                15.0,
-                15.00,
-                3.0,
-                1,
-                80,
-                80
-        );
-
-        Tempura tempura = new Tempura(
-                "rawTempura_container.png",
-                "raw_tempura.png",
-                "cooked_tempura.png",
-                "tempura",
-                10.0,
-                5.0,
-                3.0,
-                1,
-                80,
-                80
-        );
-
-        Mango mango = new Mango(
-                "manga_basket.png",
-                "raw_mango.png",
-                "mango_ready.png",
-                "mango",
-                5.0,
-                30.0,
-                20.0,
-                1,
-                120,
-                120
-        );
 // ================= CONTAINER ENTITY =================
-
-        BeverageDispenser calamansiDispenser = new BeverageDispenser(
-                "calamansiJuice_dispenser.png",                         // name
-                "dragonfruit_juice_done.png",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "calamansi juice");
-
-        BeverageDispenser bukoDispenser = new BeverageDispenser(
-                "bukoJuice_dispenser.png",                         // name
-                "mangojuice_done.png",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "buko juice");
-
-        BeverageDispenser orangeDispenser = new BeverageDispenser(
-                "orangeJuice_dispenser.png",                         // name
-                "nestea_juice_done.png",
-                1,
-                0,
-                1.5,
-                500.0,
-                4,
-                false,
-                "orange juice");
-
-        MangoBasket mangoBasket = new MangoBasket(
-                "mango_container.png",
-                "",
-                "mango basket"
-        );
-
-        HotdogContainer hotdogContainer = new HotdogContainer(
-                "rawHotdog_container.png",
-                "",
-                "hotdog container"
-        );
-
-        QuekquekContainer quekquekContainer = new QuekquekContainer(
-                "rawQuekquek_container.png",
-                "",
-                "Quekquek container"
-        );
-
-        TempuraContainer tempuraContainer = new TempuraContainer(
-                "rawTempura_container.png",
-                "",
-                "Tempura container"
-        );
-
-        CucumberContainer cucumberContainer = new CucumberContainer(
-                "cucumberGarnish_container.png",
-                "",
-                "cucumber garnish"
-        );
-
-        GusoContainer gusoContainer = new GusoContainer(
-                "gusoGarnish_container.png",
-                "",
-                "guso garnish"
-        );
-
-        SpicySauce spicySauce = new SpicySauce(
-                "spicy_sauce.png",
-                "",
-                "spicy sauce"
-        );
-
-        SweetSauce sweetSauce = new SweetSauce(
-                "sweet_sauce.png",
-                "",
-                "sweet sauce"
-        );
-
-        Bagoong bagoong = new Bagoong(
-                "hipon_bottle.png",
-                "" ,
-                "bagoong hipon"
-        );
-
-        SaltContainer salt = new SaltContainer(
-                "salt_bottle.png",
-                "",
-                "salt"
-        );
+        ContainerType orangeDispenser = ContainerTypeFactory.create(ORANGE_JUICE);
+        ContainerType calamansiDispenser = ContainerTypeFactory.create(CALAMANSI_JUICE);
+        ContainerType bukoDispenser = ContainerTypeFactory.create(BUKO_JUICE);
+        ContainerType mangoBasket = ContainerTypeFactory.create(MANGO);
+        ContainerType hotdogFood = ContainerTypeFactory.create(HOTDOG);
+        ContainerType quekquekFood = ContainerTypeFactory.create(QUEKQUEK);
+        ContainerType tempuraFood = ContainerTypeFactory.create(TEMPURA);
+        ContainerType cucumberFood = ContainerTypeFactory.create(CUCUMBER);
+        ContainerType gusoFood = ContainerTypeFactory.create(GUSO);
+        ContainerType spicySauce = ContainerTypeFactory.create(SPICY_SAUCE);
+        ContainerType sweetSauce = ContainerTypeFactory.create(SWEET_SAUCE);
+        ContainerType bagoong = ContainerTypeFactory.create(BAGOONG);
+        ContainerType salt = ContainerTypeFactory.create(SALT);
 
         // Add trashCan asset
         TrashBin trashBin = new TrashBin(
@@ -430,65 +257,73 @@ public class CookingInaMain extends GameApplication {
             uc.spawnPaperTray(tray, pos[0], pos[1], pos[2], pos[3]);
         }
 
-        uc.spawnContainerForEquipment(quekquek, fryers, 870, 980, 190, 120);
-        uc.spawnContainerForEquipment(hotdog, fryers, 1080, 980, 190, 120);
-        uc.spawnContainerForEquipment(tempura, fryers, 650, 980, 190, 120);
-        uc.spawnContainerForEquipment(mango, mangoTrays, 1630, 720, 270, 250);
+        uc.spawnContainerForEquipment((Food) quekquekFood, fryers, 870, 980, 190, 120);
+        uc.spawnContainerForEquipment((Food) hotdogFood, fryers, 1080, 980, 190, 120);
+        uc.spawnContainerForEquipment((Food) tempuraFood, fryers, 650, 980, 190, 120);
+        uc.spawnContainerForEquipment((Food) mangoBasket, mangoTrays, 1630, 720, 270, 250);
 
         //DISPENSER EQUIPMENT
-        uc.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
-        uc.spawnEquipment(bukoDispenser, 130, 400, 150, 340);
-        uc.spawnEquipment(orangeDispenser, 30, 500, 150, 340);
+        uc.spawnEquipment((Equipment) calamansiDispenser, 230, 300, 150, 340);
+        uc.spawnEquipment((Equipment) bukoDispenser, 130, 400, 150, 340);
+        uc.spawnEquipment((Equipment) orangeDispenser, 30, 500, 150, 340);
         uc.spawnTrashCan(100,950);
 
         //DISPENSER INVISIBLE
-        uc.spawnInvisibleEquipment(calamansiDispenser, 230, 300, 150, 340);
-        uc.spawnInvisibleEquipment(bukoDispenser, 130, 400, 150, 340);
-        uc.spawnInvisibleEquipment(orangeDispenser, 30, 500, 150, 340);
+        uc.spawnInvisibleEquipment((BeverageDispenser) calamansiDispenser, 230, 300, 150, 340);
+        uc.spawnInvisibleEquipment((BeverageDispenser) bukoDispenser, 130, 400, 150, 340);
+        uc.spawnInvisibleEquipment((BeverageDispenser) orangeDispenser, 30, 500, 150, 340);
 
         //CONTAINER
-        uc.spawnContainer(cucumberContainer, 1340, 720, 130, 100);
-        uc.spawnContainer(gusoContainer, 1390, 820, 140, 110);
-        uc.spawnContainer(spicySauce, 1270, 460, 60, 160);
-        uc.spawnContainer(sweetSauce, 1330, 550, 60, 160);
-        uc.spawnContainer(bagoong, 1500, 650, 54, 100);
-        uc.spawnContainer(salt, 1550, 720, 54, 100);
+        uc.spawnContainer((Food) cucumberFood, 1340, 720, 130, 100);
+        uc.spawnContainer((Food) gusoFood, 1390, 820, 140, 110);
+        uc.spawnContainer((Food) spicySauce, 1270, 460, 60, 160);
+        uc.spawnContainer((Food) sweetSauce, 1330, 550, 60, 160);
+        uc.spawnContainer((Food) bagoong, 1500, 650, 54, 100);
+        uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
     }
     private void resetGameState() {
-        // Reset any scores, timers, or game state variables
-        FXGL.getWorldProperties().setValue("score", 0);
+        // Clear all entities
+        FXGL.getGameWorld().getEntitiesCopy().forEach(Entity::removeFromWorld);
 
-        if (timerTimeline != null) {
-            timerTimeline.stop();
-        }
+        // Reset game world properties
+        FXGL.getWorldProperties().setValue("score", 0);
+        FXGL.getWorldProperties().setValue("income", 0);
+
+        // Clear equipment lists
+        fryers.clear();
+        paperTrays.clear();
+        mangoTrays.clear();
+
+        // Reset UI controller
+        uc = new UIController();
+        // Flag game state
+        isGameActive = false;
     }
 
 
     private void startTimer() {
-        // Configure your bar
+        isGameActive = true;
 
-        // Build a Timeline that fires every 1 second
-        timerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            // Step the bar by +1 each second
-            double next = timerBar.getCurrentValue() + 1;
-            timerBar.setCurrentValue(next);
-        }));
+        FXGL.getGameTimer().runAtInterval(() -> {
+            if (isGameActive) {
+                double next = timerBar.getCurrentValue() + 1;
+                timerBar.setCurrentValue(next);
 
-        // After 60 ticks (i.e. bar reaches 60) stop and end game
-        timerTimeline.setCycleCount((int) TOTAL_TIME);
-        timerTimeline.setOnFinished(e -> endGame());
-
-        // Start ticking
-        timerTimeline.play();
+                if (next >= TOTAL_TIME) {
+                    endGame();
+                }
+            }
+        }, Duration.seconds(1));
     }
 
     private void endGame() {
-        if (timerTimeline != null) {
-            timerTimeline.stop();
-        }
+        isGameActive = false;
 
         // Show game over menu
         FXGL.getSceneService().pushSubScene(new GameOverMenu());
+
+        // Full reset
+        resetGameState();
 
         // Optional: Pause the game engine if needed
         FXGL.getGameController().pauseEngine();

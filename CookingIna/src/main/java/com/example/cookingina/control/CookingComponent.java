@@ -7,7 +7,6 @@ import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.objects.entity.Equipment;
 import com.example.cookingina.objects.entity.StoreItem;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -18,7 +17,7 @@ public class CookingComponent extends Component {
     private State state = State.RAW;
     private double timer;
     private final double totalTime;
-    private final StoreItem cookedStoreItem;
+    private final StoreItem storeItem;
     private final Equipment equipment;
     private ProgressBar progressBar;
     private boolean isCooked = false;
@@ -30,10 +29,10 @@ public class CookingComponent extends Component {
 
     private static int juiceCount = 0; // Keeps track of no. of juices
 
-    public CookingComponent(double preparationTime, StoreItem cookedStoreItem, Equipment equipment ) {
+    public CookingComponent(double preparationTime, StoreItem storeItem, Equipment equipment ) {
         this.totalTime = preparationTime;
         this.timer = preparationTime;
-        this.cookedStoreItem = cookedStoreItem;
+        this.storeItem = storeItem;
         this.equipment = equipment;
         slotIndex = 0;
     }
@@ -80,7 +79,7 @@ public class CookingComponent extends Component {
             isCooked = true;
             entity.getViewComponent().removeChild(progressBar);
             entity.getViewComponent().clearChildren();
-            uc.spawnCookedIngredient(cookedStoreItem,equipment, position.getX(), position.getY());
+            uc.spawnReadyIngredient(storeItem,equipment, position.getX(), position.getY());
 
             // Attempt placement onto tray or trash immediately
             boolean placed = handleClickListener();
