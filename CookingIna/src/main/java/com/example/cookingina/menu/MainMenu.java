@@ -9,6 +9,8 @@ import javafx.geometry.Pos;
 import com.almasb.fxgl.dsl.FXGL;
 import com.example.cookingina.CookingInaMain;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -49,12 +51,23 @@ public class MainMenu extends FXGLMenu {
         });
 
         VBox vbox = new VBox(20, btnPlay, btnExit);
-        vbox.setTranslateX(getAppWidth() / 2.0 - 100);
-        vbox.setTranslateY(getAppHeight() / 2.0 - 80);
         vbox.setAlignment(Pos.CENTER);
 
-        getContentRoot().getChildren().add(vbox);
+        // Add it to the root pane:
+        Pane root = getContentRoot();
+        root.getChildren().add(vbox);
 
+        // Bind the VBox’s layout so it’s always centered in 'root':
+        vbox.layoutXProperty().bind(
+                root.widthProperty()
+                        .subtract(vbox.widthProperty())
+                        .divide(2)
+        );
+        vbox.layoutYProperty().bind(
+                root.heightProperty()
+                        .subtract(vbox.heightProperty())
+                        .divide(2)
+        );
     }
 
 
