@@ -166,7 +166,7 @@ public class PaperTrayComponent extends Component {
             case "cooked_quekquek": return 10;
             case "cooked_hotdog":   return 15;
             case "cooked_tempura":  return 12;
-            case "mango_ready": return 8;
+            case "mango_ready":     return 8;
             default:                return 0;
         }
     }
@@ -177,7 +177,6 @@ public class PaperTrayComponent extends Component {
             case "cooked_quekquek.png": return "papertray_cooked_quekquek.png";
             case "cooked_hotdog.png":   return "papertray_cooked_hotdog.png";
             case "cooked_tempura.png":  return "papertray_cooked_tempura.png";
-            case "mango_ready.png":     return "papertray_mango_ready.png";
             default:                    return "papertray.png";
         }
     }

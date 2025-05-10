@@ -127,7 +127,7 @@ public class UIController extends Component {
 
     public void spawnReadyIngredient(StoreItem item, Equipment equipment, double x, double y) {
         Entity entity;
-        if (item.getIsJuice()) {
+        if (item.getIsJuice() ) {
             if (juiceTray.size() < MAX_JUICE_ON_TRAY) {
                 entity = spawnJuiceEntity(item, equipment, x, y);
                 juiceTray.add(entity);
@@ -141,8 +141,8 @@ public class UIController extends Component {
                     .zIndex(50)
                     .viewWithBBox(FXGL.texture(item.getCookedResource(), item.getWidth(), item.getHeight()))
                     .with(new DraggableComponent())
-                    .with(new CollidableComponent(true))
                     .with(new StoreItemComponent(item))
+                    .with(new OrderComponent(equipment))
                     .buildAndAttach();
         }
 
@@ -153,7 +153,6 @@ public class UIController extends Component {
                     .zIndex(50)
                     .viewWithBBox(FXGL.texture(item.getCookedResource(), item.getWidth(), item.getHeight()))
                     .with(new DraggableComponent())
-                    .with(new CollidableComponent(true))
                     .with(new OvercookComponent(item, equipment))
                     .with(new StoreItemComponent(item))
                     .buildAndAttach();
