@@ -185,6 +185,7 @@ public class UIController extends Component {
                 )
                 .with(new DraggableComponent())
                 .with(new CollidableComponent(true))
+                .with(new OrderComponent(equipment))
                 .buildAndAttach();
 
 

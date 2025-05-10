@@ -11,6 +11,7 @@ import customers.CustomerComponent;
 import customers.Order;
 import customers.SpeechBubbleComponent;
 import javafx.geometry.Point2D;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import java.util.Iterator;
@@ -98,6 +99,9 @@ public class OrderComponent extends Component {
     private int getPrice(String itemName) {
         switch (itemName) {
             case "mango_ready":
+            case "calamansiJuice_finishedProduct":
+            case "bukoJuice_finishedProduct":
+            case "orangeJuice_finishedProduct":
                 return 15;
             default:
                 return 0;
@@ -105,6 +109,14 @@ public class OrderComponent extends Component {
     }
 
     private String getServedItemFromTexture() {
-        return "mango_ready";
+        ImageView iv = (ImageView) entity.getViewComponent().getChildren().get(0);
+        String url = iv.getImage().getUrl();
+
+        if (url.contains("calamansiJuice_finishedProduct"))     return "calamansiJuice_finishedProduct";
+        if (url.contains("bukoJuice_finishedProduct"))          return "bukoJuice_finishedProduct";
+        if (url.contains("orangeJuice_finishedProduct"))        return "orangeJuice_finishedProduct";
+        if (url.contains("mango_ready"))                        return "mango_ready";
+
+        return "";
     }
 }

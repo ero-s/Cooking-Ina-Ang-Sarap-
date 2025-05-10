@@ -10,7 +10,7 @@ import java.util.Random;
  */
 public class OrderFactory {
 
-    private static final String[] MENU_ITEMS = {"cooked_hotdog", "cooked_quekquek", "cooked_tempura", "mango_ready"};
+    private static final String[] MENU_ITEMS = {"cooked_hotdog", "cooked_quekquek", "cooked_tempura", "mango_ready", "calamnsiJuice_finishedProduct","bukoJuice_finishedProduct","orangeJuice_finishedProduct"};
     private static final int MAX_QUANTITY = 3;
     private static final int MAX_ORDERS_PER_CUSTOMER = 3;
     private static final Random RANDOM = new Random();
