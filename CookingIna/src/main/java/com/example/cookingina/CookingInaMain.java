@@ -59,6 +59,7 @@ public class CookingInaMain extends GameApplication {
     private Timeline timerTimeline;
     private static final double TOTAL_TIME = 300; // seconds
     public static final double MAX_QUOTA = 100.0; // seconds
+    private static final int MAX_CUSTOMERS = 10;
 
     @Override
     public void initUI() {
@@ -302,9 +303,12 @@ public class CookingInaMain extends GameApplication {
         uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
     }
     private void resetGameState() {
-        // Clear all entities
-        FXGL.getGameWorld().getEntitiesCopy().forEach(Entity::removeFromWorld);
+        // Clear all existing entities
+        FXGL.getGameWorld()
+                .getEntitiesCopy()
+                .forEach(Entity::removeFromWorld);
 
+        // Reset income
         FXGL.getWorldProperties().setValue("income", 0);
 
         // Clear equipment lists
@@ -312,9 +316,11 @@ public class CookingInaMain extends GameApplication {
         paperTrays.clear();
         mangoTrays.clear();
 
-        // Reset UI controller
+        // **NEW**: clear the customer list so spawning picks up again
+        UIController.components.clear();
+
+        // Re-create your UI controller
         uc = new UIController();
-        // Flag game state
     }
 
 
