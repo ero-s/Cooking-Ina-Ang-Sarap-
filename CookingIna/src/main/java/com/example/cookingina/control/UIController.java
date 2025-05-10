@@ -14,8 +14,6 @@ import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.equipment.MangoTray;
-import com.example.cookingina.objects.entity.storeItem.Calamansi_Juice;
-import com.example.cookingina.objects.entity.storeItem.QuekQuek;
 import customers.CustomerComponent;
 import customers.Order;
 import customers.SpeechBubbleComponent;
@@ -257,7 +255,7 @@ public class UIController extends Component {
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(x, y)
                 .zIndex(-1)
-                .viewWithBBox(FXGL.texture(container.getRawResource(), width, height))
+                .viewWithBBox(FXGL.texture(container.getContainerResource(), width, height))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
@@ -265,7 +263,7 @@ public class UIController extends Component {
         container.setLayoutY((int) y);
     }
 
-    public void spawnInvisibleEquipment(Equipment equipment, double x, double y, int width, int height) {
+    public void spawnInvisibleEquipment(BeverageDispenser dispenser, double x, double y, int width, int height) {
         Entity invisibleEntity = FXGL.entityBuilder()
                 .at(x, y)
                 .zIndex(100)
@@ -274,7 +272,7 @@ public class UIController extends Component {
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
-        Texture texture = FXGL.texture(equipment.getEmptyResource());
+        Texture texture = FXGL.texture(dispenser.getEmptyResource());
         texture.setOpacity(0.01);
         invisibleEntity.getViewComponent().addChild(texture);
 

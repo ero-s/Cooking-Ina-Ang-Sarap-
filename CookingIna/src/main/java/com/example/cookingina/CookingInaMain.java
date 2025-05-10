@@ -20,10 +20,7 @@ import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.equipment.MangoTray;
 import com.example.cookingina.objects.entity.equipment.TrashBin;
-import com.example.cookingina.objects.entity.storeItem.Hotdog;
 import com.example.cookingina.objects.entity.storeItem.Mango;
-import com.example.cookingina.objects.entity.storeItem.QuekQuek;
-import com.example.cookingina.objects.entity.storeItem.Tempura;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
@@ -197,15 +194,15 @@ public class CookingInaMain extends GameApplication {
         uc = new UIController();
         for(int i = 1; i <= 6; i++){
             fryers.add(new Fryer(
-                    "frying_pan.png",                         // name
-                    "usedPan.png",
-                    i,                                              // type (e.g., 1 = cooking equipment)
-                    0,                                              // playend (initial value)
-                    1.5,                                            // speedMultiplier (50% faster cooking)
-                    500.0,                                          // cost ($500)
-                    1,                                              // capacity (4 items at once)
-                    false,                                          // isUnlocked (initially locked)
-                    "A standard fryer for basic cooking needs"    // description);
+               "frying_pan.png",
+               "usedPan.png",
+               i,
+                    0,
+                    1.5,
+                    500.0,
+                    1,
+                    false,
+                    "A standard fryer for basic cooking needs"
             ));
         }
 
@@ -234,58 +231,6 @@ public class CookingInaMain extends GameApplication {
         uc.setFryers(fryers);
 // ================= SELLING ITEMS ENTITTY =================
         uc.spawnCustomerAtRandomIntervals();
-
-        QuekQuek quekquek = new QuekQuek(
-                "rawQuekquek_container.png",
-                "rawQuekquek.png",                      // raw resource identifier
-                "cooked_quek-quek.png",                          // cooked resource
-                "quekquek",                                         // description
-                15.0,                                           // preparationTime (minutes)
-                12.99,                                          // sellingPrice ($)
-                2.0,                                            // discardCost ($)
-                1,
-                80,
-                80
-        );                                             // status (1 = available)
-
-        Hotdog hotdog = new Hotdog(
-                "rawHotdog_container.png",
-                "rawHotdog.png",
-                "rawHotdog.png",
-                "hotdog",
-                15.0,
-                15.00,
-                3.0,
-                1,
-                80,
-                80
-        );
-
-        Tempura tempura = new Tempura(
-                "rawTempura_container.png",
-                "raw_tempura.png",
-                "cooked_tempura.png",
-                "tempura",
-                10.0,
-                5.0,
-                3.0,
-                1,
-                80,
-                80
-        );
-
-        Mango mango = new Mango(
-                "manga_basket.png",
-                "raw_mango.png",
-                "mango_ready.png",
-                "mango",
-                5.0,
-                30.0,
-                20.0,
-                1,
-                120,
-                120
-        );
 // ================= CONTAINER ENTITY =================
         BeverageDispenser orangeDispenser = BeverageFactory.create(ORANGE_JUICE);
         BeverageDispenser calamansiDispenser = BeverageFactory.create(CALAMANSI_JUICE);
@@ -301,22 +246,6 @@ public class CookingInaMain extends GameApplication {
         Container sweetSauce = ContainerFactory.create(SWEET_SAUCE);
         Container bagoong = ContainerFactory.create(BAGOONG);
         Container salt = ContainerFactory.create(SALT);
-
-        for(Fryer fryer : fryers){
-            if(fryer.getType() == 1){
-                uc.spawnEquipment(fryer, 1035, 490, 180, 130);
-            } else if (fryer.getType() == 2){
-                uc.spawnEquipment(fryer, 895, 490, 180, 130);
-            } else if (fryer.getType() == 3){
-                uc.spawnEquipment(fryer, 755, 490, 180, 130);
-            } else if (fryer.getType() == 4) {
-                uc.spawnEquipment(fryer, 1045, 590, 175, 130);
-            } else if (fryer.getType() == 5){
-                uc.spawnEquipment(fryer, 895, 590, 175, 130);
-            } else {
-                uc.spawnEquipment(fryer, 745, 590, 175, 130);
-            }
-        }
 
         for(int i = 0; i < 6; i++){
             PaperTray paperTray = paperTrays.get(i);
@@ -388,6 +317,9 @@ public class CookingInaMain extends GameApplication {
 
         uc.spawnContainerForEquipment(quekquekContainer, fryers, 870, 980, 190, 120);
         uc.spawnContainerForEquipment(hotdogContainer, fryers, 1080, 980, 190, 120);
+        uc.spawnContainerForEquipment(tempuraContainer, fryers, 650, 980, 190, 120);
+        uc.spawnContainerForEquipment(mangoBasket, mangoTrays, 1630, 720, 270, 250);
+
         //DISPENSER EQUIPMENT
         uc.spawnEquipment(calamansiDispenser, 230, 300, 150, 340);
         uc.spawnEquipment(bukoDispenser, 130, 400, 150, 340);
