@@ -11,12 +11,13 @@ import com.almasb.fxgl.texture.Texture;
 import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.control.UIController;
 
+import com.example.cookingina.menu.GameOverMenu;
+import com.example.cookingina.menu.MainMenu;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.equipment.MangoTray;
 import com.example.cookingina.objects.entity.equipment.TrashBin;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
 import javafx.scene.input.KeyCode;
@@ -41,6 +42,7 @@ public class CookingInaMain extends GameApplication {
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
+    private boolean isGameActive = false;
     public UIController uc = new UIController();
 
 
@@ -57,41 +59,10 @@ public class CookingInaMain extends GameApplication {
     public static Text debugText;
     private ProgressBar timerBar;
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 60.0; // seconds
-
-//    @Override
-//    protected void initUI() {
-//        // Create debug text element
-//        debugText = new Text();
-//        debugText.setFont(Font.font(14));
-//        debugText.setFill(Color.WHITE);
-//        debugText.setTranslateX(10);
-//        debugText.setTranslateY(20);
-//        setProgressBar();
-//
-//        // Add to game scene
-//        FXGL.getGameScene().addUINode(debugText);
-//
-//        ProgressBar incomeBar = new ProgressBar();
-//        incomeBar.setWidth(200);
-//        incomeBar.setHeight(20);
-//        incomeBar.setTranslateX(getAppWidth() - 220); // 20px from right edge
-//        incomeBar.setTranslateY(20);                 // 20px from top
-//
-//        // Assume you have a “goal” or “level target” constant:
-//        int levelTarget = 100;
-//
-//        // Bind progress to income / levelTarget
-//        DoubleBinding progressBinding = FXGL.getWorldProperties()
-//                .intProperty("income")
-//                .divide((double) levelTarget);
-//        incomeBar.currentValueProperty().bind(progressBinding);
-//        // Add to UI
-//        FXGL.getGameScene().addUINode(incomeBar);
-//    }
+    private static final double TOTAL_TIME = 10.0; // seconds
 
     @Override
-    protected void initUI() {
+    public void initUI() {
         // Create debug text element
         debugText = new Text();
         debugText.setFont(Font.font(14));
@@ -236,23 +207,6 @@ public class CookingInaMain extends GameApplication {
         ContainerType bagoong = ContainerTypeFactory.create(BAGOONG);
         ContainerType salt = ContainerTypeFactory.create(SALT);
 
-        for(int i = 0; i < 6; i++){
-            PaperTray paperTray = paperTrays.get(i);
-            if(i == 0){
-                uc.spawnPaperTray(paperTray, 1090, 750, 180, 130);
-            }else if(i == 1){
-                uc.spawnPaperTray(paperTray, 895, 750, 180, 130);
-            }else if(i == 2){
-                uc.spawnPaperTray(paperTray, 695, 750, 180, 130);
-            }else if(i == 3){
-                uc.spawnPaperTray(paperTray, 1090, 840, 175, 130);
-            }else if(i == 4){
-                uc.spawnPaperTray(paperTray, 895, 840, 175, 130);
-            }else {
-                uc.spawnPaperTray(paperTray, 695, 840, 175, 130);
-            }
-        }
-
         // Add trashCan asset
         TrashBin trashBin = new TrashBin(
                 "trash_closed.png",                         // name
@@ -329,40 +283,48 @@ public class CookingInaMain extends GameApplication {
         uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
     }
     private void resetGameState() {
-        // Reset any scores, timers, or game state variables
-        FXGL.getWorldProperties().setValue("score", 0);
+        // Clear all entities
+        FXGL.getGameWorld().getEntitiesCopy().forEach(Entity::removeFromWorld);
 
-        if (timerTimeline != null) {
-            timerTimeline.stop();
-        }
+        // Reset game world properties
+        FXGL.getWorldProperties().setValue("score", 0);
+        FXGL.getWorldProperties().setValue("income", 0);
+
+        // Clear equipment lists
+        fryers.clear();
+        paperTrays.clear();
+        mangoTrays.clear();
+
+        // Reset UI controller
+        uc = new UIController();
+        // Flag game state
+        isGameActive = false;
     }
 
 
     private void startTimer() {
-        // Configure your bar
+        isGameActive = true;
 
-        // Build a Timeline that fires every 1 second
-        timerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            // Step the bar by +1 each second
-            double next = timerBar.getCurrentValue() + 1;
-            timerBar.setCurrentValue(next);
-        }));
+        FXGL.getGameTimer().runAtInterval(() -> {
+            if (isGameActive) {
+                double next = timerBar.getCurrentValue() + 1;
+                timerBar.setCurrentValue(next);
 
-        // After 60 ticks (i.e. bar reaches 60) stop and end game
-        timerTimeline.setCycleCount((int) TOTAL_TIME);
-        timerTimeline.setOnFinished(e -> endGame());
-
-        // Start ticking
-        timerTimeline.play();
+                if (next >= TOTAL_TIME) {
+                    endGame();
+                }
+            }
+        }, Duration.seconds(1));
     }
 
     private void endGame() {
-        if (timerTimeline != null) {
-            timerTimeline.stop();
-        }
+        isGameActive = false;
 
         // Show game over menu
         FXGL.getSceneService().pushSubScene(new GameOverMenu());
+
+        // Full reset
+        resetGameState();
 
         // Optional: Pause the game engine if needed
         FXGL.getGameController().pauseEngine();

@@ -9,7 +9,6 @@ import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.CookingInaMain;
-import com.example.cookingina.WaitingItem;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
@@ -35,7 +34,6 @@ public class UIController extends Component {
 
     private static final int MAX_JUICE_ON_TRAY = 3;
     private static final List<Entity> juiceTray = new ArrayList<>();
-    private static final Queue<WaitingItem> waitingJuiceQueue = new LinkedList<>();
 
     private final List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
@@ -135,8 +133,6 @@ public class UIController extends Component {
                 juiceTray.add(entity);
             } else {
                 entity = null;
-                System.out.println("Juice tray full! Adding juice to waiting queue.");
-                waitingJuiceQueue.add(new WaitingItem(item, equipment, x, y, item.getWidth(), item.getHeight(), null));
             }
         } else {
             entity = entityBuilder()
@@ -199,7 +195,6 @@ public class UIController extends Component {
                 // Remove from world & tray
                 juice.removeFromWorld();
                 juiceTray.remove(juice);
-                checkJuiceQueue();
             } else {
                 // Snap back home
                 juice.setPosition(homeX, homeY);
@@ -209,15 +204,6 @@ public class UIController extends Component {
         });
 
         return juice;
-    }
-
-
-    private void checkJuiceQueue() {
-        if (juiceTray.size() < MAX_JUICE_ON_TRAY && !waitingJuiceQueue.isEmpty()) {
-            WaitingItem next = waitingJuiceQueue.poll();
-            Entity juice = this.spawnJuiceEntity(next.item, next.equipment, next.x, next.y);
-            juiceTray.add(juice);
-        }
     }
 
     public void spawnEquipment(Equipment equipment, double x, double y, int width, int height) {

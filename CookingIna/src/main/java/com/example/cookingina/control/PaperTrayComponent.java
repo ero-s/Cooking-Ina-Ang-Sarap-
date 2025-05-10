@@ -11,14 +11,9 @@ import com.example.cookingina.objects.entity.StoreItem;
 import customers.CustomerComponent;
 import customers.Order;
 import customers.SpeechBubbleComponent;
-import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.paint.Color;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
@@ -36,7 +31,6 @@ public class PaperTrayComponent extends Component {
 
     public PaperTrayComponent(PaperTray paperTray) {
         this.paperTray = paperTray;
-        this.isOccupied = false; // Default to unoccupied
     }
 
     @Override
@@ -57,6 +51,7 @@ public class PaperTrayComponent extends Component {
 
     @Override
     public void onUpdate(double tpf) {
+        // Only check for new items if no item is bound and texture hasn't been changed
         if (boundItem == null && !textureChanged) {
             FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.INGREDIENT).stream()
                     .filter(e -> e.isColliding(entity))
@@ -90,6 +85,7 @@ public class PaperTrayComponent extends Component {
             OvercookComponent oc = item.getComponent(OvercookComponent.class);
             oc.getEquipment().setOccupied(false);
         }
+
         FXGL.getGameWorld().removeEntity(item);
     }
 
@@ -101,8 +97,9 @@ public class PaperTrayComponent extends Component {
 
         StoreItem storeItem = item.getComponent(StoreItemComponent.class).getStoreItem();
 
+
         switch (storeItem.getName()) {
-            case "quekquek": return "assets/textures/papertray_quekquek.png";
+            case "quekquek": return "assets/textures/papertray_cooked_quekquek.png";
             case "hotdog": return "assets/textures/papertray_hotdog.png";
             case "tempura": return "assets/textures/papertray_tempura.png";
             case "calamansi_juice": return "assets/textures/papertray_calamansi_juice.png";
@@ -146,6 +143,7 @@ public class PaperTrayComponent extends Component {
                         speechBubble.markServed(servedItem);
                     }
 
+                    // Revert tray texture
                     resetTrayTexture();
                     setIsOccupied(false);
                     paperTray.setOccupied(false);
@@ -160,12 +158,10 @@ public class PaperTrayComponent extends Component {
             entity.setPosition(trayOriginalPos);
         }
 
-        // restore collidability
         if (collidableComponent != null) {
             entity.addComponent(collidableComponent);
         }
 
-        // remove bound item after a short delay
         FXGL.getGameTimer().runOnceAfter(() -> {
             if (boundItem != null) {
                 boundItem.removeFromWorld();
@@ -231,7 +227,7 @@ public class PaperTrayComponent extends Component {
 
     private void resetTrayTexture() {
         if (textureChanged) {
-            changeTrayTexture("/assets/textures/papertray.png");
+            changeTrayTexture("assets/textures/papertray.png");
             textureChanged = false;
         }
     }
