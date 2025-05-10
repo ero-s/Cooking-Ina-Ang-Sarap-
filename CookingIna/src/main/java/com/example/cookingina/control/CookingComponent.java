@@ -32,7 +32,7 @@ public class CookingComponent extends Component {
 
     public CookingComponent(double preparationTime, StoreItem cookedStoreItem, Equipment equipment ) {
         this.totalTime = preparationTime;
-        this.timer = preparationTime;
+        this.timer = 10;
         this.cookedStoreItem = cookedStoreItem;
         this.equipment = equipment;
         slotIndex = 0;

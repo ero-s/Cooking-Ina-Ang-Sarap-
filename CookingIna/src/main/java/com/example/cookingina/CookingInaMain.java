@@ -125,7 +125,6 @@ public class CookingInaMain extends GameApplication {
                 .addListener((obs, oldVal, newVal) -> {
                     incomeBar.setCurrentValue(newVal.doubleValue());
                 });
-
         FXGL.getGameScene().addUINode(incomeBar);
     }
 

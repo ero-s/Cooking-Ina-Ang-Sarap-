@@ -16,7 +16,7 @@ import javafx.scene.paint.Color;
 import java.util.Optional;
 
 public class OvercookComponent extends Component {
-    private static final double OVERCOOK_DURATION = 30.0;
+    private static final double OVERCOOK_DURATION = 10.0;
     private double remainingTime;
     private final StoreItem cookedStoreItem;
     private boolean isBurnt = false;
