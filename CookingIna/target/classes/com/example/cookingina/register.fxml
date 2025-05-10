@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane prefHeight="1000.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cookingina.RegisterController">
+<AnchorPane prefHeight="1000.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cookingina.RegisterScene">
    <children>
       <Button fx:id="btnRegister" layoutX="219.0" layoutY="777.0" mnemonicParsing="false" onAction="#onRegisterButtonClick" prefHeight="77.0" prefWidth="563.0" text="Register">
          <font>

@@ -3,10 +3,12 @@ package com.example.cookingina;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
+import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.Entity;
+import static com.almasb.fxgl.dsl.FXGL.*;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
 import com.almasb.fxgl.ui.ProgressBar;
@@ -25,6 +27,7 @@ import com.example.cookingina.objects.entity.storeItem.Tempura;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
+import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyCode;
@@ -130,12 +133,6 @@ public class CookingInaMain extends GameApplication {
         FXGL.getGameScene().addUINode(incomeBar);
     }
 
-    @Override
-    protected void initInput() {
-        FXGL.onKeyDown(KeyCode.F1, "Toggle debug", () -> {
-            debugText.setVisible(!debugText.isVisible());
-        });
-    }
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -145,21 +142,16 @@ public class CookingInaMain extends GameApplication {
         settings.setVersion("0.1");
         settings.setFullScreenAllowed(true);
         settings.setFullScreenFromStart(true);
-        settings.setMainMenuEnabled(true);
-
-
-
-        settings.setSceneFactory(new SceneFactory() {
-            @NotNull
-            @Override
-            public FXGLMenu newMainMenu() {
-                return new MainMenu();
-            }
-        });
+        settings.setMainMenuEnabled(false); // Show built-in main menu
     }
+
+
 
     @Override
     protected void initGame() {
+        Platform.runLater(() -> {
+            FXGL.getSceneService().pushSubScene(new LoginScene());
+        });
 
         for (Entity entity : FXGL.getGameWorld().getEntitiesCopy()) {
             entity.removeFromWorld();
@@ -170,6 +162,17 @@ public class CookingInaMain extends GameApplication {
         spawnAssets();
         startTimer();
     }
+
+//    @Override
+//    protected void initGame() {
+//        // Show splash image
+//        FXGL.getGameScene().setBackgroundColor(Color.BLACK);
+//        FXGL.getGameScene().getContentRoot().getChildren().setAll(new GameSplashScene().getContentRoot());
+//
+//        // After splash delay, show main menu
+//        FXGL.runOnce(() -> FXGL.getGameController().gotoMainMenu(), Duration.seconds(3.5));
+//    }
+
 
     @Override
     protected void initGameVars(Map<String, Object> vars) {
