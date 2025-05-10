@@ -134,7 +134,19 @@ public class UIController extends Component {
             } else {
                 entity = null;
             }
-        } else {
+        }else if(item.getName().equals("mango")){
+            entity = entityBuilder()
+                    .type(CookingInaMain.EntityType.INGREDIENT)
+                    .at(x, y)
+                    .zIndex(50)
+                    .viewWithBBox(FXGL.texture(item.getCookedResource(), item.getWidth(), item.getHeight()))
+                    .with(new DraggableComponent())
+                    .with(new CollidableComponent(true))
+                    .with(new StoreItemComponent(item))
+                    .buildAndAttach();
+        }
+
+        else{
             entity = entityBuilder()
                     .type(CookingInaMain.EntityType.INGREDIENT)
                     .at(x, y)

@@ -23,6 +23,7 @@ public class OvercookComponent extends Component {
     private final Equipment equipment;
     private ProgressBar progressBar;
     private boolean isPaused = false;
+    private boolean isServed = false;
     private boolean isDiscarded = false;
     private Point2D initialPosition;
 
@@ -151,5 +152,4 @@ public class OvercookComponent extends Component {
     public Equipment getEquipment() {
         return equipment;
     }
-
 }
