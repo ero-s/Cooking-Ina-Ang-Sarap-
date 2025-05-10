@@ -18,15 +18,10 @@ import customers.CustomerComponent;
 import customers.Order;
 import customers.SpeechBubbleComponent;
 import javafx.application.Platform;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.util.*;
@@ -60,7 +55,7 @@ public class UIController extends Component {
     }
 
     // Spawing Container and container item to the equipment
-    public void spawnContainerForEquipment(Container storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {
+    public void spawnContainerForEquipment(Food storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {
         entityBuilder()
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(containerX, containerY)
@@ -250,17 +245,17 @@ public class UIController extends Component {
 
     }
 
-    public void spawnContainer(Container container, double x, double y, int width, int height) {
+    public void spawnContainer(Food food, double x, double y, int width, int height) {
         FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(x, y)
                 .zIndex(-1)
-                .viewWithBBox(FXGL.texture(container.getContainerResource(), width, height))
+                .viewWithBBox(FXGL.texture(food.getContainerResource(), width, height))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
-        container.setLayoutX((int) x);
-        container.setLayoutY((int) y);
+        food.setLayoutX((int) x);
+        food.setLayoutY((int) y);
     }
 
     public void spawnInvisibleEquipment(BeverageDispenser dispenser, double x, double y, int width, int height) {

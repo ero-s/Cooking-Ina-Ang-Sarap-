@@ -1,16 +1,17 @@
 package com.example.cookingina.objects.entity;
 
-public class Container {
+public class Food implements ContainerType{
     private final StoreItem item;
     private final String containerResource;
     private int layoutX;
     private int layoutY;
 
-    public Container(StoreItem item, String containerResource) {
+    public Food(StoreItem item, String containerResource) {
         this.item = item;
         this.containerResource = containerResource;
         this.layoutX = 0;
         this.layoutY = 0;
+        item.setIsJuice(isJuice());
     }
 
     public StoreItem getItem() {
@@ -27,5 +28,10 @@ public class Container {
 
     public void setLayoutY(int layoutY) {
         this.layoutY = layoutY;
+    }
+
+    @Override
+    public boolean isJuice() {
+        return false;
     }
 }

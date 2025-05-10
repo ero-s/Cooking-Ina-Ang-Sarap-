@@ -10,15 +10,12 @@ public class StoreItem {
     private final int status;
     private final int height;
     private final int width;
-    private final boolean isJuice;
+    private boolean isJuice;
 
-
-
-    public StoreItem(String name, String rawResource, String cookedResource, boolean isJuice, Double preparationTime, Double sellingPrice, Double discardCost, int status, int height, int width) {
+    public StoreItem(String name, String rawResource, String cookedResource, Double preparationTime, Double sellingPrice, Double discardCost, int status, int height, int width) {
         this.name = name;
         this.rawResource = rawResource;
         this.cookedResource = cookedResource;
-        this.isJuice = isJuice;
         this.preparationTime = preparationTime;
         this.sellingPrice = sellingPrice;
         this.discardCost = discardCost;
@@ -36,7 +33,10 @@ public class StoreItem {
     public Double getPreparationTime() {
         return preparationTime;
     }
-    public boolean getIsJuice() {
+    public void setIsJuice(boolean isJuice){
+        this.isJuice = isJuice;
+    }
+    public boolean getIsJuice(){
         return isJuice;
     }
     public Double getSellingPrice() {
