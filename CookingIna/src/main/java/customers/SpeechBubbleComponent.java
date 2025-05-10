@@ -84,7 +84,7 @@ public class SpeechBubbleComponent extends Component {
         entity.getViewComponent().addChild(bubbleRoot);
         double bubbleW = bubbleRoot.getBoundsInLocal().getWidth();
         bubbleRoot.setTranslateX(-bubbleW / 2 + 50);
-        bubbleRoot.setTranslateY(-entity.getHeight() + 10);
+        bubbleRoot.setTranslateY(-entity.getHeight() + 5);
     }
 
     @Override
