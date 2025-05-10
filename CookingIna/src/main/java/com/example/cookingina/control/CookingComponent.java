@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 
-
 public class CookingComponent extends Component {
     private enum State { RAW, COOKED, OVERCOOKED }
     private State state = State.RAW;
@@ -21,107 +20,91 @@ public class CookingComponent extends Component {
     private final Equipment equipment;
     private ProgressBar progressBar;
     private boolean isCooked = false;
-    private boolean isPaused = false; // Flag to pause cooking
-    private boolean isDiscarded = false;
-    private int slotIndex;
+    private boolean isPaused = false;
     private Point2D position;
     private UIController uc = new UIController();
 
-    private static int juiceCount = 0; // Keeps track of no. of juices
-
-    public CookingComponent(double preparationTime, StoreItem storeItem, Equipment equipment ) {
+    public CookingComponent(double preparationTime, StoreItem storeItem, Equipment equipment) {
         this.totalTime = preparationTime;
         this.timer = preparationTime;
         this.storeItem = storeItem;
         this.equipment = equipment;
-        slotIndex = 0;
     }
 
     @Override
     public void onAdded() {
-        // Create and attach progress bar
+        // Set up progress bar
         progressBar = new ProgressBar();
         progressBar.setWidth(50);
         progressBar.setHeight(10);
-        progressBar.setTranslateY(-20); // Position above entity
-        progressBar.setTranslateX(-20); // Position above entity
+        progressBar.setTranslateY(-20);
+        progressBar.setTranslateX(-20);
         progressBar.setFill(Color.LIMEGREEN);
 
         entity.getViewComponent().addChild(progressBar);
         equipment.setOccupied(true);
 
-        // Store pan position to return later if needed
+        // Remember pan position
         position = new Point2D(entity.getX(), entity.getY());
 
-        // Add dragging capability
+        // Enable dragging and pause while dragging
         entity.addComponent(new DraggableComponent());
-
-        // Pause cooking when dragging starts
         entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_PRESSED, e -> isPaused = true);
-
-        // Handle drop
-        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
-            handleClickListener();
-        });
+        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, e -> handleClickListener());
     }
 
     @Override
     public void onUpdate(double tpf) {
-        if(isCooked || isPaused) return;
+        if (isCooked || isPaused) return;
         timer -= tpf;
 
-        double progress = totalTime - timer;
-        progressBar.setCurrentValue(progress);
+        // Update progress bar
+        progressBar.setCurrentValue(totalTime - timer);
         progressBar.setMinValue(0);
         progressBar.setMaxValue(totalTime);
 
         if (timer <= 0) {
             isCooked = true;
-            entity.getViewComponent().removeChild(progressBar);
             entity.getViewComponent().clearChildren();
-            uc.spawnReadyIngredient(storeItem,equipment, position.getX(), position.getY());
 
-            // Attempt placement onto tray or trash immediately
+            // Spawn ready item
+            uc.spawnReadyIngredient(storeItem, equipment, position.getX(), position.getY());
+
+            // Attempt immediate placement
             boolean placed = handleClickListener();
             if (!placed) {
-                // If not placed, return to pan
+                // Return to pan
                 entity.setPosition(position);
                 isPaused = false;
-                System.out.println("Returned to pan with cooked item.");
             }
         }
     }
 
     private boolean handleClickListener() {
-        boolean onTrash = FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.TRASH).stream()
+        boolean onTrash = FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.TRASH)
+                .stream()
                 .anyMatch(e -> e.getBoundingBoxComponent()
                         .isCollidingWith(entity.getBoundingBoxComponent()));
         if (onTrash) {
-            isDiscarded = true;
             equipment.setOccupied(false);
-            isCooked = false;
             entity.removeFromWorld();
-            System.out.println("Ingredient discarded in trash!");
-        } else {
-            // Snap back and continue (won't actually resume cooking since isCooked=true)
-            entity.setPosition(position);
-            isPaused = false;
-            System.out.println("Returned to pan area.");
             return true;
         }
+
+        // Snap back if not trash
+        entity.setPosition(position);
+        isPaused = false;
         return false;
     }
 
-    @Override
-    public void onRemoved() {
-        entity.getViewComponent().removeChild(progressBar);
-        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            entity.setPosition(position);
-        });
-        isCooked = false;
+    /**
+     * Returns whether the item is cooked. Used by OrderComponent removal filter.
+     */
+    public boolean isCooked() {
+        return isCooked;
     }
 
-    public boolean getIsCooked(){
-        return isCooked;
+    public Equipment getEquipment() {
+        return equipment;
     }
 }
