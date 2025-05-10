@@ -31,7 +31,7 @@ public class SpeechBubbleComponent extends Component {
 
     private Rectangle patienceBar;
     private double patience = 1.0; // from 1.0 (full) to 0.0 (empty)
-    private static final double DURATION_SECONDS = 20.0;
+    private static final double DURATION_SECONDS = 60.0;
     private long startTime;
     private int basePrice = 100; // Default base price, can be adjusted per customer
 
