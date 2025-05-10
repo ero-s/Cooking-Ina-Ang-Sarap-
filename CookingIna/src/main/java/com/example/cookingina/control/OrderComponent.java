@@ -102,6 +102,7 @@ public class OrderComponent extends Component {
             case "calamansiJuice_finishedProduct":
             case "bukoJuice_finishedProduct":
             case "orangeJuice_finishedProduct":
+            case "halo_halo":
                 return 15;
             default:
                 return 0;
@@ -116,6 +117,7 @@ public class OrderComponent extends Component {
         if (url.contains("bukoJuice_finishedProduct"))          return "bukoJuice_finishedProduct";
         if (url.contains("orangeJuice_finishedProduct"))        return "orangeJuice_finishedProduct";
         if (url.contains("mango_ready"))                        return "mango_ready";
+        if (url.contains("halo_halo"))                        return "halo_halo";
 
         return "";
     }

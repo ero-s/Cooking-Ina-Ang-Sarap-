@@ -12,6 +12,7 @@ import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
+import com.example.cookingina.objects.entity.equipment.IceCrusher;
 import com.example.cookingina.objects.entity.equipment.MangoTray;
 import customers.CustomerComponent;
 import customers.Order;
@@ -43,14 +44,13 @@ public class UIController extends Component {
 
     private static List<Fryer> fryers;
     private static List<MangoTray>  mangoTray;
+    private static List<IceCrusher>  iceCrusher;
 
     public void setFryers(List<Fryer> fryerList) {
         fryers = fryerList;
     }
-
-    public static void setMangoTray(List<MangoTray> mangoTrayList) {
-        mangoTray = mangoTrayList;
-    }
+    public static void setMangoTray(List<MangoTray> mangoTrayList) {mangoTray = mangoTrayList;}
+    public static void setIceCrusher(List<IceCrusher> iceCrusherList) {iceCrusher = iceCrusherList;}
 
     // Spawing Container and container item to the equipment
     public void spawnContainerForEquipment(Food storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {
@@ -121,7 +121,6 @@ public class UIController extends Component {
         ));
 
         setHighlight(ingredientEntity, x, y);
-
     }
 
 
@@ -144,9 +143,17 @@ public class UIController extends Component {
                     .with(new StoreItemComponent(item))
                     .with(new OrderComponent(equipment))
                     .buildAndAttach();
-        }
-
-        else{
+        }else if(item.getName().equals("halo-halo")){
+            entity = entityBuilder()
+                    .type(CookingInaMain.EntityType.INGREDIENT)
+                    .at(x, y)
+                    .zIndex(50)
+                    .viewWithBBox(FXGL.texture(item.getCookedResource(), item.getWidth(), item.getHeight()))
+                    .with(new DraggableComponent())
+                    .with(new StoreItemComponent(item))
+                    .with(new OrderComponent(equipment))
+                    .buildAndAttach();
+        }else{
             entity = entityBuilder()
                     .type(CookingInaMain.EntityType.INGREDIENT)
                     .at(x, y)

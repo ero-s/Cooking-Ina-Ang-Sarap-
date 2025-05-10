@@ -5,7 +5,7 @@ import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 public class ContainerTypeFactory {
 
     public enum TYPE {
-        HOTDOG, QUEKQUEK, TEMPURA, CUCUMBER, GUSO, SPICY_SAUCE, SWEET_SAUCE, MANGO, BAGOONG, ORANGE_JUICE, CALAMANSI_JUICE, BUKO_JUICE, SALT
+        HOTDOG, QUEKQUEK, TEMPURA, CUCUMBER, GUSO, SPICY_SAUCE, SWEET_SAUCE, MANGO, BAGOONG, ORANGE_JUICE, CALAMANSI_JUICE, BUKO_JUICE, SALT, HALO_HALO
     }
 
     public static ContainerType create(TYPE type) {
@@ -69,6 +69,18 @@ public class ContainerTypeFactory {
                         1,
                         120,
                         120) , "manga_basket.png");
+            case HALO_HALO: // DONE
+                return new Food(new StoreItem(
+                        "halo-halo",
+                        "glass_with_ice.png",
+                        "halo_halo.png",
+                        "halo_halo.png",
+                        5.0,
+                        30.0,
+                        20.0,
+                        1,
+                        120,
+                        120) , "ice_crusher.png");
             case BAGOONG:
                 return new Food(new StoreItem("bagoong","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",15.0,12.99, 2.0, 1 ,80, 80),"hipon_bottle.png");
             case SALT:
