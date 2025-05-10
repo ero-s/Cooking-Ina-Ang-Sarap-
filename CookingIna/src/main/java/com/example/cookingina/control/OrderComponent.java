@@ -59,7 +59,6 @@ public class OrderComponent extends Component {
                         .stream()
                         .filter(e -> e.getComponent(CookingComponent.class).getEquipment() == equipment)
                         .forEach(Entity::removeFromWorld);
-
                 break;
             }
         }

@@ -36,7 +36,7 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
 
 public class CookingInaMain extends GameApplication {
-    private int currentPlayerLevel = 1;
+    private int currentPlayerLevel = 10;
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
@@ -44,7 +44,6 @@ public class CookingInaMain extends GameApplication {
     private boolean isGameActive = false;
     private final List<IceCrusher> ice_Crusher = new ArrayList<>();
     public UIController uc = new UIController();
-
 
     public enum EntityType {
         INGREDIENT,
@@ -303,6 +302,7 @@ public class CookingInaMain extends GameApplication {
         ContainerType gusoFood = ContainerTypeFactory.create(GUSO);
         ContainerType spicySauce = ContainerTypeFactory.create(SPICY_SAUCE);
         ContainerType sweetSauce = ContainerTypeFactory.create(SWEET_SAUCE);
+        ContainerType glass_tbl = ContainerTypeFactory.create(GLASS_TABLE);
 
         ContainerType hotdogFood = ContainerTypeFactory.create(HOTDOG);
         allStoreItems.add(hotdogFood.getItem());
@@ -311,11 +311,27 @@ public class CookingInaMain extends GameApplication {
             uc.spawnContainerForEquipment((Food) hotdogFood, fryers, 1080, 980, 190, 120);
         }
 
+        ContainerType calamansiDispenser = ContainerTypeFactory.create(CALAMANSI_JUICE);
+        allStoreItems.add(calamansiDispenser.getItem());
+        calamansiDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (calamansiDispenser.getItem().getIsAvailable()) {
+            uc.spawnInvisibleEquipment((BeverageDispenser) calamansiDispenser, 230, 300, 150, 340);
+            uc.spawnEquipment((Equipment) calamansiDispenser, 230, 300, 150, 340);
+        }
+
+        ContainerType bukoDispenser = ContainerTypeFactory.create(BUKO_JUICE);
+        allStoreItems.add(bukoDispenser.getItem());
+        bukoDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (bukoDispenser.getItem().getIsAvailable()) {
+            uc.spawnInvisibleEquipment((BeverageDispenser) bukoDispenser, 30, 500, 150, 340);
+            uc.spawnEquipment((Equipment) bukoDispenser, 130, 400, 150, 340);
+        }
+
         ContainerType orangeDispenser = ContainerTypeFactory.create(ORANGE_JUICE);
         allStoreItems.add(orangeDispenser.getItem());
         orangeDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
         if (orangeDispenser.getItem().getIsAvailable()) {
-            uc.spawnInvisibleEquipment((BeverageDispenser) orangeDispenser, 30, 500, 150, 340);
+            uc.spawnInvisibleEquipment((BeverageDispenser) orangeDispenser, 130, 400, 150, 340);
             uc.spawnEquipment((Equipment) orangeDispenser, 30, 500, 150, 340);
         }
 
@@ -326,14 +342,6 @@ public class CookingInaMain extends GameApplication {
             uc.spawnContainerForEquipment((Food) quekquekFood, fryers, 870, 980, 190, 120);
         }
 
-        ContainerType bukoDispenser = ContainerTypeFactory.create(BUKO_JUICE);
-        allStoreItems.add(bukoDispenser.getItem());
-        bukoDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
-        if (bukoDispenser.getItem().getIsAvailable()) {
-            uc.spawnInvisibleEquipment((BeverageDispenser) bukoDispenser, 130, 400, 150, 340);
-            uc.spawnEquipment((Equipment) bukoDispenser, 130, 400, 150, 340);
-        }
-
         ContainerType tempuraFood = ContainerTypeFactory.create(TEMPURA);
         allStoreItems.add(tempuraFood.getItem());
         tempuraFood.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
@@ -341,12 +349,10 @@ public class CookingInaMain extends GameApplication {
             uc.spawnContainerForEquipment((Food) tempuraFood, fryers, 650, 980, 190, 120);
         }
 
-        ContainerType calamansiDispenser = ContainerTypeFactory.create(CALAMANSI_JUICE);
-        allStoreItems.add(calamansiDispenser.getItem());
-        calamansiDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
-        if (calamansiDispenser.getItem().getIsAvailable()) {
-            uc.spawnInvisibleEquipment((BeverageDispenser) calamansiDispenser, 230, 300, 150, 340);
-            uc.spawnEquipment((Equipment) calamansiDispenser, 230, 300, 150, 340);
+        allStoreItems.add(glass_tbl.getItem());
+        glass_tbl.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (glass_tbl.getItem().getIsAvailable()) {
+            uc.spawnContainer((Food) glass_tbl, 1520, 385, 400, 500);
         }
 
         ContainerType mangoBasket = ContainerTypeFactory.create(MANGO);
@@ -453,11 +459,11 @@ public class CookingInaMain extends GameApplication {
         // Timer progress bar
         timerBar = new ProgressBar();
         timerBar.setWidth(800);
-        timerBar.setHeight(40);
+        timerBar.setHeight(30);
 
         // Center horizontally
         timerBar.setTranslateX((FXGL.getAppWidth()-800)/2.0);
-        timerBar.setTranslateY(40);
+        timerBar.setTranslateY(20);
 
         timerBar.setCurrentValue(0);
         timerBar.setMinValue(0);
