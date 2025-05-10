@@ -11,9 +11,12 @@ public class StoreItem {
     private final int status;
     private final int height;
     private final int width;
+    private final int unlockLevel;
+    private boolean isAvailable;
     private boolean isJuice;
 
-    public StoreItem(String name, String rawResource, String cookedResource, String burntResource, Double preparationTime, Double sellingPrice, Double discardCost, int status, int height, int width) {
+
+    public StoreItem(String name, String rawResource, String cookedResource, Double preparationTime, Double sellingPrice, Double discardCost, int height, int width, int unlockLevel) {
         this.name = name;
         this.rawResource = rawResource;
         this.cookedResource = cookedResource;
@@ -21,10 +24,12 @@ public class StoreItem {
         this.preparationTime = preparationTime;
         this.sellingPrice = sellingPrice;
         this.discardCost = discardCost;
-        this.status = status;
+        this.isAvailable = false;
         this.height = height;
         this.width = width;
+        this.unlockLevel = unlockLevel;
     }
+
     public String getName(){
         return name;
     }
@@ -48,17 +53,26 @@ public class StoreItem {
     public Double getSellingPrice() {
         return sellingPrice;
     }
-
     public Double getDiscardCost() {
         return discardCost;
     }
-
+    public boolean getAvailable() {
+        return isAvailable;
+    }
     public int getWidth() {
         return width;
     }
-
     public int getHeight() {
         return height;
+    }
+    public int getUnlockLevel() {
+        return unlockLevel;
+    }
+    public void updateAvailability(int currentPlayerLevel) {
+        this.isAvailable = (currentPlayerLevel >= unlockLevel);
+    }
+    public boolean getIsAvailable() {
+        return isAvailable;
     }
 }
 
