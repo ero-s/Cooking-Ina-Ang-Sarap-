@@ -162,7 +162,6 @@ public class UIController extends Component {
             entity.setPosition(x, y);
         });
         setHighlight(entity, x, y);
-
     }
 
     private static boolean isInsideTray(double x, double y) {
@@ -306,6 +305,7 @@ public class UIController extends Component {
     private static Calamansi_Juice createJuiceItem(String description, String resource) {
         return new Calamansi_Juice(
                 "none",
+                resource,
                 resource,
                 resource,
                 description,

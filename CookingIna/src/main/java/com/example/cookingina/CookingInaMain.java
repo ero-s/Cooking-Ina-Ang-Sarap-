@@ -235,8 +235,9 @@ public class CookingInaMain extends GameApplication {
 
         QuekQuek quekquek = new QuekQuek(
                 "rawQuekquek_container.png",
-                "rawQuekquek.png",                      // raw resource identifier
-                "cooked_quek-quek.png",                          // cooked resource
+                "raw_quekquek.png",                      // raw resource identifier
+                "cooked_quekquek.png",
+                "overcooked_quekquek.png",// cooked resource
                 "quekquek",                                         // description
                 15.0,                                           // preparationTime (minutes)
                 12.99,                                          // sellingPrice ($)
@@ -248,8 +249,9 @@ public class CookingInaMain extends GameApplication {
 
         Hotdog hotdog = new Hotdog(
                 "rawHotdog_container.png",
-                "rawHotdog.png",
-                "rawHotdog.png",
+                "raw_hotdog.png",
+                "cooked_hotdog.png",
+                "overcooked_hotdog.png",
                 "hotdog",
                 15.0,
                 15.00,
@@ -263,6 +265,7 @@ public class CookingInaMain extends GameApplication {
                 "rawTempura_container.png",
                 "raw_tempura.png",
                 "cooked_tempura.png",
+                "overcooked_tempura.png",
                 "tempura",
                 10.0,
                 5.0,
@@ -276,6 +279,7 @@ public class CookingInaMain extends GameApplication {
                 "manga_basket.png",
                 "raw_mango.png",
                 "mango_ready.png",
+                "",
                 "mango",
                 5.0,
                 30.0,
@@ -288,7 +292,7 @@ public class CookingInaMain extends GameApplication {
 
         BeverageDispenser calamansiDispenser = new BeverageDispenser(
                 "calamansiJuice_dispenser.png",                         // name
-                "dragonfruit_juice_done.png",
+                "calamansiJuice_finishedProduct.png",
                 1,
                 0,
                 1.5,
@@ -299,7 +303,7 @@ public class CookingInaMain extends GameApplication {
 
         BeverageDispenser bukoDispenser = new BeverageDispenser(
                 "bukoJuice_dispenser.png",                         // name
-                "mangojuice_done.png",
+                "bukoJuice_finishedProduct.png",
                 1,
                 0,
                 1.5,
@@ -310,7 +314,7 @@ public class CookingInaMain extends GameApplication {
 
         BeverageDispenser orangeDispenser = new BeverageDispenser(
                 "orangeJuice_dispenser.png",                         // name
-                "nestea_juice_done.png",
+                "orangeJuice_finishedProduct.png",
                 1,
                 0,
                 1.5,

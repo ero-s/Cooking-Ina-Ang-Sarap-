@@ -78,7 +78,7 @@ public class OvercookComponent extends Component {
             entity.getViewComponent().removeChild(progressBar);
             entity.getViewComponent().clearChildren();
             entity.getViewComponent().addChild(
-                    FXGL.texture(cookedStoreItem.getCookedResource(), (int)entity.getWidth(), (int)entity.getHeight())
+                    FXGL.texture(cookedStoreItem.getBurntResource(), (int)entity.getWidth(), (int)entity.getHeight())
             );
 
             // Attempt placement onto tray or trash immediately

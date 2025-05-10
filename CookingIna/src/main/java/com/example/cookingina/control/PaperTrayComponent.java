@@ -66,12 +66,20 @@ public class PaperTrayComponent extends Component {
         }
     }
 
+//    private boolean isValidItem(Entity item) {
+//        boolean cooked = item.hasComponent(CookingComponent.class)
+//                && item.getComponent(CookingComponent.class).getIsCooked();
+//        boolean notBurnt = item.hasComponent(OvercookComponent.class)
+//                && !item.getComponent(OvercookComponent.class).getIsBurnt();
+//        return cooked || notBurnt;
+//    }
+
     private boolean isValidItem(Entity item) {
-        boolean cooked = item.hasComponent(CookingComponent.class)
+        boolean cooked     = item.hasComponent(CookingComponent.class)
                 && item.getComponent(CookingComponent.class).getIsCooked();
-        boolean notBurnt = item.hasComponent(OvercookComponent.class)
-                && !item.getComponent(OvercookComponent.class).getIsBurnt();
-        return cooked || notBurnt;
+        boolean overcooked = item.hasComponent(OvercookComponent.class)
+                && item.getComponent(OvercookComponent.class).getIsBurnt();
+        return cooked || overcooked;
     }
 
     private void bindItem(Entity item) {
@@ -93,28 +101,55 @@ public class PaperTrayComponent extends Component {
         FXGL.getGameWorld().removeEntity(item);
     }
 
+//    private String getTextureForItem(Entity item) {
+//        if (!item.hasComponent(StoreItemComponent.class)) {
+//            System.err.println("Item missing StoreItemComponent: " + item);
+//            return "papertray.png";
+//        }
+//
+//        StoreItem storeItem = item.getComponent(StoreItemComponent.class).getStoreItem();
+//        String foodType = storeItem.getDescription().toLowerCase().trim();
+//
+//        switch (foodType) {
+//            case "quekquek": return "papertray_cooked_quekquek.png";
+//            case "hotdog": return "papertray_cooked_hotdog.png";
+//            case "tempura": return "papertray_cooked_tempura.png";
+//            case "calamansi juice": return "papertray_calamansi_juice.png";
+//            default: return "papertray.png";
+//        }
+//    }
+
     private String getTextureForItem(Entity item) {
-        if (!item.hasComponent(StoreItemComponent.class)) {
-            System.err.println("Item missing StoreItemComponent: " + item);
-            return "assets/textures/papertray.png";
+        StoreItem s = item.getComponent(StoreItemComponent.class).getStoreItem();
+
+        // If it's burnt
+        if (item.hasComponent(OvercookComponent.class)
+                && item.getComponent(OvercookComponent.class).getIsBurnt()) {
+
+            switch (s.getBurntResource().toLowerCase().trim()) {
+                case "overcooked_quekquek.png":  return "papertray_overcooked_quekquek.png";
+                case "overcooked_hotdog.png":    return "papertray_overcooked_hotdog.png";
+                case "overcooked_tempura.png":   return "papertray_overcooked_tempura.png";
+                default:                         return "papertray_overcooked_generic.png";
+            }
         }
 
-        StoreItem storeItem = item.getComponent(StoreItemComponent.class).getStoreItem();
-        String foodType = storeItem.getDescription().toLowerCase().trim();
-
-        switch (foodType) {
-            case "quekquek": return "assets/textures/papertray_cooked_quekquek.png";
-            case "hotdog": return "assets/textures/papertray_hotdog.png";
-            case "tempura": return "assets/textures/papertray_tempura.png";
-            case "calamansi juice": return "assets/textures/papertray_calamansi_juice.png";
-            default: return "assets/textures/papertray.png";
+        // Otherwise cooked
+        switch (s.getCookedResource().toLowerCase().trim()) {
+            case "cooked_quekquek.png":    return "papertray_cooked_quekquek.png";
+            case "cooked_hotdog.png":      return "papertray_cooked_hotdog.png";
+            case "cooked_tempura.png":     return "papertray_cooked_tempura.png";
+            case "calamansi_juice.png":    return "papertray_calamansi_juice.png";
+            default:                       return "papertray.png";
         }
     }
 
-    private void changeTrayTexture(String imagePath) {
-        ImageView newView = new ImageView(new Image(imagePath));
+    private void changeTrayTexture(String imageName) {
+        Image fxglImage = FXGL.image(imageName);
+        ImageView newView = new ImageView(fxglImage);
         newView.setFitWidth(entity.getWidth());
         newView.setFitHeight(entity.getHeight());
+
         entity.getViewComponent().clearChildren();
         entity.getViewComponent().addChild(newView);
     }
@@ -205,7 +240,7 @@ public class PaperTrayComponent extends Component {
 
     private int getPrice(String itemName) {
         switch (itemName) {
-            case "cooked_kwek-kwek": return 10;
+            case "cooked_quekquek": return 10;
             case "cooked_hotdog": return 15;
             case "cooked_tempura": return 12;
             case "calamansi_juice": return 8;
@@ -220,7 +255,7 @@ public class PaperTrayComponent extends Component {
         ImageView iv = (ImageView)entity.getViewComponent().getChildren().get(0);
         String url = iv.getImage().getUrl();
 
-        if (url.contains("quekquek"))      return "cooked_kwek-kwek";
+        if (url.contains("quekquek"))      return "cooked_quekquek";
         if (url.contains("hotdog"))        return "cooked_hotdog";
         if (url.contains("tempura"))       return "cooked_tempura";
         if (url.contains("calamansi_juice")) return "calamansi_juice";
@@ -228,10 +263,9 @@ public class PaperTrayComponent extends Component {
         return "";
     }
 
-
     private void resetTrayTexture() {
         if (textureChanged) {
-            changeTrayTexture("/assets/textures/papertray.png");
+            changeTrayTexture("papertray.png");
             textureChanged = false;
         }
     }
