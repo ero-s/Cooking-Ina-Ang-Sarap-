@@ -57,38 +57,8 @@ public class CookingInaMain extends GameApplication {
     public static Text debugText;
     private ProgressBar timerBar;
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 60.0; // seconds
-
-//    @Override
-//    protected void initUI() {
-//        // Create debug text element
-//        debugText = new Text();
-//        debugText.setFont(Font.font(14));
-//        debugText.setFill(Color.WHITE);
-//        debugText.setTranslateX(10);
-//        debugText.setTranslateY(20);
-//        setProgressBar();
-//
-//        // Add to game scene
-//        FXGL.getGameScene().addUINode(debugText);
-//
-//        ProgressBar incomeBar = new ProgressBar();
-//        incomeBar.setWidth(200);
-//        incomeBar.setHeight(20);
-//        incomeBar.setTranslateX(getAppWidth() - 220); // 20px from right edge
-//        incomeBar.setTranslateY(20);                 // 20px from top
-//
-//        // Assume you have a “goal” or “level target” constant:
-//        int levelTarget = 100;
-//
-//        // Bind progress to income / levelTarget
-//        DoubleBinding progressBinding = FXGL.getWorldProperties()
-//                .intProperty("income")
-//                .divide((double) levelTarget);
-//        incomeBar.currentValueProperty().bind(progressBinding);
-//        // Add to UI
-//        FXGL.getGameScene().addUINode(incomeBar);
-//    }
+    private static final double TOTAL_TIME = 120; // seconds
+    public static final double MAX_QUOTA = 60.0; // seconds
 
     @Override
     public void initUI() {
@@ -99,27 +69,11 @@ public class CookingInaMain extends GameApplication {
         debugText.setTranslateX(10);
         debugText.setTranslateY(20);
         setProgressBar();
-
+        setIncomeBar();
         // Add to game scene
         FXGL.getGameScene().addUINode(debugText);
 
-        // --- FXGL income bar ---
-        ProgressBar incomeBar = new ProgressBar();
-        incomeBar.setWidth(200);
-        incomeBar.setHeight(20);
-        incomeBar.setTranslateX(getAppWidth() - 220); // 20px from right edge
-        incomeBar.setTranslateY(20);                 // 20px from top
 
-        incomeBar.setMinValue(0);
-        incomeBar.setMaxValue(100);
-
-        // Bind world property 'income' -> bar value
-        FXGL.getWorldProperties().intProperty("income")
-                .addListener((obs, oldVal, newVal) -> {
-                    incomeBar.setCurrentValue(newVal.doubleValue());
-                });
-
-        FXGL.getGameScene().addUINode(incomeBar);
     }
 
     @Override
@@ -161,6 +115,15 @@ public class CookingInaMain extends GameApplication {
         setBackground();
         spawnAssets();
         startTimer();
+
+        FXGL.getWorldProperties().intProperty("income")
+                .addListener((obs, oldVal, newVal) -> {
+                    if (newVal.intValue() >= MAX_QUOTA) {
+                        endGame();
+                    }
+                });
+
+        startTimer();
     }
 
     @Override
@@ -168,6 +131,30 @@ public class CookingInaMain extends GameApplication {
         vars.put("income", 0); // initialize 'income' to avoid crash
     }
 
+    private void setIncomeBar() {
+        // --- FXGL income bar ---
+        ProgressBar incomeBar = new ProgressBar();
+        final double BAR_WIDTH  = 800;
+        final double BAR_HEIGHT = 40;
+        incomeBar.setWidth(BAR_WIDTH);
+        incomeBar.setHeight(BAR_HEIGHT);
+
+        // Center it horizontally, 20px from the top
+        incomeBar.setTranslateX((FXGL.getAppWidth() - BAR_WIDTH) / 2.0);
+        incomeBar.setTranslateY(20);
+
+        incomeBar.setCurrentValue(0);
+        incomeBar.setMinValue(0);
+        incomeBar.setMaxValue(TOTAL_TIME);
+
+        // Bind world property 'income' -> bar value
+        FXGL.getWorldProperties().intProperty("income")
+                .addListener((obs, oldVal, newVal) -> {
+                    incomeBar.setCurrentValue(newVal.doubleValue());
+                });
+
+        FXGL.getGameScene().addUINode(incomeBar);
+    }
 
     private void setBackground() {
         double width = FXGL.getAppWidth();
@@ -318,8 +305,6 @@ public class CookingInaMain extends GameApplication {
         // Clear all entities
         FXGL.getGameWorld().getEntitiesCopy().forEach(Entity::removeFromWorld);
 
-        // Reset game world properties
-        FXGL.getWorldProperties().setValue("score", 0);
         FXGL.getWorldProperties().setValue("income", 0);
 
         // Clear equipment lists
@@ -363,7 +348,7 @@ public class CookingInaMain extends GameApplication {
         timerBar.setHeight(40);
         // Center horizontally
         timerBar.setTranslateX((FXGL.getAppWidth() - 800) / 2.0);
-        timerBar.setTranslateY(10);
+        timerBar.setTranslateY(80);
         timerBar.setCurrentValue(0);
         timerBar.setMinValue(0);
         timerBar.setMaxValue(TOTAL_TIME);
