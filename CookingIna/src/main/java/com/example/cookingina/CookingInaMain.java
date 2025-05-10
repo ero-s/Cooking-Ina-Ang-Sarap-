@@ -13,6 +13,7 @@ import com.example.cookingina.control.UIController;
 
 import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.menu.GameOverMenu;
+import com.example.cookingina.menu.LoginMenu;
 import com.example.cookingina.menu.SplashScene;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.*;
@@ -231,20 +232,9 @@ public class CookingInaMain extends GameApplication {
 // ================= SELLING ITEMS ENTITTY =================
         uc.spawnCustomerAtRandomIntervals();
 // ================= CONTAINER ENTITY =================
-        ContainerType orangeDispenser = ContainerTypeFactory.create(ORANGE_JUICE);
-        ContainerType calamansiDispenser = ContainerTypeFactory.create(CALAMANSI_JUICE);
-        ContainerType bukoDispenser = ContainerTypeFactory.create(BUKO_JUICE);
-        ContainerType mangoBasket = ContainerTypeFactory.create(MANGO);
+
         ContainerType iceCrusher = ContainerTypeFactory.create(HALO_HALO);
-        ContainerType hotdogFood = ContainerTypeFactory.create(HOTDOG);
-        ContainerType quekquekFood = ContainerTypeFactory.create(QUEKQUEK);
-        ContainerType tempuraFood = ContainerTypeFactory.create(TEMPURA);
-        ContainerType cucumberFood = ContainerTypeFactory.create(CUCUMBER);
-        ContainerType gusoFood = ContainerTypeFactory.create(GUSO);
-        ContainerType spicySauce = ContainerTypeFactory.create(SPICY_SAUCE);
-        ContainerType sweetSauce = ContainerTypeFactory.create(SWEET_SAUCE);
-        ContainerType bagoong = ContainerTypeFactory.create(BAGOONG);
-        ContainerType salt = ContainerTypeFactory.create(SALT);
+
 
         // Add trashCan asset
         TrashBin trashBin = new TrashBin(
@@ -307,10 +297,6 @@ public class CookingInaMain extends GameApplication {
             uc.spawnPaperTray(tray, pos[0], pos[1], pos[2], pos[3]);
         }
 
-        uc.spawnContainerForEquipment((Food) quekquekFood, fryers, 870, 980, 190, 120);
-        uc.spawnContainerForEquipment((Food) hotdogFood, fryers, 1080, 980, 190, 120);
-        uc.spawnContainerForEquipment((Food) tempuraFood, fryers, 650, 980, 190, 120);
-        uc.spawnContainerForEquipment((Food) mangoBasket, mangoTrays, 1630, 720, 270, 250);
         uc.spawnContainerForEquipment((Food) iceCrusher, ice_Crusher, 270, 870, 350, 250);
         // ================= CONTAINER ENTITY =================
         ContainerType cucumberFood = ContainerTypeFactory.create(CUCUMBER);
@@ -409,9 +395,9 @@ public class CookingInaMain extends GameApplication {
         mangoTrays.clear();
         ice_Crusher.clear();
 
-
-        // **NEW**: clear the customer list so spawning picks up again
-        UIController.components.clear();
+//
+//        // **NEW**: clear the customer list so spawning picks up again
+//        UIController.components.clear();
 
         // Re-create your UI controller
         uc = new UIController();

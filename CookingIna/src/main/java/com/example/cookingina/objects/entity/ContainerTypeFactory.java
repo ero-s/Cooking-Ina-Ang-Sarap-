@@ -90,6 +90,7 @@ public class ContainerTypeFactory {
                         "orange_juice",
                         "orangeJuice_finishedProduct.png",
                         "orangeJuice_finishedProduct.png",
+                        "orangeJuice_finishedProduct.png",
                         15.0,
                         12.99,
                         2.0,
@@ -108,6 +109,7 @@ public class ContainerTypeFactory {
             case CALAMANSI_JUICE:
                 return new BeverageDispenser(new StoreItem(
                         "calamansi_juice",
+                        "calamansiJuice_finishedProduct.png",
                         "calamansiJuice_finishedProduct.png",
                         "calamansiJuice_finishedProduct.png",
                         15.0,
@@ -130,6 +132,8 @@ public class ContainerTypeFactory {
                         "buko_juice",
                         "bukoJuice_finishedProduct.png",
                         "bukoJuice_finishedProduct.png",
+                        "bukoJuice_finishedProduct.png",
+
                         15.0,
                         12.99,
                         2.0,

@@ -8,7 +8,6 @@ public class StoreItem {
     private final Double preparationTime;
     private final Double sellingPrice;
     private final Double discardCost;
-    private final int status;
     private final int height;
     private final int width;
     private final int unlockLevel;
@@ -16,7 +15,7 @@ public class StoreItem {
     private boolean isJuice;
 
 
-    public StoreItem(String name, String rawResource, String cookedResource, Double preparationTime, Double sellingPrice, Double discardCost, int height, int width, int unlockLevel) {
+    public StoreItem(String name, String rawResource, String cookedResource, String burntResource, Double preparationTime, Double sellingPrice, Double discardCost, int height, int width, int unlockLevel) {
         this.name = name;
         this.rawResource = rawResource;
         this.cookedResource = cookedResource;

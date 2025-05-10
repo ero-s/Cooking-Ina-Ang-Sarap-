@@ -35,7 +35,7 @@ public class SplashScene extends FXGLMenu {
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(evt -> {
             // Push your MainMenu scene
-            getSceneService().pushSubScene(new MainMenu());
+            getSceneService().pushSubScene(new LoginMenu());
         });
         delay.play();
     }
