@@ -11,7 +11,7 @@ public class Food implements ContainerType{
         this.containerResource = containerResource;
         this.layoutX = 0;
         this.layoutY = 0;
-        item.setIsJuice(false);
+        item.setIsJuice(isJuice());
     }
 
     public StoreItem getItem() {
