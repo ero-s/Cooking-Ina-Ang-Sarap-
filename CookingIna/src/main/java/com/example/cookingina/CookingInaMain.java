@@ -42,7 +42,6 @@ public class CookingInaMain extends GameApplication {
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
-    private boolean isGameActive = false;
     public UIController uc = new UIController();
 
     public enum EntityType {
@@ -58,7 +57,38 @@ public class CookingInaMain extends GameApplication {
     public static Text debugText;
     private ProgressBar timerBar;
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 10.0; // seconds
+    private static final double TOTAL_TIME = 60.0; // seconds
+
+//    @Override
+//    protected void initUI() {
+//        // Create debug text element
+//        debugText = new Text();
+//        debugText.setFont(Font.font(14));
+//        debugText.setFill(Color.WHITE);
+//        debugText.setTranslateX(10);
+//        debugText.setTranslateY(20);
+//        setProgressBar();
+//
+//        // Add to game scene
+//        FXGL.getGameScene().addUINode(debugText);
+//
+//        ProgressBar incomeBar = new ProgressBar();
+//        incomeBar.setWidth(200);
+//        incomeBar.setHeight(20);
+//        incomeBar.setTranslateX(getAppWidth() - 220); // 20px from right edge
+//        incomeBar.setTranslateY(20);                 // 20px from top
+//
+//        // Assume you have a “goal” or “level target” constant:
+//        int levelTarget = 100;
+//
+//        // Bind progress to income / levelTarget
+//        DoubleBinding progressBinding = FXGL.getWorldProperties()
+//                .intProperty("income")
+//                .divide((double) levelTarget);
+//        incomeBar.currentValueProperty().bind(progressBinding);
+//        // Add to UI
+//        FXGL.getGameScene().addUINode(incomeBar);
+//    }
 
     @Override
     public void initUI() {
@@ -108,6 +138,9 @@ public class CookingInaMain extends GameApplication {
         settings.setFullScreenAllowed(true);
         settings.setFullScreenFromStart(true);
         settings.setMainMenuEnabled(true);
+
+
+
         settings.setSceneFactory(new SceneFactory() {
             @NotNull
             @Override

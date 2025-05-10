@@ -34,6 +34,7 @@ public class UIController extends Component {
 
     private static final int MAX_JUICE_ON_TRAY = 3;
     private static final List<Entity> juiceTray = new ArrayList<>();
+    private static final Queue<WaitingItem> waitingJuiceQueue = new LinkedList<>();
 
     private final List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
@@ -72,7 +73,7 @@ public class UIController extends Component {
                             double spawnX = equipment.getLayoutX() + 20; // adjust offset if needed
                             double spawnY = equipment.getLayoutY() + 30;
 
-                            spawnRawIngredient1(storeItem.getItem(), equipment, spawnX, spawnY);
+                            spawnRawIngredient1(storeItem, equipment, spawnX, spawnY);
 
                             equipment.setOccupied(true);
                             break;
@@ -151,7 +152,6 @@ public class UIController extends Component {
             entity.setPosition(x, y);
         });
         setHighlight(entity, x, y);
-
     }
 
     private static boolean isInsideTray(double x, double y) {
@@ -268,6 +268,16 @@ public class UIController extends Component {
             System.out.println("Equipment resource: " + dispenser.getEmptyResource());
             spawnJuiceCup(x + 40, y + 220, dispenser.getItem(), dispenser);
         });
+    }
+
+    private static Calamansi_Juice createJuiceItem(String description, String resource) {
+        return new Calamansi_Juice(
+                "none",
+                resource,
+                resource,
+                description,
+                15.0, 12.99, 2.0, 1, 110,60
+        );
     }
 
     public void spawnJuiceCup(double x, double y, StoreItem juiceItem, Equipment equipment) {

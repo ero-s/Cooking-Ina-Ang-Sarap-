@@ -10,6 +10,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -165,4 +166,35 @@ public class SpeechBubbleComponent extends Component {
 
         ft.setOnFinished(e -> bubbleRoot.getChildren().remove(popup));
     }
+
+    public void showDeductionPopup(int amount) {
+        // amount should be positive (e.g. 5), we’ll internally prepend "-"
+        int currentIncome = FXGL.geti("income");
+        int newIncome = currentIncome - amount;
+        FXGL.set("income", newIncome);
+
+        // popup text is "-5"
+        String text = "-" + amount;
+        Text popup = new Text(text);
+        popup.setFont(Font.font(32));
+        popup.setFill(Color.RED);
+        popup.setTranslateX(bubbleRoot.getBoundsInLocal().getWidth() / 2 - 10);
+        popup.setTranslateY(-40);
+
+        bubbleRoot.getChildren().add(popup);
+
+
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(0.8), popup);
+        tt.setByY(-30);
+
+        FadeTransition ft = new FadeTransition(Duration.seconds(0.8), popup);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+
+        tt.play();
+        ft.play();
+
+        ft.setOnFinished(e -> bubbleRoot.getChildren().remove(popup));
+    }
+
 }

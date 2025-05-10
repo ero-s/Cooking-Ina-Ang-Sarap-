@@ -25,6 +25,8 @@ public class PaperTrayComponent extends Component {
     private Point2D dragOffset;
     private Entity boundItem;
     private boolean isOccupied = false;
+    private boolean wasItemBurnt = false;
+
 
     private boolean textureChanged = false;
     private CollidableComponent collidableComponent;
@@ -51,7 +53,6 @@ public class PaperTrayComponent extends Component {
 
     @Override
     public void onUpdate(double tpf) {
-        // Only check for new items if no item is bound and texture hasn't been changed
         if (boundItem == null && !textureChanged) {
             FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.INGREDIENT).stream()
                     .filter(e -> e.isColliding(entity))
@@ -62,11 +63,11 @@ public class PaperTrayComponent extends Component {
     }
 
     private boolean isValidItem(Entity item) {
-        boolean cooked = item.hasComponent(CookingComponent.class)
-                && item.getComponent(CookingComponent.class).getIsCooked();
-        boolean notBurnt = item.hasComponent(OvercookComponent.class)
+        boolean cooked     = item.hasComponent(OvercookComponent.class)
                 && !item.getComponent(OvercookComponent.class).getIsBurnt();
-        return cooked || notBurnt;
+        boolean overcooked = item.hasComponent(OvercookComponent.class)
+                && item.getComponent(OvercookComponent.class).getIsBurnt();
+        return cooked || overcooked;
     }
 
     private void bindItem(Entity item) {
@@ -81,87 +82,103 @@ public class PaperTrayComponent extends Component {
         paperTray.setOccupied(true);
         textureChanged = true;
 
+        // Capture burnt state when binding the item
         if (item.hasComponent(OvercookComponent.class)) {
             OvercookComponent oc = item.getComponent(OvercookComponent.class);
+            wasItemBurnt = oc.getIsBurnt();
             oc.getEquipment().setOccupied(false);
+        } else {
+            wasItemBurnt = false;
         }
-
         FXGL.getGameWorld().removeEntity(item);
     }
 
     private String getTextureForItem(Entity item) {
-        if (!item.hasComponent(StoreItemComponent.class)) {
-            System.err.println("Item missing StoreItemComponent: " + item);
-            return "assets/textures/papertray.png";
+        StoreItem s = item.getComponent(StoreItemComponent.class).getStoreItem();
+
+        // If it's burnt
+        if (item.hasComponent(OvercookComponent.class)
+                && item.getComponent(OvercookComponent.class).getIsBurnt()) {
+
+            switch (s.getBurntResource().toLowerCase().trim()) {
+                case "overcooked_quekquek.png":  return "papertray_overcooked_quekquek.png";
+                case "overcooked_hotdog.png":    return "papertray_overcooked_hotdog.png";
+                case "overcooked_tempura.png":   return "papertray_overcooked_tempura.png";
+                default:                         return "papertray_overcooked_generic.png";
+            }
         }
 
-        StoreItem storeItem = item.getComponent(StoreItemComponent.class).getStoreItem();
-
-
-        switch (storeItem.getName()) {
-            case "quekquek": return "assets/textures/papertray_cooked_quekquek.png";
-            case "hotdog": return "assets/textures/papertray_hotdog.png";
-            case "tempura": return "assets/textures/papertray_tempura.png";
-            case "calamansi_juice": return "assets/textures/papertray_calamansi_juice.png";
-            default: return "assets/textures/papertray.png";
+        // Otherwise cooked
+        switch (s.getCookedResource().toLowerCase().trim()) {
+            case "cooked_quekquek.png":    return "papertray_cooked_quekquek.png";
+            case "cooked_hotdog.png":      return "papertray_cooked_hotdog.png";
+            case "cooked_tempura.png":     return "papertray_cooked_tempura.png";
+            case "calamansi_juice.png":    return "papertray_calamansi_juice.png";
+            default:                       return "papertray.png";
         }
-    }
-
-    private void changeTrayTexture(String imagePath) {
-        ImageView newView = new ImageView(new Image(imagePath));
-        newView.setFitWidth(entity.getWidth());
-        newView.setFitHeight(entity.getHeight());
-        entity.getViewComponent().clearChildren();
-        entity.getViewComponent().addChild(newView);
     }
 
     private void onRelease(MouseEvent event) {
         boolean served = false;
 
+        // Temporarily re-add CollidableComponent for collision checks
+        boolean wasCollidableTemporarilyAdded = false;
+        if (collidableComponent != null && !entity.hasComponent(CollidableComponent.class)) {
+            entity.addComponent(collidableComponent);
+            wasCollidableTemporarilyAdded = true;
+        }
+
         for (Entity customer : FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.CUSTOMER)) {
             if (customer.isColliding(entity) && textureChanged) {
                 served = true;
-                serveCustomer(customer);
-                String servedItem = getServedItemFromTexture();
+
+                // Get the item name from the texture (e.g., "cooked_quekquek")
+                String servedItemName = getServedItemNameFromTexture();
+                if (servedItemName.isEmpty()) break;
 
                 CustomerComponent customerComponent = customer.getComponent(CustomerComponent.class);
                 SpeechBubbleComponent speechBubble = customer.getComponent(SpeechBubbleComponent.class);
 
-                Order matchedOrder = null;
-                for (Order order : customerComponent.getOrders()) {
-                    if (order.getItem().equals(servedItem)) {
-                        matchedOrder = order;
-                        break;
-                    }
-                }
+                // Match order by item name (e.g., "cooked_quekquek")
+                Order matchedOrder = customerComponent.getOrders().stream()
+                        .filter(o -> o.getItem().equals(servedItemName))
+                        .findFirst()
+                        .orElse(null);
 
                 if (matchedOrder != null) {
                     if (matchedOrder.getQuantity() > 1) {
                         matchedOrder.decrement();
                     } else {
                         customerComponent.getOrders().remove(matchedOrder);
-                        speechBubble.markServed(servedItem);
+                        speechBubble.markServed(servedItemName);
                     }
+
+                    // Handle payment/deduction
+                    serveCustomer(customer, servedItemName); // Pass item name to serveCustomer
 
                     // Revert tray texture
                     resetTrayTexture();
                     setIsOccupied(false);
                     paperTray.setOccupied(false);
-
-                    FXGL.inc("income", getPrice(servedItem));
-                    break;
                 }
+                break;
             }
+        }
+
+        if (wasCollidableTemporarilyAdded) {
+            entity.removeComponent(CollidableComponent.class);
         }
 
         if (!served) {
             entity.setPosition(trayOriginalPos);
         }
 
+        // restore collidability
         if (collidableComponent != null) {
             entity.addComponent(collidableComponent);
         }
 
+        // remove bound item after a short delay
         FXGL.getGameTimer().runOnceAfter(() -> {
             if (boundItem != null) {
                 boundItem.removeFromWorld();
@@ -170,55 +187,59 @@ public class PaperTrayComponent extends Component {
         }, Duration.seconds(0.2));
     }
 
-    private void serveCustomer(Entity customer) {
-        String servedItem = getServedItemFromTexture();
+    private void changeTrayTexture(String imageName) {
+        Image fxglImage = FXGL.image(imageName);
+        ImageView newView = new ImageView(fxglImage);
+        newView.setFitWidth(entity.getWidth());
+        newView.setFitHeight(entity.getHeight());
+
+        entity.getViewComponent().clearChildren();
+        entity.getViewComponent().addChild(newView);
+    }
+
+    private void serveCustomer(Entity customer, String servedItemName) {
         CustomerComponent cc = customer.getComponent(CustomerComponent.class);
 
         customer.getComponentOptional(SpeechBubbleComponent.class).ifPresent(sb -> {
-            Order toHandle = cc.getOrders().stream()
-                    .filter(o -> o.getItem().equals(servedItem))
-                    .findFirst().orElse(null);
-
-            if (toHandle != null) {
-                if (toHandle.getQuantity() > 1) {
-                    toHandle.decrement();
-                } else {
-                    cc.getOrders().remove(toHandle);
-                }
-
-                sb.markServed(servedItem);
-
-                int price = getPrice(servedItem);
-                sb.showPricePopup(price);
-
-                // only here do we reset texture
-                resetTrayTexture();
+            int price = getPrice(servedItemName);
+            if (wasItemBurnt) {
+                sb.showDeductionPopup(price); // Deduct full price for burnt items
+            } else {
+                sb.showPricePopup(price); // Add adjusted price based on patience
             }
         });
     }
 
-
     private int getPrice(String itemName) {
         switch (itemName) {
-            case "cooked_kwek-kwek": return 10;
-            case "cooked_hotdog": return 15;
-            case "cooked_tempura": return 12;
+            case "cooked_quekquek": return 10;
+            case "cooked_hotdog":   return 15;
+            case "cooked_tempura":  return 12;
             case "calamansi_juice": return 8;
             default: return 0;
         }
     }
 
+    private int getPrice(StoreItem item) {
+        if (item == null) return 0;  // In case no valid item was passed
 
-    private String getServedItemFromTexture() {
+        return item.getSellingPrice().intValue();  // Return the selling price as an integer
+    }
+
+
+    private String getServedItemNameFromTexture() {
         if (!textureChanged) return "";
 
-        ImageView iv = (ImageView)entity.getViewComponent().getChildren().get(0);
-        String url = iv.getImage().getUrl();
+        ImageView iv = (ImageView) entity.getViewComponent().getChildren().get(0);
+        String url = iv.getImage().getUrl().toLowerCase();
 
-        if (url.contains("quekquek"))      return "cooked_kwek-kwek";
-        if (url.contains("hotdog"))        return "cooked_hotdog";
-        if (url.contains("tempura"))       return "cooked_tempura";
-        if (url.contains("calamansi_juice")) return "calamansi_juice";
+        if (url.contains("overcooked_quekquek")) return "cooked_quekquek";
+        if (url.contains("overcooked_hotdog"))   return "cooked_hotdog";
+        if (url.contains("overcooked_tempura"))  return "cooked_tempura";
+        if (url.contains("cooked_quekquek"))     return "cooked_quekquek";
+        if (url.contains("cooked_hotdog"))       return "cooked_hotdog";
+        if (url.contains("cooked_tempura"))      return "cooked_tempura";
+        if (url.contains("calamansi_juice"))     return "calamansi_juice";
 
         return "";
     }
@@ -226,9 +247,13 @@ public class PaperTrayComponent extends Component {
 
     private void resetTrayTexture() {
         if (textureChanged) {
-            changeTrayTexture("assets/textures/papertray.png");
+            changeTrayTexture("papertray.png");
             textureChanged = false;
         }
+    }
+
+    private void setIsOccupied(boolean isOccupied) {
+        this.isOccupied = isOccupied;
     }
 
     public PaperTray getTray() {
@@ -237,9 +262,5 @@ public class PaperTrayComponent extends Component {
 
     public boolean getIsOccupied() {
         return isOccupied;
-    }
-
-    public void setIsOccupied(boolean isOccupied) {
-        this.isOccupied = isOccupied;
     }
 }
