@@ -8,6 +8,7 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
+import com.almasb.fxgl.time.TimerAction;
 import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.control.UIController;
 
@@ -41,6 +42,7 @@ public class CookingInaMain extends GameApplication {
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
+    private boolean isGameActive = false;
     public UIController uc = new UIController();
 
 
@@ -236,23 +238,6 @@ public class CookingInaMain extends GameApplication {
         ContainerType bagoong = ContainerTypeFactory.create(BAGOONG);
         ContainerType salt = ContainerTypeFactory.create(SALT);
 
-        for(int i = 0; i < 6; i++){
-            PaperTray paperTray = paperTrays.get(i);
-            if(i == 0){
-                uc.spawnPaperTray(paperTray, 1090, 750, 180, 130);
-            }else if(i == 1){
-                uc.spawnPaperTray(paperTray, 895, 750, 180, 130);
-            }else if(i == 2){
-                uc.spawnPaperTray(paperTray, 695, 750, 180, 130);
-            }else if(i == 3){
-                uc.spawnPaperTray(paperTray, 1090, 840, 175, 130);
-            }else if(i == 4){
-                uc.spawnPaperTray(paperTray, 895, 840, 175, 130);
-            }else {
-                uc.spawnPaperTray(paperTray, 695, 840, 175, 130);
-            }
-        }
-
         // Add trashCan asset
         TrashBin trashBin = new TrashBin(
                 "trash_closed.png",                         // name
@@ -329,40 +314,48 @@ public class CookingInaMain extends GameApplication {
         uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
     }
     private void resetGameState() {
-        // Reset any scores, timers, or game state variables
-        FXGL.getWorldProperties().setValue("score", 0);
+        // Clear all entities
+        FXGL.getGameWorld().getEntitiesCopy().forEach(Entity::removeFromWorld);
 
-        if (timerTimeline != null) {
-            timerTimeline.stop();
-        }
+        // Reset game world properties
+        FXGL.getWorldProperties().setValue("score", 0);
+        FXGL.getWorldProperties().setValue("income", 0);
+
+        // Clear equipment lists
+        fryers.clear();
+        paperTrays.clear();
+        mangoTrays.clear();
+
+        // Reset UI controller
+        uc = new UIController();
+        // Flag game state
+        isGameActive = false;
     }
 
 
     private void startTimer() {
-        // Configure your bar
+        isGameActive = true;
 
-        // Build a Timeline that fires every 1 second
-        timerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            // Step the bar by +1 each second
-            double next = timerBar.getCurrentValue() + 1;
-            timerBar.setCurrentValue(next);
-        }));
+        FXGL.getGameTimer().runAtInterval(() -> {
+            if (isGameActive) {
+                double next = timerBar.getCurrentValue() + 1;
+                timerBar.setCurrentValue(next);
 
-        // After 60 ticks (i.e. bar reaches 60) stop and end game
-        timerTimeline.setCycleCount((int) TOTAL_TIME);
-        timerTimeline.setOnFinished(e -> endGame());
-
-        // Start ticking
-        timerTimeline.play();
+                if (next >= TOTAL_TIME) {
+                    endGame();
+                }
+            }
+        }, Duration.seconds(1));
     }
 
     private void endGame() {
-        if (timerTimeline != null) {
-            timerTimeline.stop();
-        }
+        isGameActive = false;
 
         // Show game over menu
         FXGL.getSceneService().pushSubScene(new GameOverMenu());
+
+        // Full reset
+        resetGameState();
 
         // Optional: Pause the game engine if needed
         FXGL.getGameController().pauseEngine();
