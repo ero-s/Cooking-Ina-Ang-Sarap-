@@ -36,7 +36,7 @@ public class UIController extends Component {
     private static final int MAX_JUICE_ON_TRAY = 3;
     private static final List<Entity> juiceTray = new ArrayList<>();
 
-    private final List<CustomerComponent> components = new ArrayList<>();
+    public final static List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
     private static final Random random = new Random();
     private static int mangoCount = 0;
@@ -164,11 +164,13 @@ public class UIController extends Component {
                     .with(new StoreItemComponent(item))
                     .buildAndAttach();
         }
-        assert entity != null;
-        entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            entity.setPosition(x, y);
-        });
-        setHighlight(entity, x, y);
+        if(entity != null){
+
+            entity.getViewComponent().addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+                entity.setPosition(x, y);
+            });
+            setHighlight(entity, x, y);
+        }
     }
 
     private static boolean isInsideTray(double x, double y) {
@@ -253,7 +255,7 @@ public class UIController extends Component {
         FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(x, y)
-                .zIndex(-1)
+                .zIndex(0)
                 .viewWithBBox(FXGL.texture(food.getContainerResource(), width, height))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
@@ -320,24 +322,18 @@ public class UIController extends Component {
 
 
     public void spawnCustomerAtRandomIntervals() {
-        // Kick off the first scheduling
         scheduleNextSpawn();
     }
 
     private void scheduleNextSpawn() {
-        if (components.size() >= MAX_CUSTOMERS) {
-            System.out.println("At cap; pausing spawns.");
-            return;
-        }
-
         double delay = 1 + random.nextDouble() * 2;
         FXGL.runOnce(() -> {
-            boolean spawned = this.spawnCustomer("customer_image.png");
-
-            if (spawned && components.size() < MAX_CUSTOMERS) {
-                // Schedule next only if we’re still under the limit
-                scheduleNextSpawn();
+            // only actually spawn if we’re under the cap
+            if (components.size() < MAX_CUSTOMERS) {
+                spawnCustomer("customer_image.png");
             }
+            // no matter what, plan the next roll
+            scheduleNextSpawn();
         }, Duration.seconds(delay));
     }
 
@@ -351,13 +347,12 @@ public class UIController extends Component {
             return false;
         }
 
-        // Try to find a non-overlapping targetX
+        // Find a non-overlapping X within max attempts
         double targetX;
         int maxTries = 10;
         int attempts = 0;
-
         do {
-            targetX = random.nextInt(sceneW - w);
+            targetX = random.nextInt(400,sceneW - w-350);
             attempts++;
         } while (checkOverlap(targetX, w) && attempts < maxTries);
 
@@ -367,15 +362,13 @@ public class UIController extends Component {
         }
 
         boolean goRight = random.nextBoolean();
-        double startX = goRight ? -w : sceneW + w;
+        double startX = goRight ? -w : sceneW + w ;
         String dir = goRight ? "RIGHT" : "LEFT";
 
-        Texture tex = FXGL.texture(imageName, w, h);
-
-        Entity ent = FXGL.entityBuilder()
+        var ent = FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.CUSTOMER)
                 .at(startX, y)
-                .viewWithBBox(tex)
+                .viewWithBBox(FXGL.texture(imageName, w, h))
                 .zIndex(-1)
                 .with(new CustomerComponent(targetX, y, dir))
                 .buildAndAttach();
@@ -387,12 +380,10 @@ public class UIController extends Component {
                 "  Active: " + components.size());
         return true;
     }
-
-    private boolean checkOverlap(double x, int w) {
-        return this.components.stream()
-                .anyMatch(cc -> Math.abs(cc.getTargetX() - x) < w);
+    private boolean checkOverlap(double x, int width) {
+        return components.stream()
+                .anyMatch(cc -> Math.abs(cc.getTargetX() - x) < width);
     }
-
     public static void showOrderBubble(Entity customer, List<Order> orders) {
         // If the customer already has one, remove it first:
         if (customer.hasComponent(SpeechBubbleComponent.class)) {

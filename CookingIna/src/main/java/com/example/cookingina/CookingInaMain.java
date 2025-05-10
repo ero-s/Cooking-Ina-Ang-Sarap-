@@ -3,9 +3,11 @@ package com.example.cookingina;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
+import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
+import static com.almasb.fxgl.dsl.FXGL.*;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
 import com.almasb.fxgl.ui.ProgressBar;
@@ -17,6 +19,9 @@ import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.*;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
+import javafx.application.Platform;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -55,8 +60,9 @@ public class CookingInaMain extends GameApplication {
     public static Text debugText;
     private ProgressBar timerBar;
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 10; // seconds
-    public static final double MAX_QUOTA = 10.0; // seconds
+    private static final double TOTAL_TIME = 300; // seconds
+    public static final double MAX_QUOTA = 100.0; // seconds
+    private static final int MAX_CUSTOMERS = 10;
 
     @Override
     public void initUI() {
@@ -91,11 +97,13 @@ public class CookingInaMain extends GameApplication {
         settings.setFullScreenFromStart(true);
         settings.setMainMenuEnabled(true);
 
+
+
         settings.setSceneFactory(new SceneFactory() {
             @NotNull
             @Override
             public FXGLMenu newMainMenu() {
-                return new MainMenu();
+                return new SplashScene();
             }
         });
     }
@@ -141,7 +149,7 @@ public class CookingInaMain extends GameApplication {
 
         incomeBar.setCurrentValue(0);
         incomeBar.setMinValue(0);
-        incomeBar.setMaxValue(TOTAL_TIME);
+        incomeBar.setMaxValue(MAX_QUOTA);
 
         // Bind world property 'income' -> bar value
         FXGL.getWorldProperties().intProperty("income")
@@ -324,9 +332,12 @@ public class CookingInaMain extends GameApplication {
         uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
     }
     private void resetGameState() {
-        // Clear all entities
-        FXGL.getGameWorld().getEntitiesCopy().forEach(Entity::removeFromWorld);
+        // Clear all existing entities
+        FXGL.getGameWorld()
+                .getEntitiesCopy()
+                .forEach(Entity::removeFromWorld);
 
+        // Reset income
         FXGL.getWorldProperties().setValue("income", 0);
 
         // Clear equipment lists
@@ -336,9 +347,11 @@ public class CookingInaMain extends GameApplication {
         ice_Crusher.clear();
 
 
-        // Reset UI controller
+        // **NEW**: clear the customer list so spawning picks up again
+        UIController.components.clear();
+
+        // Re-create your UI controller
         uc = new UIController();
-        // Flag game state
     }
 
     private void startTimer() {
@@ -367,11 +380,13 @@ public class CookingInaMain extends GameApplication {
     private void setProgressBar() {
         // Timer progress bar
         timerBar = new ProgressBar();
-        timerBar.setWidth(800);
+        timerBar.setWidth(370);
         timerBar.setHeight(40);
+
         // Center horizontally
-        timerBar.setTranslateX((FXGL.getAppWidth() - 800) / 2.0);
-        timerBar.setTranslateY(80);
+        timerBar.setTranslateX(1450);
+        timerBar.setTranslateY(1000);
+
         timerBar.setCurrentValue(0);
         timerBar.setMinValue(0);
         timerBar.setMaxValue(TOTAL_TIME);
@@ -380,6 +395,7 @@ public class CookingInaMain extends GameApplication {
         timerBar.setFill(Color.LIME);
         timerBar.setBackgroundFill(Color.GRAY);
         timerBar.setLabelFill(Color.WHITE);
+
 
         // Add to game scene
         FXGL.getGameScene().addUINode(timerBar);
