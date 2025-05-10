@@ -6,6 +6,7 @@ module com.example.cookingina {
     requires annotations;
     requires com.fasterxml.jackson.core;
     requires java.desktop;
+    requires java.sql;
 
     opens com.example.cookingina to javafx.fxml;
     opens assets.textures;

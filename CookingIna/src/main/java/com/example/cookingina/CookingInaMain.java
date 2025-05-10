@@ -11,7 +11,9 @@ import com.almasb.fxgl.texture.Texture;
 import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.control.UIController;
 
+import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.menu.GameOverMenu;
+import com.example.cookingina.menu.LoginMenu;
 import com.example.cookingina.menu.SplashScene;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.*;
@@ -24,6 +26,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +34,17 @@ import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
-import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.SALT;
 
 public class CookingInaMain extends GameApplication {
-
+    private int currentPlayerLevel = 1;
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
+    private List<StoreItem> allStoreItems = new ArrayList<>();
+    private boolean isGameActive = false;
     private final List<IceCrusher> ice_Crusher = new ArrayList<>();
     public UIController uc = new UIController();
+
 
     public enum EntityType {
         INGREDIENT,
@@ -59,6 +64,27 @@ public class CookingInaMain extends GameApplication {
     private static final double TOTAL_TIME = 300; // seconds
     public static final double MAX_QUOTA = 100.0; // seconds
     private static final int MAX_CUSTOMERS = 10;
+
+    private LocalDateTime joinDate;
+
+    public void setJoinDate(LocalDateTime joinDate) {
+        this.joinDate = joinDate;
+    }
+
+    public LocalDateTime getJoinDate() {
+        return joinDate;
+    }
+
+    public void setCurrentPlayerLevel(int level) {
+        this.currentPlayerLevel = level;
+        updateAllItemsAvailability();
+    }
+
+    private void updateAllItemsAvailability() {
+        for (StoreItem item : allStoreItems) {
+            item.updateAvailability(currentPlayerLevel);
+        }
+    }
 
     @Override
     public void initUI() {
@@ -85,6 +111,8 @@ public class CookingInaMain extends GameApplication {
 
     @Override
     protected void initSettings(GameSettings settings) {
+        DatabaseManager.initializeDatabase();
+
         settings.setWidth(1920);
         settings.setHeight(1080);
         settings.setTitle("CookingIna");
@@ -113,6 +141,7 @@ public class CookingInaMain extends GameApplication {
         uc = null;
         resetGameState();
         setBackground();
+        updateAllItemsAvailability();
         spawnAssets();
         startTimer();
 
@@ -132,7 +161,6 @@ public class CookingInaMain extends GameApplication {
     }
 
 
-
     private void setBackground() {
         double width = FXGL.getAppWidth();
         double height = FXGL.getAppHeight();
@@ -148,6 +176,7 @@ public class CookingInaMain extends GameApplication {
                 .buildAndAttach();
     }
     private void spawnAssets(){
+        allStoreItems.clear();
         uc = new UIController();
         for(int i = 0; i < 6; i++){
             fryers.add(new Fryer(
@@ -203,20 +232,9 @@ public class CookingInaMain extends GameApplication {
 // ================= SELLING ITEMS ENTITTY =================
         uc.spawnCustomerAtRandomIntervals();
 // ================= CONTAINER ENTITY =================
-        ContainerType orangeDispenser = ContainerTypeFactory.create(ORANGE_JUICE);
-        ContainerType calamansiDispenser = ContainerTypeFactory.create(CALAMANSI_JUICE);
-        ContainerType bukoDispenser = ContainerTypeFactory.create(BUKO_JUICE);
-        ContainerType mangoBasket = ContainerTypeFactory.create(MANGO);
+
         ContainerType iceCrusher = ContainerTypeFactory.create(HALO_HALO);
-        ContainerType hotdogFood = ContainerTypeFactory.create(HOTDOG);
-        ContainerType quekquekFood = ContainerTypeFactory.create(QUEKQUEK);
-        ContainerType tempuraFood = ContainerTypeFactory.create(TEMPURA);
-        ContainerType cucumberFood = ContainerTypeFactory.create(CUCUMBER);
-        ContainerType gusoFood = ContainerTypeFactory.create(GUSO);
-        ContainerType spicySauce = ContainerTypeFactory.create(SPICY_SAUCE);
-        ContainerType sweetSauce = ContainerTypeFactory.create(SWEET_SAUCE);
-        ContainerType bagoong = ContainerTypeFactory.create(BAGOONG);
-        ContainerType salt = ContainerTypeFactory.create(SALT);
+
 
         // Add trashCan asset
         TrashBin trashBin = new TrashBin(
@@ -279,31 +297,89 @@ public class CookingInaMain extends GameApplication {
             uc.spawnPaperTray(tray, pos[0], pos[1], pos[2], pos[3]);
         }
 
-        uc.spawnContainerForEquipment((Food) quekquekFood, fryers, 870, 980, 190, 120);
-        uc.spawnContainerForEquipment((Food) hotdogFood, fryers, 1080, 980, 190, 120);
-        uc.spawnContainerForEquipment((Food) tempuraFood, fryers, 650, 980, 190, 120);
-        uc.spawnContainerForEquipment((Food) mangoBasket, mangoTrays, 1630, 720, 270, 250);
         uc.spawnContainerForEquipment((Food) iceCrusher, ice_Crusher, 270, 870, 350, 250);
+        // ================= CONTAINER ENTITY =================
+        ContainerType cucumberFood = ContainerTypeFactory.create(CUCUMBER);
+        ContainerType gusoFood = ContainerTypeFactory.create(GUSO);
+        ContainerType spicySauce = ContainerTypeFactory.create(SPICY_SAUCE);
+        ContainerType sweetSauce = ContainerTypeFactory.create(SWEET_SAUCE);
+
+        ContainerType hotdogFood = ContainerTypeFactory.create(HOTDOG);
+        allStoreItems.add(hotdogFood.getItem());
+        hotdogFood.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (hotdogFood.getItem().getIsAvailable()) {
+            uc.spawnContainerForEquipment((Food) hotdogFood, fryers, 1080, 980, 190, 120);
+        }
+
+        ContainerType orangeDispenser = ContainerTypeFactory.create(ORANGE_JUICE);
+        allStoreItems.add(orangeDispenser.getItem());
+        orangeDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (orangeDispenser.getItem().getIsAvailable()) {
+            uc.spawnInvisibleEquipment((BeverageDispenser) orangeDispenser, 30, 500, 150, 340);
+            uc.spawnEquipment((Equipment) orangeDispenser, 30, 500, 150, 340);
+        }
+
+        ContainerType quekquekFood = ContainerTypeFactory.create(QUEKQUEK);
+        allStoreItems.add(quekquekFood.getItem());
+        quekquekFood.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (quekquekFood.getItem().getIsAvailable()) {
+            uc.spawnContainerForEquipment((Food) quekquekFood, fryers, 870, 980, 190, 120);
+        }
+
+        ContainerType bukoDispenser = ContainerTypeFactory.create(BUKO_JUICE);
+        allStoreItems.add(bukoDispenser.getItem());
+        bukoDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (bukoDispenser.getItem().getIsAvailable()) {
+            uc.spawnInvisibleEquipment((BeverageDispenser) bukoDispenser, 130, 400, 150, 340);
+            uc.spawnEquipment((Equipment) bukoDispenser, 130, 400, 150, 340);
+        }
+
+        ContainerType tempuraFood = ContainerTypeFactory.create(TEMPURA);
+        allStoreItems.add(tempuraFood.getItem());
+        tempuraFood.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (tempuraFood.getItem().getIsAvailable()) {
+            uc.spawnContainerForEquipment((Food) tempuraFood, fryers, 650, 980, 190, 120);
+        }
+
+        ContainerType calamansiDispenser = ContainerTypeFactory.create(CALAMANSI_JUICE);
+        allStoreItems.add(calamansiDispenser.getItem());
+        calamansiDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (calamansiDispenser.getItem().getIsAvailable()) {
+            uc.spawnInvisibleEquipment((BeverageDispenser) calamansiDispenser, 230, 300, 150, 340);
+            uc.spawnEquipment((Equipment) calamansiDispenser, 230, 300, 150, 340);
+        }
+
+        ContainerType mangoBasket = ContainerTypeFactory.create(MANGO);
+        allStoreItems.add(mangoBasket.getItem());
+        mangoBasket.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (mangoBasket.getItem().getIsAvailable()) {
+            uc.spawnContainerForEquipment((Food) mangoBasket, mangoTrays, 1630, 720, 270, 250);
+        }
+
+        ContainerType bagoong = ContainerTypeFactory.create(BAGOONG);
+        allStoreItems.add(bagoong.getItem());
+        bagoong.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (bagoong.getItem().getIsAvailable()) {
+            uc.spawnContainer((Food) bagoong, 1500, 650, 54, 100);
+        }
+
+        ContainerType salt = ContainerTypeFactory.create(SALT);
+        allStoreItems.add(salt.getItem());
+        salt.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (salt.getItem().getIsAvailable()) {
+            uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
+        }
 
         //DISPENSER EQUIPMENT
-        uc.spawnEquipment((Equipment) calamansiDispenser, 230, 300, 150, 340);
-        uc.spawnEquipment((Equipment) bukoDispenser, 130, 400, 150, 340);
-        uc.spawnEquipment((Equipment) orangeDispenser, 30, 500, 150, 340);
         uc.spawnTrashCan(100,950);
-
-        //DISPENSER INVISIBLE
-        uc.spawnInvisibleEquipment((BeverageDispenser) calamansiDispenser, 230, 300, 150, 340);
-        uc.spawnInvisibleEquipment((BeverageDispenser) bukoDispenser, 130, 400, 150, 340);
-        uc.spawnInvisibleEquipment((BeverageDispenser) orangeDispenser, 30, 500, 150, 340);
 
         //CONTAINER
         uc.spawnContainer((Food) cucumberFood, 1340, 720, 130, 100);
         uc.spawnContainer((Food) gusoFood, 1390, 820, 140, 110);
         uc.spawnContainer((Food) spicySauce, 1270, 460, 60, 160);
         uc.spawnContainer((Food) sweetSauce, 1330, 550, 60, 160);
-        uc.spawnContainer((Food) bagoong, 1500, 650, 54, 100);
-        uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
     }
+
     private void resetGameState() {
         // Clear all existing entities
         FXGL.getGameWorld()
@@ -319,9 +395,9 @@ public class CookingInaMain extends GameApplication {
         mangoTrays.clear();
         ice_Crusher.clear();
 
-
-        // **NEW**: clear the customer list so spawning picks up again
-        UIController.components.clear();
+//
+//        // **NEW**: clear the customer list so spawning picks up again
+//        UIController.components.clear();
 
         // Re-create your UI controller
         uc = new UIController();
