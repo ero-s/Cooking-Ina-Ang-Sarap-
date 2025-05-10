@@ -22,7 +22,7 @@ public class BeverageDispenser extends Equipment implements ContainerType {
 
         super(emptyResource,usedResource, type, speedMultiplier, cost, capacity, isUnlocked, description);
         this.item = item;
-        item.setIsJuice(true);
+        item.setIsJuice(isJuice());
     }
 
     public StoreItem getItem(){
