@@ -392,7 +392,6 @@ public class CookingInaMain extends GameApplication {
         timerBar.setBackgroundFill(Color.GRAY);
         timerBar.setLabelFill(Color.WHITE);
 
-
         // Add to game scene
         FXGL.getGameScene().addUINode(timerBar);
     }
