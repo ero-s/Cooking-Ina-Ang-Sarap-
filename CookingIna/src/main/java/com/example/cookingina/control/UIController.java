@@ -178,8 +178,8 @@ public class UIController extends Component {
     }
 
     private Entity spawnJuiceEntity(StoreItem cookedItem,
-                                           Equipment equipment,
-                                           double x, double y) {
+                                    Equipment equipment,
+                                    double x, double y) {
         // Build at (x,y)…
         Entity juice = FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.INGREDIENT)
@@ -225,6 +225,7 @@ public class UIController extends Component {
 
         return juice;
     }
+
 
     public void spawnEquipment(Equipment equipment, double x, double y, int width, int height) {
         FXGL.entityBuilder()
