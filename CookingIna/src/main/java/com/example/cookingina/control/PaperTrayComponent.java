@@ -37,18 +37,8 @@ public class PaperTrayComponent extends Component {
         trayOriginalPos = entity.getPosition();
 
         entity.getViewComponent()
-                .addEventHandler(MouseEvent.MOUSE_PRESSED, this::onPress);
-        entity.getViewComponent()
                 .addEventHandler(MouseEvent.MOUSE_RELEASED, this::onRelease);
     }
-
-    private void onPress(MouseEvent e) {
-        dragOffset = new Point2D(e.getSceneX(), e.getSceneY())
-                .subtract(entity.getPosition());
-        collidableComponent = entity.getComponent(CollidableComponent.class);
-        entity.removeComponent(CollidableComponent.class);
-    }
-
     @Override
     public void onUpdate(double tpf) {
         if (boundItem == null && !textureChanged) {

@@ -53,6 +53,8 @@ public class CookingInaMain extends GameApplication {
 
     public static Text debugText;
     private ProgressBar timerBar;
+    private ProgressBar incomeBar;
+
     private Timeline timerTimeline;
     private static final double TOTAL_TIME = 300; // seconds
     public static final double MAX_QUOTA = 100.0; // seconds
@@ -129,30 +131,7 @@ public class CookingInaMain extends GameApplication {
         vars.put("income", 0); // initialize 'income' to avoid crash
     }
 
-    private void setIncomeBar() {
-        // --- FXGL income bar ---
-        ProgressBar incomeBar = new ProgressBar();
-        final double BAR_WIDTH  = 800;
-        final double BAR_HEIGHT = 40;
-        incomeBar.setWidth(BAR_WIDTH);
-        incomeBar.setHeight(BAR_HEIGHT);
 
-        // Center it horizontally, 20px from the top
-        incomeBar.setTranslateX((FXGL.getAppWidth() - BAR_WIDTH) / 2.0);
-        incomeBar.setTranslateY(20);
-
-        incomeBar.setCurrentValue(0);
-        incomeBar.setMinValue(0);
-        incomeBar.setMaxValue(MAX_QUOTA);
-
-        // Bind world property 'income' -> bar value
-        FXGL.getWorldProperties().intProperty("income")
-                .addListener((obs, oldVal, newVal) -> {
-                    incomeBar.setCurrentValue(newVal.doubleValue());
-                });
-
-        FXGL.getGameScene().addUINode(incomeBar);
-    }
 
     private void setBackground() {
         double width = FXGL.getAppWidth();
@@ -370,16 +349,39 @@ public class CookingInaMain extends GameApplication {
         // Optional: Pause the game engine if needed
         FXGL.getGameController().pauseEngine();
     }
+    private void setIncomeBar() {
+        // --- FXGL income bar ---
+        final double BAR_WIDTH  = 370;
+        final double BAR_HEIGHT = 40;
+        incomeBar = new ProgressBar();
+        incomeBar.setWidth(BAR_WIDTH);
+        incomeBar.setHeight(BAR_HEIGHT);
 
+        // Center it horizontally, 20px from the top
+        incomeBar.setTranslateX(1450);
+        incomeBar.setTranslateY(1000);
+
+        incomeBar.setCurrentValue(0);
+        incomeBar.setMinValue(0);
+        incomeBar.setMaxValue(MAX_QUOTA);
+
+        // Bind world property 'income' -> bar value
+        FXGL.getWorldProperties().intProperty("income")
+                .addListener((obs, oldVal, newVal) -> {
+                    incomeBar.setCurrentValue(newVal.doubleValue());
+                });
+
+        FXGL.getGameScene().addUINode(incomeBar);
+    }
     private void setProgressBar() {
         // Timer progress bar
         timerBar = new ProgressBar();
-        timerBar.setWidth(370);
+        timerBar.setWidth(800);
         timerBar.setHeight(40);
 
         // Center horizontally
-        timerBar.setTranslateX(1450);
-        timerBar.setTranslateY(1000);
+        timerBar.setTranslateX((FXGL.getAppWidth()-800)/2.0);
+        timerBar.setTranslateY(40);
 
         timerBar.setCurrentValue(0);
         timerBar.setMinValue(0);

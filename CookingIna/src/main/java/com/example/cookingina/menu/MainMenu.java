@@ -40,8 +40,8 @@ public class MainMenu extends FXGLMenu {
                 "-fx-background-position: center center;");
         btnExit.setPrefWidth(190);
         btnExit.setPrefHeight(110);
-        Button play = new Button("Play");
-        play.setOnAction(e -> {
+
+        btnPlay.setOnAction(e -> {
             FXGL.getGameController().startNewGame();
             ((CookingInaMain) FXGL.getApp()).initUI();
             FXGL.getSceneService().popSubScene();
