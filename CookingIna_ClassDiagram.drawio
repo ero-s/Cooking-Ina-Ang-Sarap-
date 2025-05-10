@@ -263,7 +263,7 @@
         <mxCell id="wbYaB39w-U3x0-qxHnxj-160" value="- discardCost: double" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="wbYaB39w-U3x0-qxHnxj-147">
           <mxGeometry y="208" width="223" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="wbYaB39w-U3x0-qxHnxj-161" value="- status: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="wbYaB39w-U3x0-qxHnxj-147">
+        <mxCell id="wbYaB39w-U3x0-qxHnxj-161" value="- isAvailable: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="wbYaB39w-U3x0-qxHnxj-147">
           <mxGeometry y="234" width="223" height="26" as="geometry" />
         </mxCell>
         <mxCell id="wbYaB39w-U3x0-qxHnxj-199" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="wbYaB39w-U3x0-qxHnxj-171" target="wbYaB39w-U3x0-qxHnxj-158">

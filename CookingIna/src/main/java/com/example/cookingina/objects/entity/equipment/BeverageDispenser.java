@@ -25,6 +25,7 @@ public class BeverageDispenser extends Equipment implements ContainerType {
         item.setIsJuice(isJuice());
     }
 
+    @Override
     public StoreItem getItem(){
         return item;
     }

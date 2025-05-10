@@ -14,6 +14,7 @@ public class Food implements ContainerType{
         item.setIsJuice(isJuice());
     }
 
+    @Override
     public StoreItem getItem() {
         return item;
     }
