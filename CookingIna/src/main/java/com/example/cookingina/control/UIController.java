@@ -210,7 +210,6 @@ public class UIController extends Component {
                             trash.getBoundingBoxComponent()
                                     .isCollidingWith(juice.getBoundingBoxComponent())
                     );
-
             if (onTrash) {
                 // Remove from world & tray
                 juice.removeFromWorld();
@@ -219,10 +218,8 @@ public class UIController extends Component {
                 // Snap back home
                 juice.setPosition(homeX, homeY);
             }
-
             e.consume();
         });
-
         return juice;
     }
 

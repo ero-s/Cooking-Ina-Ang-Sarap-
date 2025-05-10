@@ -394,11 +394,7 @@ public class CookingInaMain extends GameApplication {
         paperTrays.clear();
         mangoTrays.clear();
         ice_Crusher.clear();
-
-//
-//        // **NEW**: clear the customer list so spawning picks up again
-//        UIController.components.clear();
-
+        UIController.components.clear();
         // Re-create your UI controller
         uc = new UIController();
     }

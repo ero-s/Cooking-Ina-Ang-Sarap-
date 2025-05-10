@@ -112,10 +112,11 @@ public class PaperTrayComponent extends Component {
                     } else {
                         sb.showPricePopup(price);
                     }
+                    resetTray();
+
                 }
 
                 // 5) Reset the tray
-                resetTray();
                 break;
             }
         }
