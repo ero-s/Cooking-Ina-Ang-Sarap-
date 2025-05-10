@@ -29,13 +29,7 @@ import java.util.*;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 
 public class UIController extends Component {
-
-    public DraggableComponent draggable;
-    public boolean wasDragging = false;
-
-    private static final int MAX_JUICE_ON_TRAY = 3;
     private static final List<Entity> juiceTray = new ArrayList<>();
-
     public final static List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
     private static final Random random = new Random();
