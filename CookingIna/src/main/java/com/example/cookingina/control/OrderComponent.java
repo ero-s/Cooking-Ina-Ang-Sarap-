@@ -50,6 +50,15 @@ public class OrderComponent extends Component {
                 // Serve one matching order, update UI and income
                 serveCustomer(customer);
 
+                // Remove this ready-item entity
+                entity.removeFromWorld();
+
+                // Also remove any cooking entity tied to this equipment
+                FXGL.getGameWorld()
+                        .getEntitiesByComponent(CookingComponent.class)
+                        .stream()
+                        .filter(e -> e.getComponent(CookingComponent.class).getEquipment() == equipment)
+                        .forEach(Entity::removeFromWorld);
                 break;
             }
         }
@@ -84,11 +93,6 @@ public class OrderComponent extends Component {
                 int price = getPrice(servedItem);
                 FXGL.inc("income", price);
                 sb.showPricePopup(price);
-
-                // Remove this ready-item entity
-                entity.removeFromWorld();
-                equipment.setOccupied(false);
-
                 break;
             }
         }

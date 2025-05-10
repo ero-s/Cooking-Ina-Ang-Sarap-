@@ -52,6 +52,7 @@ public class UIController extends Component {
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(containerX, containerY)
                 .viewWithBBox(FXGL.texture(storeItem.getContainerResource(), containerWidth, containerHeight))
+                .zIndex(0)
                 .with(new CollidableComponent(true))
                 .buildAndAttach()
                 .getViewComponent()
@@ -273,7 +274,7 @@ public class UIController extends Component {
             dispenser.setOccupied(true);
             System.out.println("CLICK DETECTED on invisible entity!");
             System.out.println("Equipment resource: " + dispenser.getEmptyResource());
-            spawnJuiceCup(x + 40, y + 220, dispenser.getItem(), dispenser);
+            spawnJuiceCup(x + 20, y + 220, dispenser.getItem(), dispenser);
         });
     }
 
@@ -326,8 +327,8 @@ public class UIController extends Component {
     }
 
     public boolean spawnCustomer(List<String> imageNames) {
-        int w = 250, h = 250;
-        double y = 280;
+        int w = 200, h = 200;
+        double y = 330;
         int sceneW = FXGL.getAppWidth();
 
         if (components.size() >= MAX_CUSTOMERS) {

@@ -5,7 +5,7 @@ import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 public class ContainerTypeFactory {
 
     public enum TYPE {
-        HOTDOG, QUEKQUEK, TEMPURA, CUCUMBER, GUSO, SPICY_SAUCE, SWEET_SAUCE, MANGO, BAGOONG, ORANGE_JUICE, CALAMANSI_JUICE, BUKO_JUICE, SALT, HALO_HALO
+        HOTDOG, QUEKQUEK, TEMPURA, CUCUMBER, GUSO, SPICY_SAUCE, SWEET_SAUCE, MANGO, BAGOONG, ORANGE_JUICE, CALAMANSI_JUICE, BUKO_JUICE, SALT, HALO_HALO, GLASS_TABLE
     }
 
     public static ContainerType create(TYPE type) {
@@ -56,6 +56,8 @@ public class ContainerTypeFactory {
                 return new Food(new StoreItem("spicy_sauce","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",5.0,12.99, 2.0, 1, 80,80),"spicy_sauce.png");
             case SWEET_SAUCE:
                 return new Food(new StoreItem("sweet_sauce","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",12.99, 2.0, 2.0,  1, 80,80),"sweet_sauce.png");
+            case GLASS_TABLE:
+                return new Food(new StoreItem("glass_table","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",12.99, 2.0, 2.0,  1, 150,100),"glass_table.png");
             case MANGO: // DONE
                 return new Food(new StoreItem(
                         "mango",
@@ -94,8 +96,8 @@ public class ContainerTypeFactory {
                         12.99,
                         2.0,
                         1,
-                        110,
-                        60),
+                        100,
+                        100),
                         "orangeJuice_dispenser.png",
                         "nestea_juice_done.png",
                         1,
@@ -115,8 +117,8 @@ public class ContainerTypeFactory {
                         12.99,
                         2.0,
                         1,
-                        110,
-                        60),
+                        100,
+                        100),
                         "calamansiJuice_dispenser.png",
                         "dragonfruit_juice_done.png",
                         1,
@@ -136,8 +138,8 @@ public class ContainerTypeFactory {
                         12.99,
                         2.0,
                         1,
-                        110,
-                        60),
+                        100,
+                        100),
                         "bukoJuice_dispenser.png",
                         "mangojuice_done.png",
                         1,
