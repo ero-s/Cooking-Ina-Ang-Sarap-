@@ -33,18 +33,7 @@ public class UIController extends Component {
     public final static List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
     private static final Random random = new Random();
-    private static int mangoCount = 0;
-    private static final int MAX_MANGO = 3;
 
-    private static List<Fryer> fryers;
-    private static List<MangoTray>  mangoTray;
-    private static List<IceCrusher>  iceCrusher;
-
-    public void setFryers(List<Fryer> fryerList) {
-        fryers = fryerList;
-    }
-    public static void setMangoTray(List<MangoTray> mangoTrayList) {mangoTray = mangoTrayList;}
-    public static void setIceCrusher(List<IceCrusher> iceCrusherList) {iceCrusher = iceCrusherList;}
 
     // Spawing Container and container item to the equipment
     public void spawnContainerForEquipment(Food storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {

@@ -226,8 +226,6 @@ public class CookingInaMain extends GameApplication {
                     180, 130
             ));
         }
-
-        uc.setFryers(fryers);
 // ================= SELLING ITEMS ENTITTY =================
         uc.spawnCustomerAtRandomIntervals();
 // ================= CONTAINER ENTITY =================

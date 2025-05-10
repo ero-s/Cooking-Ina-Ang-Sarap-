@@ -65,13 +65,19 @@ public class OrderComponent extends Component {
 
         if (!served) {
             // Free the equipment even though we didn't serve
-            equipment.setOccupied(false);
+            boolean onTrash = FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.TRASH)
+                    .stream()
+                    .anyMatch(e -> e.getBoundingBoxComponent()
+                            .isCollidingWith(entity.getBoundingBoxComponent()));
+            if (onTrash) {
+                equipment.setOccupied(false);
+                entity.removeFromWorld();
 
-            // Snap back if not served
-            entity.setPosition(trayOriginalPos);
-
-            // Re-enable collision
-            entity.addComponent(new CollidableComponent(true));
+            }
+            else{
+                // Snap back if not served
+                entity.setPosition(trayOriginalPos);
+            }
         }
     }
 
