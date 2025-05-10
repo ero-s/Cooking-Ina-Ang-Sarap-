@@ -50,12 +50,14 @@ public class OrderComponent extends Component {
                 // Serve one matching order, update UI and income
                 serveCustomer(customer);
 
-
                 break;
             }
         }
 
         if (!served) {
+            // Free the equipment even though we didn't serve
+            equipment.setOccupied(false);
+
             // Snap back if not served
             entity.setPosition(trayOriginalPos);
 
@@ -85,13 +87,8 @@ public class OrderComponent extends Component {
 
                 // Remove this ready-item entity
                 entity.removeFromWorld();
+                equipment.setOccupied(false);
 
-                // Also remove any cooking entity tied to this equipment
-                FXGL.getGameWorld()
-                        .getEntitiesByComponent(CookingComponent.class)
-                        .stream()
-                        .filter(e -> e.getComponent(CookingComponent.class).getEquipment() == equipment)
-                        .forEach(Entity::removeFromWorld);
                 break;
             }
         }

@@ -127,12 +127,8 @@ public class UIController extends Component {
     public void spawnReadyIngredient(StoreItem item, Equipment equipment, double x, double y) {
         Entity entity;
         if (item.getIsJuice() ) {
-            if (juiceTray.size() < MAX_JUICE_ON_TRAY) {
-                entity = spawnJuiceEntity(item, equipment, x, y);
-                juiceTray.add(entity);
-            } else {
-                entity = null;
-            }
+            entity = spawnJuiceEntity(item, equipment, x, y);
+
         }else if(item.getName().equals("mango")){
             entity = entityBuilder()
                     .type(CookingInaMain.EntityType.INGREDIENT)

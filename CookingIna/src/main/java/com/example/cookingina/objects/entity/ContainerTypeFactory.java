@@ -16,8 +16,8 @@ public class ContainerTypeFactory {
                         "raw_hotdog.png",
                         "cooked_hotdog.png",
                         "overcooked_hotdog.png",
-                        15.0,
-                        15.00,
+                        5.0,
+                        5.00,
                         3.0,1,
                         80,
                         80 ),
@@ -28,7 +28,7 @@ public class ContainerTypeFactory {
                         "raw_quekquek.png",
                         "cooked_quekquek.png",
                         "overcooked_quekquek.png",
-                        15.0,
+                        5.0,
                         12.99,
                         2.0,
                         1,
@@ -49,11 +49,11 @@ public class ContainerTypeFactory {
                         80),
                         "rawTempura_container.png");
             case CUCUMBER:
-                return new Food(new StoreItem("cucumber","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek.png",15.0,12.99, 2.0 ,1, 80,80),"cucumberGarnish_container.png");
+                return new Food(new StoreItem("cucumber","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek.png",5.0,12.99, 2.0 ,1, 80,80),"cucumberGarnish_container.png");
             case GUSO:
-                return new Food(new StoreItem("guso","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",15.0,12.99, 2.0, 80, 1,80),"gusoGarnish_container.png");
+                return new Food(new StoreItem("guso","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",5.0,12.99, 2.0, 80, 1,80),"gusoGarnish_container.png");
             case SPICY_SAUCE:
-                return new Food(new StoreItem("spicy_sauce","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",15.0,12.99, 2.0, 1, 80,80),"spicy_sauce.png");
+                return new Food(new StoreItem("spicy_sauce","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",5.0,12.99, 2.0, 1, 80,80),"spicy_sauce.png");
             case SWEET_SAUCE:
                 return new Food(new StoreItem("sweet_sauce","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",12.99, 2.0, 2.0,  1, 80,80),"sweet_sauce.png");
             case MANGO: // DONE
@@ -81,16 +81,16 @@ public class ContainerTypeFactory {
                         120,
                         120) , "ice_crusher.png");
             case BAGOONG:
-                return new Food(new StoreItem("bagoong","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",15.0,12.99, 2.0, 1 ,80, 80),"hipon_bottle.png");
+                return new Food(new StoreItem("bagoong","rawQuekquek_container.png", "rawQuekquek.png", "overcooked_quekquek",5.0,12.99, 2.0, 1 ,80, 80),"hipon_bottle.png");
             case SALT:
-                return new Food(new StoreItem("salt","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",15.0,12.99, 2.0, 1 ,80, 80),"salt_bottle.png");
+                return new Food(new StoreItem("salt","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek",5.0,12.99, 2.0, 1 ,80, 80),"salt_bottle.png");
             case ORANGE_JUICE:
                 return new BeverageDispenser(new StoreItem(
                         "orange_juice",
                         "orangeJuice_finishedProduct.png",
                         "orangeJuice_finishedProduct.png",
                         "orangeJuice_finishedProduct.png",
-                        15.0,
+                        5.0,
                         12.99,
                         2.0,
                         1,
@@ -111,7 +111,7 @@ public class ContainerTypeFactory {
                         "calamansiJuice_finishedProduct.png",
                         "calamansiJuice_finishedProduct.png",
                         "calamansiJuice_finishedProduct.png",
-                        15.0,
+                        5.0,
                         12.99,
                         2.0,
                         1,
@@ -132,7 +132,7 @@ public class ContainerTypeFactory {
                         "bukoJuice_finishedProduct.png",
                         "bukoJuice_finishedProduct.png",
                         "bukoJuice_finishedProduct.png",
-                        15.0,
+                        5.0,
                         12.99,
                         2.0,
                         1,
