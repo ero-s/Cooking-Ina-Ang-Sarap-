@@ -15,7 +15,7 @@ public class StoreItem {
     private boolean isJuice;
 
 
-    public StoreItem(String name, String rawResource, String cookedResource, String burntResource, Double preparationTime, Double sellingPrice, Double discardCost, int height, int width, int unlockLevel) {
+    public StoreItem(String name, String rawResource, String cookedResource, String burntResource, Double preparationTime, Double sellingPrice, Double discardCost, int unlockLevel, int height, int width) {
         this.name = name;
         this.rawResource = rawResource;
         this.cookedResource = cookedResource;

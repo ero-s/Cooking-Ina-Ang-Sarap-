@@ -133,7 +133,6 @@ public class ContainerTypeFactory {
                         "bukoJuice_finishedProduct.png",
                         "bukoJuice_finishedProduct.png",
                         "bukoJuice_finishedProduct.png",
-
                         15.0,
                         12.99,
                         2.0,
