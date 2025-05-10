@@ -67,7 +67,7 @@ public class CookingInaMain extends GameApplication {
     private static final int MAX_CUSTOMERS = 10;
 
     @Override
-    protected void initUI() {
+    public void initUI() {
         // Create debug text element
         debugText = new Text();
         debugText.setFont(Font.font(14));
@@ -105,7 +105,7 @@ public class CookingInaMain extends GameApplication {
             @NotNull
             @Override
             public FXGLMenu newMainMenu() {
-                return new MainMenu();
+                return new SplashScene();
             }
         });
     }
@@ -355,11 +355,13 @@ public class CookingInaMain extends GameApplication {
     private void setProgressBar() {
         // Timer progress bar
         timerBar = new ProgressBar();
-        timerBar.setWidth(800);
+        timerBar.setWidth(370);
         timerBar.setHeight(40);
+
         // Center horizontally
-        timerBar.setTranslateX((FXGL.getAppWidth() - 800) / 2.0);
-        timerBar.setTranslateY(80);
+        timerBar.setTranslateX(1450);
+        timerBar.setTranslateY(1000);
+
         timerBar.setCurrentValue(0);
         timerBar.setMinValue(0);
         timerBar.setMaxValue(TOTAL_TIME);
@@ -369,9 +371,11 @@ public class CookingInaMain extends GameApplication {
         timerBar.setBackgroundFill(Color.GRAY);
         timerBar.setLabelFill(Color.WHITE);
 
+
         // Add to game scene
         FXGL.getGameScene().addUINode(timerBar);
     }
+
 
     @Override
     protected void initPhysics() {

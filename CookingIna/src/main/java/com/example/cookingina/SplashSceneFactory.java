@@ -4,6 +4,7 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.LoadingScene;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.app.scene.SceneFactory;
+import com.example.cookingina.menu.MainMenu;
 
 public class SplashSceneFactory extends SceneFactory {
 

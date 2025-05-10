@@ -248,7 +248,7 @@ public class UIController extends Component {
         FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.CONTAINER)
                 .at(x, y)
-                .zIndex(-1)
+                .zIndex(0)
                 .viewWithBBox(FXGL.texture(food.getContainerResource(), width, height))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
@@ -345,7 +345,7 @@ public class UIController extends Component {
         int maxTries = 10;
         int attempts = 0;
         do {
-            targetX = random.nextInt(sceneW - w);
+            targetX = random.nextInt(400,sceneW - w-350);
             attempts++;
         } while (checkOverlap(targetX, w) && attempts < maxTries);
 
@@ -355,7 +355,7 @@ public class UIController extends Component {
         }
 
         boolean goRight = random.nextBoolean();
-        double startX = goRight ? -w : sceneW + w;
+        double startX = goRight ? -w : sceneW + w ;
         String dir = goRight ? "RIGHT" : "LEFT";
 
         var ent = FXGL.entityBuilder()

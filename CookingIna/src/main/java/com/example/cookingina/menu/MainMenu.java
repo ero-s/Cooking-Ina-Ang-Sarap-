@@ -55,11 +55,6 @@ public class MainMenu extends FXGLMenu {
 
         getContentRoot().getChildren().add(vbox);
 
-        FadeTransition fadeButtons = new FadeTransition(Duration.seconds(1.0), vbox);
-        fadeButtons.setFromValue(0);
-        fadeButtons.setToValue(1);
-        fadeButtons.setDelay(Duration.seconds(1.0));
-        fadeButtons.play();
     }
 
 

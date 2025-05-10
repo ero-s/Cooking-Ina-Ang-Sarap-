@@ -1,8 +1,10 @@
 package com.example.cookingina;
 
-import com.almasb.fxgl.app.scene.LoadingScene;
-import com.almasb.fxgl.scene.SubScene;
-import javafx.animation.FadeTransition;
+import com.almasb.fxgl.app.scene.FXGLMenu;
+import com.almasb.fxgl.app.scene.MenuType;
+import com.almasb.fxgl.scene.SceneService;
+import com.example.cookingina.menu.MainMenu;
+import javafx.animation.PauseTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -11,32 +13,36 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import static com.almasb.fxgl.dsl.FXGL.*;
+import static com.almasb.fxgl.dsl.FXGL.getAppHeight;
+import static com.almasb.fxgl.dsl.FXGL.getAppWidth;
+import static com.almasb.fxgl.dsl.FXGL.getSceneService;
 
-public class SplashScene extends SubScene {
+public class SplashScene extends FXGLMenu {
     public SplashScene() {
+        super(MenuType.MAIN_MENU);
+
+        // Black background
+        Rectangle background = new Rectangle(getAppWidth(), getAppHeight(), Color.BLACK);
+        getContentRoot().getChildren().add(background);
+
+        // Splash image or fallback text
         try {
-            System.out.println("Creating splash screen...");
-
-            // Basic fallback content
-            Rectangle background = new Rectangle(getAppWidth(), getAppHeight(), Color.BLACK);
-            getContentRoot().getChildren().add(background);
-
-            // Try loading image
             ImageView splashImage = new ImageView(new Image(
                     getClass().getResourceAsStream("/assets/textures/splash_scene.png")
             ));
             splashImage.setFitWidth(getAppWidth());
             splashImage.setFitHeight(getAppHeight());
             getContentRoot().getChildren().add(splashImage);
-
-            System.out.println("Splash resources loaded successfully");
         } catch (Exception e) {
-            System.err.println("SPLASH SCREEN ERROR:");
-            e.printStackTrace();
-
-            // Essential fallback
             getContentRoot().getChildren().add(new Text("Loading..."));
         }
+
+        // After 3 seconds, transition to MainMenu
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        delay.setOnFinished(evt -> {
+            // Push your MainMenu scene
+            getSceneService().pushSubScene(new MainMenu());
+        });
+        delay.play();
     }
 }
