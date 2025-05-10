@@ -8,16 +8,16 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.texture.Texture;
-import com.almasb.fxgl.time.TimerAction;
 import com.almasb.fxgl.ui.ProgressBar;
 import com.example.cookingina.control.UIController;
 
+import com.example.cookingina.menu.GameOverMenu;
+import com.example.cookingina.menu.MainMenu;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.equipment.MangoTray;
 import com.example.cookingina.objects.entity.equipment.TrashBin;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
 import javafx.scene.input.KeyCode;
@@ -59,41 +59,10 @@ public class CookingInaMain extends GameApplication {
     public static Text debugText;
     private ProgressBar timerBar;
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 60.0; // seconds
-
-//    @Override
-//    protected void initUI() {
-//        // Create debug text element
-//        debugText = new Text();
-//        debugText.setFont(Font.font(14));
-//        debugText.setFill(Color.WHITE);
-//        debugText.setTranslateX(10);
-//        debugText.setTranslateY(20);
-//        setProgressBar();
-//
-//        // Add to game scene
-//        FXGL.getGameScene().addUINode(debugText);
-//
-//        ProgressBar incomeBar = new ProgressBar();
-//        incomeBar.setWidth(200);
-//        incomeBar.setHeight(20);
-//        incomeBar.setTranslateX(getAppWidth() - 220); // 20px from right edge
-//        incomeBar.setTranslateY(20);                 // 20px from top
-//
-//        // Assume you have a “goal” or “level target” constant:
-//        int levelTarget = 100;
-//
-//        // Bind progress to income / levelTarget
-//        DoubleBinding progressBinding = FXGL.getWorldProperties()
-//                .intProperty("income")
-//                .divide((double) levelTarget);
-//        incomeBar.currentValueProperty().bind(progressBinding);
-//        // Add to UI
-//        FXGL.getGameScene().addUINode(incomeBar);
-//    }
+    private static final double TOTAL_TIME = 10.0; // seconds
 
     @Override
-    protected void initUI() {
+    public void initUI() {
         // Create debug text element
         debugText = new Text();
         debugText.setFont(Font.font(14));
