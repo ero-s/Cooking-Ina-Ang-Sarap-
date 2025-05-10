@@ -326,20 +326,21 @@ public class UIController extends Component {
     }
 
     private void scheduleNextSpawn() {
+        List<String> imageName = Arrays.asList("Austine", "Krizza", "Kyle", "Sherielyn", "Vince", "Christian", "Shervin");
         double delay = 1 + random.nextDouble() * 2;
         FXGL.runOnce(() -> {
             // only actually spawn if we’re under the cap
             if (components.size() < MAX_CUSTOMERS) {
-                spawnCustomer("customer_image.png");
+                spawnCustomer(imageName);
             }
             // no matter what, plan the next roll
             scheduleNextSpawn();
         }, Duration.seconds(delay));
     }
 
-    public boolean spawnCustomer(String imageName) {
-        int w = 180, h = 200;
-        double y = 320;
+    public boolean spawnCustomer(List<String> imageNames) {
+        int w = 250, h = 250;
+        double y = 280;
         int sceneW = FXGL.getAppWidth();
 
         if (components.size() >= MAX_CUSTOMERS) {
@@ -347,12 +348,24 @@ public class UIController extends Component {
             return false;
         }
 
-        // Find a non-overlapping X within max attempts
+        // 🟢 **Select a random image name from the list**
+        if (imageNames.isEmpty()) {
+            System.out.println("Image list is empty; cannot spawn customer.");
+            return false;
+        }
+        String selectedImageName = imageNames.get(random.nextInt(imageNames.size()));
+
+        // 🔄 **Find a non-overlapping X within max attempts**
         double targetX;
         int maxTries = 10;
         int attempts = 0;
+
+        // Adjusted the range and added fallback if the range is invalid
+        int minX = Math.min(400, sceneW - w - 350);
+        int maxX = Math.max(400, sceneW - w - 350);
+
         do {
-            targetX = random.nextInt(400,sceneW - w-350);
+            targetX = random.nextInt(minX, maxX);
             attempts++;
         } while (checkOverlap(targetX, w) && attempts < maxTries);
 
@@ -362,13 +375,14 @@ public class UIController extends Component {
         }
 
         boolean goRight = random.nextBoolean();
-        double startX = goRight ? -w : sceneW + w ;
+        double startX = goRight ? -w : sceneW + w;
         String dir = goRight ? "RIGHT" : "LEFT";
 
+        // 🟢 **Build and attach the entity with the selected image**
         var ent = FXGL.entityBuilder()
                 .type(CookingInaMain.EntityType.CUSTOMER)
                 .at(startX, y)
-                .viewWithBBox(FXGL.texture(imageName, w, h))
+                .viewWithBBox(FXGL.texture(selectedImageName + ".png", w, h))
                 .zIndex(-1)
                 .with(new CustomerComponent(targetX, y, dir))
                 .buildAndAttach();
@@ -376,10 +390,10 @@ public class UIController extends Component {
         CustomerComponent cc = ent.getComponent(CustomerComponent.class);
         components.add(cc);
 
-        System.out.println("Spawned customer → targetX=" + targetX +
-                "  Active: " + components.size());
+        System.out.println("Spawned customer → targetX=" + targetX + "  Active: " + components.size());
         return true;
     }
+
     private boolean checkOverlap(double x, int width) {
         return components.stream()
                 .anyMatch(cc -> Math.abs(cc.getTargetX() - x) < width);

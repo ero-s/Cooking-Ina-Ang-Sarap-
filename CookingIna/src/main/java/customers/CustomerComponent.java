@@ -36,8 +36,9 @@ public class CustomerComponent extends Component {
 
                     Platform.runLater(() -> {
                         if (!hasArrived) {
-                            entity.translateX(dx);
-
+                            if(entity != null){
+                                entity.translateX(dx);
+                            }
                             if (Math.abs(entity.getX() - targetX) < 1) {
                                 entity.setX(targetX);
                                 hasArrived = true;
