@@ -18,10 +18,9 @@ public class ContainerTypeFactory {
                         "overcooked_hotdog.png",
                         15.0,
                         15.00,
-                        3.0,
+                        3.0,1,
                         80,
-                        80 ,
-                        1),
+                        80 ),
                         "rawHotdog_container.png");
             case QUEKQUEK: //DONE
                 return new Food(new StoreItem(
@@ -32,9 +31,9 @@ public class ContainerTypeFactory {
                         15.0,
                         12.99,
                         2.0,
+                        1,
                         80,
-                        80,
-                        1) ,
+                        80) ,
                         "rawQuekquek_container.png");
             case TEMPURA:
                 return new Food(new StoreItem(
@@ -45,9 +44,9 @@ public class ContainerTypeFactory {
                         10.0,
                         5.0,
                         3.0,
+                        1,
                         80,
-                        80,
-                        1),
+                        80),
                         "rawTempura_container.png");
             case CUCUMBER:
                 return new Food(new StoreItem("cucumber","rawQuekquek_container.png", "rawQuekquek.png","overcooked_quekquek.png",15.0,12.99, 2.0 ,1, 80,80),"cucumberGarnish_container.png");
