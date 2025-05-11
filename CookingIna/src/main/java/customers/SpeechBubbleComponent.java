@@ -130,7 +130,6 @@ public class SpeechBubbleComponent extends Component {
             FadeTransition ft = new FadeTransition(Duration.seconds(0.5), entity.getViewComponent().getParent());
             ft.setFromValue(1.0);
             ft.setToValue(0.0);
-            ft.setOnFinished(e -> entity.removeFromWorld());
             ft.play();
             UIController.components.remove(entity.getComponent(CustomerComponent.class));
 

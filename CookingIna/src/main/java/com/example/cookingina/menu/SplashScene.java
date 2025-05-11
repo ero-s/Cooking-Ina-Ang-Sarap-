@@ -24,8 +24,10 @@ import static com.almasb.fxgl.dsl.FXGL.getSceneService;
  * Splash scene that displays for 3 seconds then always transitions to the LoginMenu.
  */
 public class SplashScene extends FXGLMenu {
+    private CookingInaMain game = new CookingInaMain();
     public SplashScene() {
         super(MenuType.MAIN_MENU);
+
 
         // Black background fallback
         Rectangle background = new Rectangle(getAppWidth(), getAppHeight(), Color.BLACK);
@@ -62,7 +64,7 @@ public class SplashScene extends FXGLMenu {
                 int level = DatabaseManager.getPlayerLevel(creds.getUsername());
                 LocalDateTime joinDate = DatabaseManager.getJoinDate(creds.getUsername());
 
-                CookingInaMain.setCurrentPlayerLevel(level);
+                game.setCurrentPlayerLevel(level);
                 CookingInaMain.setJoinDate(joinDate);
                 getSceneService().pushSubScene(new MainMenu());
 

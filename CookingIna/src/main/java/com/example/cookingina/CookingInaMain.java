@@ -13,8 +13,8 @@ import com.example.cookingina.control.UIController;
 
 import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.menu.GameOverMenu;
-import com.example.cookingina.menu.LoginMenu;
 import com.example.cookingina.menu.SplashScene;
+import com.example.cookingina.menu.YouWonMenu;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.*;
 import javafx.animation.Timeline;
@@ -36,14 +36,26 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
 
 public class CookingInaMain extends GameApplication {
-    public static int currentPlayerLevel;
+    public int currentPlayerLevel = 1;
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
     private static List<StoreItem> allStoreItems = new ArrayList<>();
     private boolean isGameActive = false;
+    private String currUsername;
     private final List<IceCrusher> ice_Crusher = new ArrayList<>();
     public UIController uc = new UIController();
+
+    public int getPlayerLevel() {
+        return currentPlayerLevel;
+    }
+
+    public void setCurrentUsername(String username) {
+        this.currUsername = username;
+    }
+    public void setCurrLevel(int level) {
+        this.currentPlayerLevel = level;
+    }
 
 
     public enum EntityType {
@@ -72,15 +84,17 @@ public class CookingInaMain extends GameApplication {
     }
 
 
-    public static void setCurrentPlayerLevel(int level) {
-        currentPlayerLevel = 10;
-        updateAllItemsAvailability();
+
+
+    private void updateAllItemsAvailability() {
+        for (StoreItem item : allStoreItems) {
+            item.updateAvailability(getPlayerLevel());
+        }
     }
 
-    private static void updateAllItemsAvailability() {
-        for (StoreItem item : allStoreItems) {
-            item.updateAvailability(currentPlayerLevel);
-        }
+    public void setCurrentPlayerLevel(int level) {
+        currentPlayerLevel = level;
+        updateAllItemsAvailability();
     }
 
     @Override
@@ -153,7 +167,7 @@ public class CookingInaMain extends GameApplication {
         FXGL.getWorldProperties().intProperty("income")
                 .addListener((obs, oldVal, newVal) -> {
                     if (newVal.intValue() >= quota) {
-                        endGame();
+                        niceGame();
                     }
                 });
     }
@@ -417,18 +431,32 @@ public class CookingInaMain extends GameApplication {
             timerBar.setCurrentValue(next);
 
             if (next >= TOTAL_TIME) {
-                endGame();
+                gameOver();
             }
         }, Duration.seconds(1));
     }
 
-    private void endGame() {
+    private void gameOver() {
+        resetGameState();
+
 
         // Show game over menu
         FXGL.getSceneService().pushSubScene(new GameOverMenu());
 
         // Full reset
+
+        // Optional: Pause the game engine if needed
+        FXGL.getGameController().pauseEngine();
+    }
+
+    private void niceGame() {
         resetGameState();
+
+
+        // Show game over menu
+        FXGL.getSceneService().pushSubScene(new YouWonMenu(currUsername,currentPlayerLevel));
+
+        // Full reset
 
         // Optional: Pause the game engine if needed
         FXGL.getGameController().pauseEngine();
@@ -480,10 +508,6 @@ public class CookingInaMain extends GameApplication {
         FXGL.getGameScene().addUINode(timerBar);
     }
 
-
-    void onPause() {
-
-    }
 
     @Override
     protected void initPhysics() {

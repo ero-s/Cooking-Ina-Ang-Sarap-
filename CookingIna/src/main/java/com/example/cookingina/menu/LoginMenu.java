@@ -229,6 +229,7 @@ public class LoginMenu extends FXGLMenu {
 
             CookingInaMain game = (CookingInaMain) FXGL.getApp();
             game.setCurrentPlayerLevel(savedLevel);
+            game.setCurrentUsername(username);
             game.setJoinDate(joinDate);
             Session.setUsername(username);
             uc = new UserCredentials(username,password);

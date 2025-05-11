@@ -16,6 +16,9 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class LevelMenu extends FXGLMenu {
 
     private int currentLevel;
+    public CookingInaMain game = new CookingInaMain();
+    public List<LevelData> levels = DatabaseManager.getAllLevels(game.getPlayerLevel());
+
 
     public LevelMenu(String currentUsername) {
         super(MenuType.MAIN_MENU);
@@ -56,7 +59,6 @@ public class LevelMenu extends FXGLMenu {
     }
 
     private void loadLevelMenu(Pane pane, int currentLevel) {
-        List<LevelData> levels = DatabaseManager.getAllLevels(currentLevel);
 
         double x = 100;
         double y = 150;
