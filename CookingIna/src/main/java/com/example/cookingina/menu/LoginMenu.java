@@ -5,6 +5,7 @@ import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.database.DatabaseManager;
+import com.example.cookingina.user.UserCredentials;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -114,13 +115,15 @@ public class LoginMenu extends FXGLMenu {
         if (DatabaseManager.validateLogin(username, password)) {
             currentUsername = username;
 
+            // Serialize credentials after successful login
+            UserCredentials creds = new UserCredentials(username, password);
+            creds.save();
+
             int savedLevel = DatabaseManager.getPlayerLevel(username);
             LocalDateTime joinDate = DatabaseManager.getJoinDate(username);
 
-            CookingInaMain game = (CookingInaMain) FXGL.getApp();
-            game.setCurrentPlayerLevel(savedLevel);
-            game.setJoinDate(joinDate);  // Set the join date
-            // After successful login, show the MainMenu scene
+            CookingInaMain.setCurrentPlayerLevel(savedLevel);
+            CookingInaMain.setJoinDate(joinDate);
             FXGL.getSceneService().pushSubScene(new MainMenu());
         } else {
             showError("Invalid username or password");

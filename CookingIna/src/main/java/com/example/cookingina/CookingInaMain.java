@@ -36,11 +36,11 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
 
 public class CookingInaMain extends GameApplication {
-    private int currentPlayerLevel = 10;
+    private static int currentPlayerLevel = 10;
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
-    private List<StoreItem> allStoreItems = new ArrayList<>();
+    private static List<StoreItem> allStoreItems = new ArrayList<>();
     private boolean isGameActive = false;
     private final List<IceCrusher> ice_Crusher = new ArrayList<>();
     public UIController uc = new UIController();
@@ -60,23 +60,23 @@ public class CookingInaMain extends GameApplication {
     private ProgressBar incomeBar;
 
     private Timeline timerTimeline;
-    private static final double TOTAL_TIME = 300; // seconds
+    public static final double TOTAL_TIME = 300; // seconds
     public static final double MAX_QUOTA = 100.0; // seconds
-    private static final int MAX_CUSTOMERS = 10;
+    public static final int MAX_CUSTOMERS = 10;
 
-    private LocalDateTime joinDate;
+    private static LocalDateTime  joinDate;
 
-    public void setJoinDate(LocalDateTime joinDate) {
-        this.joinDate = joinDate;
+    public static void setJoinDate(LocalDateTime joinDate) {
+        joinDate = joinDate;
     }
 
 
-    public void setCurrentPlayerLevel(int level) {
-        this.currentPlayerLevel = level;
+    public static void setCurrentPlayerLevel(int level) {
+        currentPlayerLevel = level;
         updateAllItemsAvailability();
     }
 
-    private void updateAllItemsAvailability() {
+    private static void updateAllItemsAvailability() {
         for (StoreItem item : allStoreItems) {
             item.updateAvailability(currentPlayerLevel);
         }
