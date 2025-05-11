@@ -3,7 +3,10 @@ package customers;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.dsl.FXGL;
+import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.control.UIController;
+import com.example.cookingina.database.DatabaseManager;
+import com.example.cookingina.session.Session;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
@@ -27,7 +30,7 @@ public class SpeechBubbleComponent extends Component {
 
     private Rectangle patienceBar;
     private double patience = 1.0; // from 1.0 (full) to 0.0 (empty)
-    private static final double DURATION_SECONDS = 10.0;
+    private static final double DURATION_SECONDS = DatabaseManager.getPatienceLevel(Session.getUsername());
     private long startTime;
 
     public SpeechBubbleComponent(List<Order> orders) {
@@ -89,8 +92,9 @@ public class SpeechBubbleComponent extends Component {
 
     @Override
     public void onUpdate(double tpf) {
-        double elapsed = (System.currentTimeMillis() - startTime) / 1000.0;
-        double progress = Math.max(0, 1.0 - elapsed / DURATION_SECONDS);
+        double elapsedSec = (System.currentTimeMillis() - startTime) / 1000.0;
+        double remaining  = Math.max(0, DURATION_SECONDS - elapsedSec);
+        double progress   = remaining / DURATION_SECONDS;
         patience = progress;
 
         // Remove customer if patience has fully run out

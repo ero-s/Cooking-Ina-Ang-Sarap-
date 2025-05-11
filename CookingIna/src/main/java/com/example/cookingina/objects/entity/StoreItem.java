@@ -23,7 +23,7 @@ public class StoreItem {
         this.preparationTime = preparationTime;
         this.sellingPrice = sellingPrice;
         this.discardCost = discardCost;
-        this.isAvailable = false;
+        this.isAvailable = true;
         this.height = height;
         this.width = width;
         this.unlockLevel = unlockLevel;

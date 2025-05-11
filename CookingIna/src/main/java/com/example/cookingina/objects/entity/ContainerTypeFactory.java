@@ -79,7 +79,7 @@ public class ContainerTypeFactory {
                         5.0,
                         30.0,
                         20.0,
-                        10,
+                        8,
                         120,
                         120) , "ice_crusher.png");
             case BAGOONG:
@@ -105,7 +105,7 @@ public class ContainerTypeFactory {
                         1.5,
                         500.0,
                         4,
-                        false,
+                        true,
                         "orange juice");
             case CALAMANSI_JUICE:
                 return new BeverageDispenser(new StoreItem(
@@ -126,7 +126,7 @@ public class ContainerTypeFactory {
                         1.5,
                         500.0,
                         4,
-                        false,
+                        true,
                         "calamansi juice");
             case BUKO_JUICE:
                 return new BeverageDispenser(new StoreItem(
@@ -147,7 +147,7 @@ public class ContainerTypeFactory {
                         1.5,
                         500.0,
                         4,
-                        false,
+                        true,
                         "buko juice");
             default:
                 throw new IllegalArgumentException("Unknown container type: " + type);

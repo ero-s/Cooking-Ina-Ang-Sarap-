@@ -121,6 +121,32 @@ public class DatabaseManager {
         return null;
     }
 
+    public static Integer getPatienceLevel(String username) {
+        String sql =
+                "SELECT l.patiencelevel " +
+                        "  FROM tblplayer p " +
+                        "  JOIN tbllevel  l ON p.levelid = l.levelid " +
+                        " WHERE p.username = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                // if the column is NULL in the DB this will return 0;
+                // you can use rs.wasNull() to detect that if needed
+                return rs.getInt("patiencelevel");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;  // return null if no record found or on error
+    }
+
     public static String getDisplayName(String username) {
         String sql = "SELECT displayname FROM tblplayer WHERE username = ?";
         try (Connection conn = getConnection();

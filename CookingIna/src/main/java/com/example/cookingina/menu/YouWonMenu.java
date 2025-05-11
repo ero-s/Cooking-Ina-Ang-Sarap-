@@ -3,15 +3,19 @@ package com.example.cookingina.menu;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.model.LevelData;
+import com.example.cookingina.session.Session;
+import javafx.animation.FadeTransition;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class YouWonMenu extends FXGLMenu {
 
@@ -23,33 +27,33 @@ public class YouWonMenu extends FXGLMenu {
         this.username = username;
         this.currentLevel = currentLevel;
 
-        // Gold background
-        Rectangle bg = new Rectangle(getAppWidth(), getAppHeight(), Color.GOLD.deriveColor(1, 1, 1, 1));
-
-        // Victory text
-        Text victoryText = new Text("You Won!");
-        victoryText.setFont(Font.font("Verdana", 48));
-        victoryText.setFill(Color.DARKGREEN);
+        initBackground();
 
         // Only show next level button if not at max level
         int maxLevel =10;
 
-        Button playAgain = new Button("Play Again");
-        playAgain.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 20;");
+        Button playAgain = new Button();
+        playAgain.setStyle("-fx-background-image: url('assets/textures/playAgain.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
+        playAgain.setPrefSize(430, 130);
         playAgain.setOnAction(e -> {
+
             FXGL.getGameController().startNewGame();
             ((CookingInaMain) FXGL.getApp()).initUI();
             FXGL.getSceneService().popSubScene();
             FXGL.getGameController().resumeEngine();
         });
 
-        Button nextLevel = new Button("Next Level");
-        nextLevel.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 20;");
+        Button nextLevel = new Button();
+        nextLevel.setStyle("-fx-background-image: url('assets/textures/nextLevel.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
+        nextLevel.setPrefSize(430, 130);
         nextLevel.setOnAction(e -> {
 
             // Update both player level and unlock next level
-            DatabaseManager.updatePlayerLevel(username, currentLevel);
-            DatabaseManager.unlockLevel(username, currentLevel);
+            if(currentLevel == DatabaseManager.getPlayerLevel(username)) {
+
+                DatabaseManager.updatePlayerLevel(username, currentLevel);
+                DatabaseManager.unlockLevel(username, currentLevel);
+            }
 
             // Refresh level menu
             FXGL.getSceneService().popSubScene();
@@ -61,14 +65,28 @@ public class YouWonMenu extends FXGLMenu {
         }
 
 
-        VBox box = new VBox(20, victoryText, nextLevel, playAgain);
+        VBox box = new VBox(10, nextLevel, playAgain);
         centerElements(box);
 
-        getContentRoot().getChildren().addAll(bg, box);
+        FadeTransition fade = new FadeTransition(Duration.seconds((double)1.5F), box);
+        fade.setFromValue((double)0.0F);
+        fade.setToValue((double)1.0F);
+        fade.play();
+
+        getContentRoot().getChildren().addAll(box);
     }
 
     private void centerElements(VBox box) {
-        box.setTranslateX(getAppWidth() / 2.0 - 100);
-        box.setTranslateY(getAppHeight() / 2.0 - 100);
+        box.setTranslateX(getAppWidth() / 2.0 - 200);
+        box.setTranslateY(getAppHeight() / 2.0 + 150);
     }
+
+    protected void initBackground() {
+        Texture background = FXGL.texture("bg_youWon.png");
+        background.setFitHeight((double)this.getAppHeight());
+        background.setFitWidth((double)this.getAppWidth());
+        this.getContentRoot().getChildren().add(0, background);
+    }
+
+
 }

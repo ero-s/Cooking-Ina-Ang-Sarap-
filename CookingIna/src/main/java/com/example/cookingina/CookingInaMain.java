@@ -104,7 +104,7 @@ public class CookingInaMain extends GameApplication {
         debugText.setFill(Color.WHITE);
         debugText.setTranslateX(10);
         debugText.setTranslateY(20);
-        setProgressBar();
+        setTimerBar();
         setIncomeBar();
         // Add to game scene
         FXGL.getGameScene().addUINode(debugText);
@@ -334,21 +334,23 @@ public class CookingInaMain extends GameApplication {
             uc.spawnEquipment((Equipment) calamansiDispenser, 230, 300, 150, 340);
         }
 
-        ContainerType bukoDispenser = ContainerTypeFactory.create(BUKO_JUICE);
-        allStoreItems.add(bukoDispenser.getItem());
-        bukoDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
-        if (bukoDispenser.getItem().getIsAvailable()) {
-            uc.spawnInvisibleEquipment((BeverageDispenser) bukoDispenser, 30, 500, 150, 340);
-            uc.spawnEquipment((Equipment) bukoDispenser, 130, 400, 150, 340);
-        }
 
         ContainerType orangeDispenser = ContainerTypeFactory.create(ORANGE_JUICE);
         allStoreItems.add(orangeDispenser.getItem());
         orangeDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
         if (orangeDispenser.getItem().getIsAvailable()) {
+            uc.spawnEquipment((Equipment) orangeDispenser, 130, 400, 150, 340);
             uc.spawnInvisibleEquipment((BeverageDispenser) orangeDispenser, 130, 400, 150, 340);
-            uc.spawnEquipment((Equipment) orangeDispenser, 30, 500, 150, 340);
         }
+
+        ContainerType bukoDispenser = ContainerTypeFactory.create(BUKO_JUICE);
+        allStoreItems.add(bukoDispenser.getItem());
+        bukoDispenser.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (bukoDispenser.getItem().getIsAvailable()) {
+            uc.spawnInvisibleEquipment((BeverageDispenser) bukoDispenser, 30, 500, 150, 340);
+            uc.spawnEquipment((Equipment) bukoDispenser, 30, 500, 150, 340);
+        }
+
 
         ContainerType quekquekFood = ContainerTypeFactory.create(QUEKQUEK);
         allStoreItems.add(quekquekFood.getItem());
@@ -485,7 +487,7 @@ public class CookingInaMain extends GameApplication {
 
         FXGL.getGameScene().addUINode(incomeBar);
     }
-    private void setProgressBar() {
+    private void setTimerBar() {
         // Timer progress bar
         timerBar = new ProgressBar();
         timerBar.setWidth(800);
@@ -500,9 +502,9 @@ public class CookingInaMain extends GameApplication {
         timerBar.setMaxValue(TOTAL_TIME);
 
         // Visual styling
-        timerBar.setFill(Color.LIME);
-        timerBar.setBackgroundFill(Color.GRAY);
-        timerBar.setLabelFill(Color.WHITE);
+        timerBar.setFill(Color.RED);
+        timerBar.setBackgroundFill(Color.BLACK);
+        timerBar.setLabelVisible(false);
 
         // Add to game scene
         FXGL.getGameScene().addUINode(timerBar);
