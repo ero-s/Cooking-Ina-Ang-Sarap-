@@ -3,7 +3,6 @@ package customers;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.dsl.FXGL;
-import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.control.UIController;
 import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.session.Session;
@@ -90,19 +89,13 @@ public class SpeechBubbleComponent extends Component {
         bubbleRoot.setTranslateY(entity.getHeight()-300);
     }
 
-    @Override
     public void onUpdate(double tpf) {
-        double elapsedSec = (System.currentTimeMillis() - startTime) / 1000.0;
-        double remaining  = Math.max(0, DURATION_SECONDS - elapsedSec);
-        double progress   = remaining / DURATION_SECONDS;
+        double elapsed = (System.currentTimeMillis() - startTime) / 1000.0;
+        double progress = Math.max(0, 1.0 - elapsed / DURATION_SECONDS);
         patience = progress;
 
-        // Remove customer if patience has fully run out
         if (progress <= 0) {
-            // Remove from spawner list
-            UIController.components.remove(entity.getComponent(CustomerComponent.class));
-            // Remove entity
-            entity.removeFromWorld();
+            removeCustomerEntity();
             return;
         }
 
@@ -110,7 +103,7 @@ public class SpeechBubbleComponent extends Component {
         patienceBar.setWidth(width * progress);
         patienceBar.setFill(
                 progress > 0.5 ? Color.LIMEGREEN :
-                        progress > 0.2 ? Color.ORANGE :
+                        progress > 0.2 ? Color.ORANGE   :
                                 Color.RED
         );
     }
@@ -126,17 +119,13 @@ public class SpeechBubbleComponent extends Component {
             ImageView iv = icons.remove(matchKey);
             bubbleRoot.getChildren().remove(iv);
         }
-
-        // If all orders served, remove customer
         if (icons.isEmpty() && entity != null) {
-            // Remove from spawner list
-            // Optionally play a fade-out
-            FadeTransition ft = new FadeTransition(Duration.seconds(0.5), entity.getViewComponent().getParent());
+            // fade out bubble, then remove
+            FadeTransition ft = new FadeTransition(Duration.seconds(0.5), bubbleRoot);
             ft.setFromValue(1.0);
             ft.setToValue(0.0);
+            ft.setOnFinished(evt -> removeCustomerEntity());
             ft.play();
-            UIController.components.remove(entity.getComponent(CustomerComponent.class));
-
         }
     }
 
@@ -182,5 +171,14 @@ public class SpeechBubbleComponent extends Component {
         tt.play();
         ft.play();
         ft.setOnFinished(e -> bubbleRoot.getChildren().remove(popup));
+    }
+
+    private void removeCustomerEntity() {
+        // 1) Remove the speech bubble itself
+        UIController.components.remove(entity.getComponent(CustomerComponent.class));
+
+        // 2) Remove the CustomerComponent so UIController lookup stops
+        // 3) Finally remove the whole entity
+        entity.removeFromWorld();
     }
 }

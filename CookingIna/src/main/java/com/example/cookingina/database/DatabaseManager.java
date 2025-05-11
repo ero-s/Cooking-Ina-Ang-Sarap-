@@ -163,6 +163,25 @@ public class DatabaseManager {
         return username; // fallback to username
     }
 
+    public static Integer getTargetIncome(int levelId) {
+        String sql = "SELECT targetIncome FROM tbllevel WHERE levelid = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, levelId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("targetIncome");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static int registerUser(String username, String password) {
         String sql = "INSERT INTO tblplayer (username, password, displayname) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();

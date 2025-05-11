@@ -41,6 +41,9 @@ public class CookingComponent extends Component {
         progressBar.setTranslateX(-20);
         progressBar.setFill(Color.LIMEGREEN);
 
+        progressBar.setMinValue(0);
+        progressBar.setMaxValue(totalTime);
+
         entity.getViewComponent().addChild(progressBar);
         equipment.setOccupied(true);
 
@@ -60,8 +63,6 @@ public class CookingComponent extends Component {
 
         // Update progress bar
         progressBar.setCurrentValue(totalTime - timer);
-        progressBar.setMinValue(0);
-        progressBar.setMaxValue(totalTime);
 
         if (timer <= 0) {
             isCooked = true;

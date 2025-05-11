@@ -92,4 +92,15 @@ public class CustomerComponent extends Component {
     public List<Order> getOrders() {
         return myOrders;
     }
+
+    @Override
+    public void onRemoved() {
+        // Stop any background movement
+        if (movementThread != null && movementThread.isAlive()) {
+            movementThread.interrupt();
+        }
+        // Let FXGL fully remove the entity
+        entity.removeFromWorld();
+    }
+
 }

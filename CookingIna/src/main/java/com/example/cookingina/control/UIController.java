@@ -326,7 +326,7 @@ public class UIController extends Component {
         double y = 330;
         int sceneW = FXGL.getAppWidth();
 
-        if (components.size() >= MAX_CUSTOMERS) {
+        if (components.size() > MAX_CUSTOMERS) {
             System.out.println("MAX reached (" + MAX_CUSTOMERS + "); skipping spawn.");
             return false;
         }

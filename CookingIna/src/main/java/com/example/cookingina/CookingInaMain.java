@@ -165,7 +165,7 @@ public class CookingInaMain extends GameApplication {
 
         FXGL.getWorldProperties().intProperty("income")
                 .addListener((obs, oldVal, newVal) -> {
-                    if (newVal.intValue() >= quota) {
+                    if (newVal.intValue() >= DatabaseManager.getTargetIncome(DatabaseManager.getPlayerLevel(Session.getUsername()))) {
                         niceGame();
                     }
                 });
