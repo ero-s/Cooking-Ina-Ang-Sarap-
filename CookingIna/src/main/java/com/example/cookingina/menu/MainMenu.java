@@ -18,6 +18,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import java.io.File;
+
 public class MainMenu extends FXGLMenu {
     public MainMenu() {
         super(MenuType.MAIN_MENU);
@@ -26,28 +28,47 @@ public class MainMenu extends FXGLMenu {
     }
 
     private void initMenuUI() {
+        // Play Button
         Button btnPlay = new Button();
-        btnPlay.setOnAction((evt) -> this.fireNewGame());
         btnPlay.setStyle("-fx-background-image: url('assets/textures/play_button.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
-        btnPlay.setPrefWidth((double)300.0F);
-        btnPlay.setPrefHeight((double)200.0F);
-        Button btnExit = new Button();
-        btnExit.setOnAction((evt) -> FXGL.getGameController().exit());
-        btnExit.setStyle("-fx-background-image: url('assets/textures/exit_button.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
-        btnExit.setPrefWidth((double)190.0F);
-        btnExit.setPrefHeight((double)110.0F);
-        btnPlay.setOnAction((e) -> {
+        btnPlay.setPrefWidth(300.0);
+        btnPlay.setPrefHeight(200.0);
+        btnPlay.setOnAction(e -> {
             String user = Session.getUsername();
             FXGL.getSceneService().pushSubScene(new LevelMenu(user));
         });
-        VBox vbox = new VBox((double)20.0F, new Node[]{btnPlay, btnExit});
+
+        // Logout Button
+        Button btnLogout = new Button();
+        btnLogout.setStyle("-fx-background-image: url('assets/textures/logout_button.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
+        btnLogout.setPrefWidth(190.0);
+        btnLogout.setPrefHeight(110.0);
+        btnLogout.setOnAction(e -> {
+            // Clear credentials and session
+            new File("credentials.ser").delete();
+            Session.clear();
+            // Return to login
+            FXGL.getSceneService().pushSubScene(new LoginMenu());
+        });
+
+        // Exit Button
+        Button btnExit = new Button();
+        btnExit.setStyle("-fx-background-image: url('assets/textures/exit_button.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
+        btnExit.setPrefWidth(190.0);
+        btnExit.setPrefHeight(110.0);
+        btnExit.setOnAction(evt -> FXGL.getGameController().exit());
+
+        VBox vbox = new VBox(20.0, btnPlay, btnLogout, btnExit);
         vbox.setAlignment(Pos.CENTER);
+
         Pane root = this.getContentRoot();
         root.getChildren().add(vbox);
+
         vbox.layoutXProperty().bind(root.widthProperty().subtract(vbox.widthProperty()).divide(2));
         vbox.layoutYProperty().bind(root.heightProperty().subtract(vbox.heightProperty()).divide(2));
     }
 
+    // initBackground() remains unchanged
     protected void initBackground() {
         Texture background = FXGL.texture("main_menu.png");
         background.setFitHeight((double)this.getAppHeight());
