@@ -70,9 +70,6 @@ public class CookingInaMain extends GameApplication {
         this.joinDate = joinDate;
     }
 
-    public LocalDateTime getJoinDate() {
-        return joinDate;
-    }
 
     public void setCurrentPlayerLevel(int level) {
         this.currentPlayerLevel = level;
@@ -150,8 +147,6 @@ public class CookingInaMain extends GameApplication {
                         endGame();
                     }
                 });
-
-        startTimer();
     }
 
     @Override
@@ -472,6 +467,11 @@ public class CookingInaMain extends GameApplication {
         FXGL.getGameScene().addUINode(timerBar);
     }
 
+
+    void onPause() {
+
+    }
+
     @Override
     protected void initPhysics() {
         // existing collision handlers...
@@ -487,11 +487,6 @@ public class CookingInaMain extends GameApplication {
                 if (!customer.hasComponent(SpeechBubbleComponent.class)) {
                     return; // no bubble to update
                 }
-                SpeechBubbleComponent bubble = customer.getComponent(SpeechBubbleComponent.class);
-                // 2) Determine which Order this ingredient matches
-                //    Assumes your ingredient entity has a UserData or component exposing its name
-                String servedName = ingredient.getString("itemName");
-                // or: ingredient.getComponent(SomeComponent.class).getStoreItem().getDescription();
                 FXGL.getGameScene().addUINode(timerBar);
             }
         });
