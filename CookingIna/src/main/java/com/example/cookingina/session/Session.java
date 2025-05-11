@@ -11,4 +11,8 @@ public final class Session {
     public static String getUsername() {
         return username;
     }
+
+    public static void clear() {
+        username = null;
+    }
 }
