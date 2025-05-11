@@ -33,18 +33,7 @@ public class UIController extends Component {
     public final static List<CustomerComponent> components = new ArrayList<>();
     private static final int MAX_CUSTOMERS = 5;
     private static final Random random = new Random();
-    private static int mangoCount = 0;
-    private static final int MAX_MANGO = 3;
 
-    private static List<Fryer> fryers;
-    private static List<MangoTray>  mangoTray;
-    private static List<IceCrusher>  iceCrusher;
-
-    public void setFryers(List<Fryer> fryerList) {
-        fryers = fryerList;
-    }
-    public static void setMangoTray(List<MangoTray> mangoTrayList) {mangoTray = mangoTrayList;}
-    public static void setIceCrusher(List<IceCrusher> iceCrusherList) {iceCrusher = iceCrusherList;}
 
     // Spawing Container and container item to the equipment
     public void spawnContainerForEquipment(Food storeItem, List<? extends Equipment> equipmentList, double containerX, double containerY, int containerWidth, int containerHeight) {
@@ -308,20 +297,25 @@ public class UIController extends Component {
         viewNode.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> entity.setPosition(x,y));
     }
 
+    private boolean spawnPaused = false;
 
     public void spawnCustomerAtRandomIntervals() {
-        scheduleNextSpawn();
+        FXGL.getGameTimer().runAtInterval(this::scheduleNextSpawn, Duration.seconds(1));
     }
 
     private void scheduleNextSpawn() {
-        List<String> imageName = Arrays.asList("Austine", "Krizza", "Kyle", "Sherielyn", "Vince", "Christian", "Shervin");
+
+        List<String> imageName = Arrays.asList(
+                "Austine", "Krizza", "Kyle", "Sherielyn", "Vince", "Christian", "Shervin"
+        );
         double delay = 1 + random.nextDouble() * 2;
+
         FXGL.runOnce(() -> {
-            // only actually spawn if we’re under the cap
+            // Only spawn if game still running and under customer cap
             if (components.size() < MAX_CUSTOMERS) {
                 spawnCustomer(imageName);
             }
-            // no matter what, plan the next roll
+            // Continue scheduling regardless
             scheduleNextSpawn();
         }, Duration.seconds(delay));
     }
@@ -336,19 +330,16 @@ public class UIController extends Component {
             return false;
         }
 
-        // 🟢 **Select a random image name from the list**
         if (imageNames.isEmpty()) {
             System.out.println("Image list is empty; cannot spawn customer.");
             return false;
         }
+
         String selectedImageName = imageNames.get(random.nextInt(imageNames.size()));
 
-        // 🔄 **Find a non-overlapping X within max attempts**
         double targetX;
         int maxTries = 10;
         int attempts = 0;
-
-        // Adjusted the range and added fallback if the range is invalid
         int minX = Math.min(400, sceneW - w - 350);
         int maxX = Math.max(400, sceneW - w - 350);
 
@@ -366,8 +357,7 @@ public class UIController extends Component {
         double startX = goRight ? -w : sceneW + w;
         String dir = goRight ? "RIGHT" : "LEFT";
 
-        // 🟢 **Build and attach the entity with the selected image**
-        var ent = FXGL.entityBuilder()
+        Entity ent = entityBuilder()
                 .type(CookingInaMain.EntityType.CUSTOMER)
                 .at(startX, y)
                 .viewWithBBox(FXGL.texture(selectedImageName + ".png", w, h))

@@ -82,7 +82,7 @@ public class PaperTrayComponent extends Component {
         // Attempt to serve any overlapping customer
         for (Entity customer : FXGL.getGameWorld()
                 .getEntitiesByType(CookingInaMain.EntityType.CUSTOMER)) {
-            if (customer.isColliding(entity) && textureChanged) {
+            if (customer.isColliding(entity) && textureChanged && customer.hasComponent(SpeechBubbleComponent.class)) {
                 served = true;
 
                 String servedItem = getServedItemFromTexture();
@@ -123,7 +123,18 @@ public class PaperTrayComponent extends Component {
 
         // Snap back if not served
         if (!served) {
-            entity.setPosition(trayOriginalPos);
+            boolean onTrash = FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.TRASH)
+                    .stream()
+                    .anyMatch(e -> e.getBoundingBoxComponent()
+                            .isCollidingWith(entity.getBoundingBoxComponent()));
+            if (onTrash) {
+                resetTray();
+
+            }
+            else{
+                // Snap back if not served
+                entity.setPosition(trayOriginalPos);
+            }
         }
 
         // Delay removal of boundItem to allow texture change to display
@@ -133,6 +144,7 @@ public class PaperTrayComponent extends Component {
                 boundItem = null;
             }, Duration.seconds(0.2));
         }
+
     }
 
     private void resetTray() {

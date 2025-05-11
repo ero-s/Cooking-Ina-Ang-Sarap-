@@ -2,11 +2,13 @@ package customers;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.component.Component;
+import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.control.UIController;
 import javafx.application.Platform;
 import javafx.util.Duration;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CustomerComponent extends Component {
 
@@ -26,36 +28,57 @@ public class CustomerComponent extends Component {
 
     @Override
     public void onAdded() {
-        // Start a background thread to handle movement
         movementThread = new Thread(() -> {
             try {
                 while (!hasArrived) {
-                    // Use FXGL tpf estimate (for simplicity assume 60 FPS = ~0.016s)
+
+                    // --- your existing movement logic ---
                     double tpf = 0.016;
-                    double dx = 100 * tpf * (direction.equals("RIGHT") ? 1 : -1);
+                    double dx  = 100 * tpf * (direction.equals("RIGHT") ? 1 : -1);
 
                     Platform.runLater(() -> {
                         if (!hasArrived && entity != null) {
                             entity.translateX(dx);
-
                             if (Math.abs(entity.getX() - targetX) < 1) {
                                 entity.setX(targetX);
                                 hasArrived = true;
-
-                                FXGL.getGameTimer().runOnceAfter(this::onArrived, Duration.seconds(0));
+                                FXGL.getGameTimer()
+                                        .runOnceAfter(this::onArrived, Duration.seconds(0));
                             }
                         }
                     });
 
-                    Thread.sleep(16); // simulate frame delay ~60 FPS
+                    Thread.sleep(16); // ~60 FPS
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         });
 
-        movementThread.setDaemon(true); // allow app to close cleanly
+        movementThread.setDaemon(true);
         movementThread.start();
+    }
+
+
+    @Override
+    public void onUpdate(double tpf) {
+        if (hasArrived)
+            return;
+
+
+        // 100 px/sec speed
+        double dx = 100 * tpf * (Objects.equals(direction, "RIGHT") ? +1 : -1);
+        entity.translateX(dx);
+
+        // Check arrival
+        if (Math.abs(entity.getX() - targetX) < 1) {
+            entity.setX(targetX);
+            hasArrived = true;
+
+            // Schedule bubble on FX thread
+            FXGL.getGameTimer()
+                    .runOnceAfter(this::onArrived, Duration.seconds(0));
+        }
     }
 
     private void onArrived() {

@@ -84,7 +84,7 @@ public class SpeechBubbleComponent extends Component {
         entity.getViewComponent().addChild(bubbleRoot);
         double bubbleW = bubbleRoot.getBoundsInLocal().getWidth();
         bubbleRoot.setTranslateX(-bubbleW / 2 + 50);
-        bubbleRoot.setTranslateY(entity.getHeight()-100);
+        bubbleRoot.setTranslateY(entity.getHeight()-300);
     }
 
     @Override
@@ -126,13 +126,14 @@ public class SpeechBubbleComponent extends Component {
         // If all orders served, remove customer
         if (icons.isEmpty() && entity != null) {
             // Remove from spawner list
-            UIController.components.remove(entity.getComponent(CustomerComponent.class));
             // Optionally play a fade-out
             FadeTransition ft = new FadeTransition(Duration.seconds(0.5), entity.getViewComponent().getParent());
             ft.setFromValue(1.0);
             ft.setToValue(0.0);
             ft.setOnFinished(e -> entity.removeFromWorld());
             ft.play();
+            UIController.components.remove(entity.getComponent(CustomerComponent.class));
+
         }
     }
 
