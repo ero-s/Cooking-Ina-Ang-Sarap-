@@ -4,7 +4,7 @@ import java.io.*;
 
 public class UserCredentials implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final String CREDENTIALS_PATH = System.getProperty("user.home") + "/.cooking-ina/credentials.ser";
+    private static final String CREDENTIALS_PATH = System.getProperty("user.home") + "/.cooking-ina/credentials.text";
 
     private String username;
     private String password;
@@ -25,7 +25,15 @@ public class UserCredentials implements Serializable {
 
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(CREDENTIALS_PATH))) {
-            oos.writeObject(this);
+            if(username != null && password != null) {
+                if(!username.isEmpty() && !password.isEmpty()) {
+                    oos.writeObject(null);
+                }
+                else{
+                    oos.writeObject(this);
+
+                }
+            }
         } catch (IOException e) {
             System.err.println("Failed to save credentials: " + e.getMessage());
         }

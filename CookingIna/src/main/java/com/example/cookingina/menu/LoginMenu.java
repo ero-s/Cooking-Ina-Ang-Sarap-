@@ -7,6 +7,7 @@ import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.session.Session;
+import com.example.cookingina.user.UserCredentials;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,6 +26,7 @@ public class LoginMenu extends FXGLMenu {
 
     private Text messageText;
     private String currentUsername;
+    private UserCredentials uc;
 
     public LoginMenu() {
         super(MenuType.MAIN_MENU);
@@ -221,6 +223,7 @@ public class LoginMenu extends FXGLMenu {
 
         if (DatabaseManager.validateLogin(username, password)) {
             currentUsername = username;
+            uc = new UserCredentials(username, password);
             int savedLevel = DatabaseManager.getPlayerLevel(username);
             LocalDateTime joinDate = DatabaseManager.getJoinDate(username);
 
@@ -228,6 +231,8 @@ public class LoginMenu extends FXGLMenu {
             game.setCurrentPlayerLevel(savedLevel);
             game.setJoinDate(joinDate);
             Session.setUsername(username);
+            uc = new UserCredentials(username,password);
+            uc.save();
             FXGL.getSceneService().pushSubScene(new MainMenu());
         } else {
             showError("Invalid username or password");

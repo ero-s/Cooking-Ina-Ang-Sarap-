@@ -9,7 +9,9 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
+import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.session.Session;
+import com.example.cookingina.user.UserCredentials;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -21,6 +23,7 @@ import javafx.util.Duration;
 import java.io.File;
 
 public class MainMenu extends FXGLMenu {
+    private UserCredentials uc;
     public MainMenu() {
         super(MenuType.MAIN_MENU);
         this.initBackground();
@@ -41,11 +44,13 @@ public class MainMenu extends FXGLMenu {
         // Logout Button
         Button btnLogout = new Button();
         btnLogout.setStyle("-fx-background-image: url('assets/textures/logout_button.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
-        btnLogout.setPrefWidth(190.0);
+        btnLogout.setPrefWidth(320.0);
         btnLogout.setPrefHeight(110.0);
         btnLogout.setOnAction(e -> {
             // Clear credentials and session
             new File("credentials.ser").delete();
+            uc = new UserCredentials("","");
+            uc.save();
             Session.clear();
             // Return to login
             FXGL.getSceneService().pushSubScene(new LoginMenu());
