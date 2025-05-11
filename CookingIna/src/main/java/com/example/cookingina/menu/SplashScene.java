@@ -52,8 +52,7 @@ public class SplashScene extends FXGLMenu {
             try {
                 UserCredentials creds = UserCredentials.load();
 
-                if (creds == null || !DatabaseManager.validateLogin(
-                        creds.getUsername(), creds.getPassword())) {
+                if (creds == null) {
                     // Invalid or no credentials
                     getSceneService().pushSubScene(new LoginMenu());
                     return;

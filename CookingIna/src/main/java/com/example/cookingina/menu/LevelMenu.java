@@ -6,10 +6,10 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.model.LevelData;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import java.util.List;
-import java.util.Map;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
@@ -23,16 +23,36 @@ public class LevelMenu extends FXGLMenu {
         Pane levelPane = new Pane();
         levelPane.setPrefSize(FXGL.getAppWidth(), FXGL.getAppHeight());
 
+        // Background
         ImageView bg = new ImageView(getAssetLoader().loadImage("level_map.png"));
         bg.setFitWidth(FXGL.getAppWidth());
         bg.setFitHeight(FXGL.getAppHeight());
         levelPane.getChildren().add(bg);
 
+        // Levels
         currentLevel = DatabaseManager.getPlayerLevel(currentUsername);
         loadLevelMenu(levelPane, currentLevel);
 
+        // Back Button
+        Button backButton = new Button("← Back");
+        backButton.setStyle("-fx-font-size: 16px; "
+                + "-fx-padding: 8 15; "
+                + "-fx-background-color: #4CAF50; "
+                + "-fx-text-fill: white; "
+                + "-fx-background-radius: 5; "
+                + "-fx-cursor: hand;");
+
+        // Position in top-left corner
+        backButton.setLayoutX(20);
+        backButton.setLayoutY(20);
+
+        // Action to return to main menu
+        backButton.setOnAction(e -> FXGL.getSceneService().popSubScene());
+
+        // Add button to the pane (after background but before levels)
+        levelPane.getChildren().add(backButton);
+
         getContentRoot().getChildren().add(levelPane);
-        System.out.println(currentUsername);
     }
 
     private void loadLevelMenu(Pane pane, int currentLevel) {
@@ -62,11 +82,6 @@ public class LevelMenu extends FXGLMenu {
                     ((CookingInaMain) FXGL.getApp()).initUI();
                     FXGL.getSceneService().popSubScene();
                     FXGL.getGameController().resumeEngine();
-
-                    System.out.println("Selected Level: " + level.levelId +
-                            " Quota: " + level.targetIncome +
-                            " MaxCustomers: " + level.maxCustomers +
-                            " Time: " + level.timeLimit);
                 });
             } else {
                 levelImage.setOpacity(0.8);
