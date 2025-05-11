@@ -54,18 +54,19 @@ public class LevelMenu extends FXGLMenu {
 
             if (level.unlocked) {
                 levelImage.setOnMouseClicked(e -> {
-                    Map<String, Object> gameParameters = Map.of(
-                            "quota", level.targetIncome,
-                            "maxCustomers", level.maxCustomers,
-                            "time", level.timeLimit
-                    );
+                    FXGL.set("quota", level.targetIncome);
+                    FXGL.set("maxCustomers", level.maxCustomers);
+                    FXGL.set("time", level.timeLimit);
 
                     FXGL.getGameController().startNewGame();
                     ((CookingInaMain) FXGL.getApp()).initUI();
                     FXGL.getSceneService().popSubScene();
                     FXGL.getGameController().resumeEngine();
 
-                    System.out.println(level);
+                    System.out.println("Selected Level: " + level.levelId +
+                            " Quota: " + level.targetIncome +
+                            " MaxCustomers: " + level.maxCustomers +
+                            " Time: " + level.timeLimit);
                 });
             } else {
                 levelImage.setOpacity(0.8);
