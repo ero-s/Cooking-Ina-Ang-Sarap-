@@ -22,7 +22,8 @@ public class OrderFactory {
      */
 
     public static Order createRandomOrder() {
-        int safeUpperBound = Math.min(CookingInaMain.currentPlayerLevel, MENU_ITEMS.length);
+        CookingInaMain game = new CookingInaMain();
+        int safeUpperBound = Math.min(game.getPlayerLevel(), MENU_ITEMS.length);
         String item = MENU_ITEMS[RANDOM.nextInt(safeUpperBound)];
         int quantity = RANDOM.nextInt(MAX_QUANTITY) + 1;
         return new Order(item, quantity);

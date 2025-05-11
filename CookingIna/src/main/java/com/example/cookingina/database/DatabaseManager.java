@@ -218,31 +218,56 @@ public class DatabaseManager {
         return levels;
     }
 
-    public static List<LevelData> getAllLevels(int currentLevel) {
-        List<LevelData> levels = new ArrayList<>();
+//    public static List<LevelData> getAllLevels(String username) {
+//        List<LevelData> levels = new ArrayList<>();
+//
+//        String sql = """
+//        SELECT l.*,
+//               p.levelid AS playerLevel
+//        FROM tbllevel l
+//        JOIN tblplayer p ON p.username = ?
+//        ORDER BY l.levelid
+//    """;
+//
+//        try (Connection conn = getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setString(1, username);
+//            ResultSet rs = stmt.executeQuery();
+//
+//            int playerLevel = -1;
+//            if (rs.next()) {
+//                playerLevel = rs.getInt("playerLevel");
+//                do {
+//                    LevelData data = new LevelData();
+//                    data.levelId = rs.getInt("levelid");
+//                    data.targetIncome = rs.getDouble("targetincome");
+//                    data.maxCustomers = rs.getInt("maxcustomers");
+//                    data.timeLimit = rs.getInt("timelimit");
+//                    data.patienceLevel = rs.getInt("patiencelevel");
+//                    data.unlocked = data.levelId <= playerLevel;
+//
+//                    levels.add(data);
+//                } while (rs.next());
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return levels;
+//    }
 
-        String sql = "SELECT * FROM tbllevel ORDER BY levelid";
+    public static void unlockLevel(String username, int levelId) {
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(
+                     "UPDATE tblplayer SET levelid = levelid + 1 WHERE username = ?")) {
 
-            while (rs.next()) {
-                LevelData data = new LevelData();
-                data.levelId = rs.getInt("levelid");
-                data.targetIncome = rs.getDouble("targetincome");
-                data.maxCustomers = rs.getInt("maxcustomers");
-                data.timeLimit = rs.getInt("timelimit");
-                data.patienceLevel = rs.getInt("patiencelevel");
-                data.unlocked = data.levelId <= currentLevel;  // determine unlock status
-
-                levels.add(data);
-            }
+            stmt.setString(1, username);
+            stmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return levels;
     }
-
 }

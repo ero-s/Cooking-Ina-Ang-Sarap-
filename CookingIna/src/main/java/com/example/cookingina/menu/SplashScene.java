@@ -4,6 +4,7 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.database.DatabaseManager;
+import com.example.cookingina.session.Session;
 import com.example.cookingina.user.UserCredentials;
 import javafx.animation.PauseTransition;
 import javafx.scene.image.Image;
@@ -26,6 +27,7 @@ import static com.almasb.fxgl.dsl.FXGL.getSceneService;
 public class SplashScene extends FXGLMenu {
     public SplashScene() {
         super(MenuType.MAIN_MENU);
+
 
         // Black background fallback
         Rectangle background = new Rectangle(getAppWidth(), getAppHeight(), Color.BLACK);
@@ -57,6 +59,7 @@ public class SplashScene extends FXGLMenu {
                     getSceneService().pushSubScene(new LoginMenu());
                     return;
                 }
+                Session.setUsername(creds.getUsername());
 
                 // Valid credentials
                 int level = DatabaseManager.getPlayerLevel(creds.getUsername());

@@ -13,10 +13,11 @@ import com.example.cookingina.control.UIController;
 
 import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.menu.GameOverMenu;
-import com.example.cookingina.menu.LoginMenu;
 import com.example.cookingina.menu.SplashScene;
+import com.example.cookingina.menu.YouWonMenu;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.*;
+import com.example.cookingina.session.Session;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
 import javafx.scene.input.KeyCode;
@@ -36,14 +37,24 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
 
 public class CookingInaMain extends GameApplication {
-    public static int currentPlayerLevel;
+    public static int currentPlayerLevel = 1;
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
     private static List<StoreItem> allStoreItems = new ArrayList<>();
     private boolean isGameActive = false;
+    private String currUsername;
     private final List<IceCrusher> ice_Crusher = new ArrayList<>();
     public UIController uc = new UIController();
+
+    public static int getPlayerLevel() {
+        return currentPlayerLevel;
+    }
+
+    public void setCurrentUsername(String username) {
+        this.currUsername = username;
+        currentPlayerLevel = DatabaseManager.getPlayerLevel(currUsername);
+    }
 
 
     public enum EntityType {
@@ -72,15 +83,17 @@ public class CookingInaMain extends GameApplication {
     }
 
 
-    public static void setCurrentPlayerLevel(int level) {
-        currentPlayerLevel = 10;
-        updateAllItemsAvailability();
-    }
+
 
     private static void updateAllItemsAvailability() {
         for (StoreItem item : allStoreItems) {
-            item.updateAvailability(currentPlayerLevel);
+            item.updateAvailability(getPlayerLevel());
         }
+    }
+
+    public static void setCurrentPlayerLevel(int level) {
+        currentPlayerLevel = level;
+        updateAllItemsAvailability();
     }
 
     @Override
@@ -153,7 +166,7 @@ public class CookingInaMain extends GameApplication {
         FXGL.getWorldProperties().intProperty("income")
                 .addListener((obs, oldVal, newVal) -> {
                     if (newVal.intValue() >= quota) {
-                        endGame();
+                        niceGame();
                     }
                 });
     }
@@ -238,9 +251,6 @@ public class CookingInaMain extends GameApplication {
         uc.spawnCustomerAtRandomIntervals();
 // ================= CONTAINER ENTITY =================
 
-        ContainerType iceCrusher = ContainerTypeFactory.create(HALO_HALO);
-
-
         // Add trashCan asset
         TrashBin trashBin = new TrashBin(
                 "trash_closed.png",                         // name
@@ -302,7 +312,6 @@ public class CookingInaMain extends GameApplication {
             uc.spawnPaperTray(tray, pos[0], pos[1], pos[2], pos[3]);
         }
 
-        uc.spawnContainerForEquipment((Food) iceCrusher, ice_Crusher, 270, 870, 350, 250);
         // ================= CONTAINER ENTITY =================
         ContainerType cucumberFood = ContainerTypeFactory.create(CUCUMBER);
         ContainerType gusoFood = ContainerTypeFactory.create(GUSO);
@@ -368,15 +377,20 @@ public class CookingInaMain extends GameApplication {
             uc.spawnContainerForEquipment((Food) mangoBasket, mangoTrays, 1630, 720, 270, 250);
         }
 
+        ContainerType iceCrusher = ContainerTypeFactory.create(HALO_HALO);
+        allStoreItems.add(iceCrusher.getItem());
+        iceCrusher.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (iceCrusher.getItem().getIsAvailable()) {
+            uc.spawnContainerForEquipment((Food) iceCrusher, ice_Crusher, 270, 870, 350, 250);
+        }
+
         ContainerType bagoong = ContainerTypeFactory.create(BAGOONG);
-        allStoreItems.add(bagoong.getItem());
         bagoong.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
         if (bagoong.getItem().getIsAvailable()) {
             uc.spawnContainer((Food) bagoong, 1500, 650, 54, 100);
         }
 
         ContainerType salt = ContainerTypeFactory.create(SALT);
-        allStoreItems.add(salt.getItem());
         salt.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
         if (salt.getItem().getIsAvailable()) {
             uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
@@ -417,18 +431,32 @@ public class CookingInaMain extends GameApplication {
             timerBar.setCurrentValue(next);
 
             if (next >= TOTAL_TIME) {
-                endGame();
+                gameOver();
             }
         }, Duration.seconds(1));
     }
 
-    private void endGame() {
+    private void gameOver() {
+        resetGameState();
+
 
         // Show game over menu
         FXGL.getSceneService().pushSubScene(new GameOverMenu());
 
         // Full reset
+
+        // Optional: Pause the game engine if needed
+        FXGL.getGameController().pauseEngine();
+    }
+
+    private void niceGame() {
         resetGameState();
+
+
+        // Show game over menu
+        FXGL.getSceneService().pushSubScene(new YouWonMenu(Session.getUsername(),currentPlayerLevel));
+
+        // Full reset
 
         // Optional: Pause the game engine if needed
         FXGL.getGameController().pauseEngine();
@@ -480,10 +508,6 @@ public class CookingInaMain extends GameApplication {
         FXGL.getGameScene().addUINode(timerBar);
     }
 
-
-    void onPause() {
-
-    }
 
     @Override
     protected void initPhysics() {
