@@ -4,6 +4,7 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
+import com.example.cookingina.session.Session;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import com.almasb.fxgl.dsl.FXGL;
@@ -34,10 +35,8 @@ public class MainMenu extends FXGLMenu {
         Button btnPlay = createGameButton("PLAY", "#2ecc71");
         btnPlay.setPrefSize(300, 100);
         btnPlay.setOnAction(e -> {
-            FXGL.getGameController().startNewGame();
-            ((CookingInaMain) FXGL.getApp()).initUI();
-            FXGL.getSceneService().popSubScene();
-            FXGL.getGameController().resumeEngine();
+            String user = Session.getUsername();
+            FXGL.getSceneService().pushSubScene(new LevelMenu(user));
         });
 
         // Exit Button

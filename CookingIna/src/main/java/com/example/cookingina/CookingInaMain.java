@@ -45,6 +45,7 @@ public class CookingInaMain extends GameApplication {
     private final List<IceCrusher> ice_Crusher = new ArrayList<>();
     public UIController uc = new UIController();
 
+
     public enum EntityType {
         INGREDIENT,
         EQUIPMENT,
@@ -147,6 +148,8 @@ public class CookingInaMain extends GameApplication {
                         endGame();
                     }
                 });
+
+        startTimer();
     }
 
     @Override

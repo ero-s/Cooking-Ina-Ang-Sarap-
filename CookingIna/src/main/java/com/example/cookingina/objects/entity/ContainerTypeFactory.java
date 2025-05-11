@@ -20,7 +20,7 @@ public class ContainerTypeFactory {
                         5.00,
                         3.0,1,
                         80,
-                        80 ),
+                        80) ,
                         "rawHotdog_container.png");
             case QUEKQUEK: //DONE
                 return new Food(new StoreItem(
