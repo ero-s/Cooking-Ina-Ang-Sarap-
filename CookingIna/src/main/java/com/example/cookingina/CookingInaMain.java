@@ -17,6 +17,7 @@ import com.example.cookingina.menu.SplashScene;
 import com.example.cookingina.menu.YouWonMenu;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.*;
+import com.example.cookingina.session.Session;
 import javafx.animation.Timeline;
 import customers.SpeechBubbleComponent;
 import javafx.scene.input.KeyCode;
@@ -36,7 +37,7 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
 
 public class CookingInaMain extends GameApplication {
-    public int currentPlayerLevel = 1;
+    public static int currentPlayerLevel = 1;
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
@@ -46,15 +47,13 @@ public class CookingInaMain extends GameApplication {
     private final List<IceCrusher> ice_Crusher = new ArrayList<>();
     public UIController uc = new UIController();
 
-    public int getPlayerLevel() {
+    public static int getPlayerLevel() {
         return currentPlayerLevel;
     }
 
     public void setCurrentUsername(String username) {
         this.currUsername = username;
-    }
-    public void setCurrLevel(int level) {
-        this.currentPlayerLevel = level;
+        currentPlayerLevel = DatabaseManager.getPlayerLevel(currUsername);
     }
 
 
@@ -86,13 +85,13 @@ public class CookingInaMain extends GameApplication {
 
 
 
-    private void updateAllItemsAvailability() {
+    private static void updateAllItemsAvailability() {
         for (StoreItem item : allStoreItems) {
             item.updateAvailability(getPlayerLevel());
         }
     }
 
-    public void setCurrentPlayerLevel(int level) {
+    public static void setCurrentPlayerLevel(int level) {
         currentPlayerLevel = level;
         updateAllItemsAvailability();
     }
@@ -252,9 +251,6 @@ public class CookingInaMain extends GameApplication {
         uc.spawnCustomerAtRandomIntervals();
 // ================= CONTAINER ENTITY =================
 
-        ContainerType iceCrusher = ContainerTypeFactory.create(HALO_HALO);
-
-
         // Add trashCan asset
         TrashBin trashBin = new TrashBin(
                 "trash_closed.png",                         // name
@@ -316,7 +312,6 @@ public class CookingInaMain extends GameApplication {
             uc.spawnPaperTray(tray, pos[0], pos[1], pos[2], pos[3]);
         }
 
-        uc.spawnContainerForEquipment((Food) iceCrusher, ice_Crusher, 270, 870, 350, 250);
         // ================= CONTAINER ENTITY =================
         ContainerType cucumberFood = ContainerTypeFactory.create(CUCUMBER);
         ContainerType gusoFood = ContainerTypeFactory.create(GUSO);
@@ -382,15 +377,20 @@ public class CookingInaMain extends GameApplication {
             uc.spawnContainerForEquipment((Food) mangoBasket, mangoTrays, 1630, 720, 270, 250);
         }
 
+        ContainerType iceCrusher = ContainerTypeFactory.create(HALO_HALO);
+        allStoreItems.add(iceCrusher.getItem());
+        iceCrusher.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
+        if (iceCrusher.getItem().getIsAvailable()) {
+            uc.spawnContainerForEquipment((Food) iceCrusher, ice_Crusher, 270, 870, 350, 250);
+        }
+
         ContainerType bagoong = ContainerTypeFactory.create(BAGOONG);
-        allStoreItems.add(bagoong.getItem());
         bagoong.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
         if (bagoong.getItem().getIsAvailable()) {
             uc.spawnContainer((Food) bagoong, 1500, 650, 54, 100);
         }
 
         ContainerType salt = ContainerTypeFactory.create(SALT);
-        allStoreItems.add(salt.getItem());
         salt.getItem().updateAvailability(currentPlayerLevel); // <-- Add this line
         if (salt.getItem().getIsAvailable()) {
             uc.spawnContainer((Food) salt, 1550, 720, 54, 100);
@@ -454,7 +454,7 @@ public class CookingInaMain extends GameApplication {
 
 
         // Show game over menu
-        FXGL.getSceneService().pushSubScene(new YouWonMenu(currUsername,currentPlayerLevel));
+        FXGL.getSceneService().pushSubScene(new YouWonMenu(Session.getUsername(),currentPlayerLevel));
 
         // Full reset
 

@@ -31,21 +31,8 @@ public class YouWonMenu extends FXGLMenu {
         victoryText.setFont(Font.font("Verdana", 48));
         victoryText.setFill(Color.DARKGREEN);
 
-        // Next Level Button (only show if not max level)
-        Button nextLevel = new Button("Next Level");
-        nextLevel.setStyle("-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 20;");
-        nextLevel.setOnAction(e -> {
-            int newLevel = currentLevel + 1;
-            DatabaseManager.updatePlayerLevel(username, newLevel);
-            FXGL.getSceneService().popSubScene();
-            FXGL.getSceneService().pushSubScene(new LevelMenu(username));
-        });
-
         // Only show next level button if not at max level
-        int maxLevel = DatabaseManager.getPlayerLevel(username);
-        if (currentLevel >= maxLevel) {
-            nextLevel.setVisible(false);
-        }
+        int maxLevel =10;
 
         Button playAgain = new Button("Play Again");
         playAgain.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 20;");
@@ -56,22 +43,25 @@ public class YouWonMenu extends FXGLMenu {
             FXGL.getGameController().resumeEngine();
         });
 
-        Button levelMenu = new Button("Next Level");
-        levelMenu.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 20;");
-        levelMenu.setOnAction(e -> {
+        Button nextLevel = new Button("Next Level");
+        nextLevel.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 20;");
+        nextLevel.setOnAction(e -> {
 
-            int newLevel = currentLevel + 1;
-            LevelMenu lv = new LevelMenu(username);
+            // Update both player level and unlock next level
+            DatabaseManager.updatePlayerLevel(username, currentLevel);
+            DatabaseManager.unlockLevel(username, currentLevel);
 
-            CookingInaMain game = new CookingInaMain();
-            game.setCurrLevel(newLevel);
-            lv.levels.get(newLevel).unlocked = true;
-            DatabaseManager.updatePlayerLevel(username, newLevel);
+            // Refresh level menu
+            FXGL.getSceneService().popSubScene();
             FXGL.getSceneService().pushSubScene(new LevelMenu(username));
-
         });
 
-        VBox box = new VBox(20, victoryText, nextLevel, playAgain, levelMenu);
+        if (currentLevel >= maxLevel) {
+            nextLevel.setVisible(false);
+        }
+
+
+        VBox box = new VBox(20, victoryText, nextLevel, playAgain);
         centerElements(box);
 
         getContentRoot().getChildren().addAll(bg, box);

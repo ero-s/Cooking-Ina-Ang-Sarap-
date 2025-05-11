@@ -6,6 +6,7 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.model.LevelData;
+import com.example.cookingina.session.Session;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -16,12 +17,14 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class LevelMenu extends FXGLMenu {
 
     private int currentLevel;
-    public CookingInaMain game = new CookingInaMain();
-    public List<LevelData> levels = DatabaseManager.getAllLevels(game.getPlayerLevel());
+    private String currentUsername;
+    public CookingInaMain game = (CookingInaMain) FXGL.getApp();
+
 
 
     public LevelMenu(String currentUsername) {
         super(MenuType.MAIN_MENU);
+        this.currentUsername = currentUsername;
 
         Pane levelPane = new Pane();
         levelPane.setPrefSize(FXGL.getAppWidth(), FXGL.getAppHeight());
@@ -33,7 +36,7 @@ public class LevelMenu extends FXGLMenu {
         levelPane.getChildren().add(bg);
 
         // Levels
-        currentLevel = DatabaseManager.getPlayerLevel(currentUsername);
+        currentLevel = DatabaseManager.getPlayerLevel(Session.getUsername());
         loadLevelMenu(levelPane, currentLevel);
 
         // Back Button
@@ -50,7 +53,7 @@ public class LevelMenu extends FXGLMenu {
         backButton.setLayoutY(20);
 
         // Action to return to main menu
-        backButton.setOnAction(e -> FXGL.getSceneService().popSubScene());
+        backButton.setOnAction(e -> FXGL.getSceneService().pushSubScene(new MainMenu()));
 
         // Add button to the pane (after background but before levels)
         levelPane.getChildren().add(backButton);
@@ -59,12 +62,13 @@ public class LevelMenu extends FXGLMenu {
     }
 
     private void loadLevelMenu(Pane pane, int currentLevel) {
-
+        List<LevelData> levels = DatabaseManager.getAllLevelsWithPlayerLevel(Session.getUsername());
         double x = 100;
         double y = 150;
         int count = 0;
 
         for (LevelData level : levels) {
+            boolean isUnlocked = level.levelId <= currentLevel;
             ImageView levelImage = new ImageView();
             String imgPath = "level" + level.levelId
                     + (level.unlocked ? "_unlocked.png" : "_locked.png");
@@ -74,12 +78,13 @@ public class LevelMenu extends FXGLMenu {
             levelImage.setLayoutX(x);
             levelImage.setLayoutY(y);
 
-            if (level.unlocked) {
+            if (isUnlocked) {
                 levelImage.setOnMouseClicked(e -> {
-                    FXGL.set("quota", level.targetIncome);
+                    FXGL.set("quota", (int)level.targetIncome);
                     FXGL.set("maxCustomers", level.maxCustomers);
                     FXGL.set("time", level.timeLimit);
 
+                    CookingInaMain.setCurrentPlayerLevel(level.levelId);
                     FXGL.getGameController().startNewGame();
                     ((CookingInaMain) FXGL.getApp()).initUI();
                     FXGL.getSceneService().popSubScene();

@@ -31,7 +31,7 @@ public class ContainerTypeFactory {
                         5.0,
                         12.99,
                         2.0,
-                        1,
+                        3,
                         80,
                         80) ,
                         "rawQuekquek_container.png");
@@ -44,7 +44,7 @@ public class ContainerTypeFactory {
                         10.0,
                         5.0,
                         3.0,
-                        1,
+                        5,
                         80,
                         80),
                         "rawTempura_container.png");
@@ -67,7 +67,7 @@ public class ContainerTypeFactory {
                         5.0,
                         30.0,
                         20.0,
-                        1,
+                        7,
                         120,
                         120) , "manga_basket.png");
             case HALO_HALO: // DONE
@@ -79,7 +79,7 @@ public class ContainerTypeFactory {
                         5.0,
                         30.0,
                         20.0,
-                        1,
+                        10,
                         120,
                         120) , "ice_crusher.png");
             case BAGOONG:
@@ -95,7 +95,7 @@ public class ContainerTypeFactory {
                         5.0,
                         12.99,
                         2.0,
-                        1,
+                        2,
                         100,
                         100),
                         "orangeJuice_dispenser.png",
@@ -116,7 +116,7 @@ public class ContainerTypeFactory {
                         5.0,
                         12.99,
                         2.0,
-                        1,
+                        4,
                         100,
                         100),
                         "calamansiJuice_dispenser.png",
@@ -137,7 +137,7 @@ public class ContainerTypeFactory {
                         5.0,
                         12.99,
                         2.0,
-                        1,
+                        6,
                         100,
                         100),
                         "bukoJuice_dispenser.png",

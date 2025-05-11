@@ -27,6 +27,7 @@ public class LoginMenu extends FXGLMenu {
     private Text messageText;
     private String currentUsername;
     private UserCredentials uc;
+    private Session session = new Session();
 
     public LoginMenu() {
         super(MenuType.MAIN_MENU);
@@ -223,6 +224,7 @@ public class LoginMenu extends FXGLMenu {
 
         if (DatabaseManager.validateLogin(username, password)) {
             currentUsername = username;
+            Session.setUsername(username);
             uc = new UserCredentials(username, password);
             int savedLevel = DatabaseManager.getPlayerLevel(username);
             LocalDateTime joinDate = DatabaseManager.getJoinDate(username);
