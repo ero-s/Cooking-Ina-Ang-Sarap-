@@ -145,19 +145,29 @@ public class CookingInaMain extends GameApplication {
         spawnAssets();
         startTimer();
 
+        int quota = FXGL.geti("quota");
+        int timeLimit = FXGL.geti("time");
+        int maxCustomers = FXGL.geti("maxCustomers");
+
+        System.out.println("Game started with Quota: " + quota +
+                ", Time: " + timeLimit +
+                ", Max Customers: " + maxCustomers);
+
         FXGL.getWorldProperties().intProperty("income")
                 .addListener((obs, oldVal, newVal) -> {
-                    if (newVal.intValue() >= MAX_QUOTA) {
+                    if (newVal.intValue() >= quota) {
                         endGame();
                     }
                 });
-
-        startTimer();
     }
+
 
     @Override
     protected void initGameVars(Map<String, Object> vars) {
-        vars.put("income", 0); // initialize 'income' to avoid crash
+        vars.put("income", 0);
+        vars.put("quota", 100);
+        vars.put("time", 300);
+        vars.put("maxCustomers", 10);
     }
 
 
