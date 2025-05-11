@@ -6,6 +6,7 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.CookingInaMain;
 import com.example.cookingina.database.DatabaseManager;
+import com.example.cookingina.session.Session;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -226,6 +227,7 @@ public class LoginMenu extends FXGLMenu {
             CookingInaMain game = (CookingInaMain) FXGL.getApp();
             game.setCurrentPlayerLevel(savedLevel);
             game.setJoinDate(joinDate);
+            Session.setUsername(username);
             FXGL.getSceneService().pushSubScene(new MainMenu());
         } else {
             showError("Invalid username or password");

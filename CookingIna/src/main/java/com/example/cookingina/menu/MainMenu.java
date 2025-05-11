@@ -4,6 +4,7 @@ import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
+import com.example.cookingina.session.Session;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import com.almasb.fxgl.dsl.FXGL;
@@ -44,20 +45,16 @@ public class MainMenu extends FXGLMenu {
         btnExit.setPrefHeight(110);
 
         btnPlay.setOnAction(e -> {
-            FXGL.getGameController().startNewGame();
-            ((CookingInaMain) FXGL.getApp()).initUI();
-            FXGL.getSceneService().popSubScene();
-            FXGL.getGameController().resumeEngine();
+            String user = Session.getUsername();
+            FXGL.getSceneService().pushSubScene(new LevelMenu(user));
         });
 
         VBox vbox = new VBox(20, btnPlay, btnExit);
         vbox.setAlignment(Pos.CENTER);
 
-        // Add it to the root pane:
         Pane root = getContentRoot();
         root.getChildren().add(vbox);
 
-        // Bind the VBox’s layout so it’s always centered in 'root':
         vbox.layoutXProperty().bind(
                 root.widthProperty()
                         .subtract(vbox.widthProperty())

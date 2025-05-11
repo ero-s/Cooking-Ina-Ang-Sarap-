@@ -1,8 +1,12 @@
 // DatabaseManager.java
 package com.example.cookingina.database;
 
+import com.example.cookingina.model.LevelData;
+
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseManager {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/dbcookingina";
@@ -169,4 +173,76 @@ public class DatabaseManager {
             return false;
         }
     }
+
+    public static int getPlayerId(String username) {
+        String sql = "SELECT playerid FROM tblplayer WHERE username = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("playerid");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // not found
+    }
+
+    public static List<LevelData> getAllLevelsWithPlayerLevel(String username) {
+        List<LevelData> levels = new ArrayList<>();
+        int playerLevel = getPlayerLevel(username);
+
+        String sql = "SELECT levelid, targetincome, maxcustomers, timelimit, patiencelevel FROM tbllevel ORDER BY levelid ASC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                LevelData level = new LevelData();
+                level.levelId = rs.getInt("levelid");
+                level.targetIncome = rs.getDouble("targetincome");
+                level.maxCustomers = rs.getInt("maxcustomers");
+                level.timeLimit = rs.getInt("timelimit");
+                level.patienceLevel = rs.getInt("patiencelevel");
+                level.unlocked = level.levelId <= playerLevel;
+                levels.add(level);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return levels;
+    }
+
+    public static List<LevelData> getAllLevels(int currentLevel) {
+        List<LevelData> levels = new ArrayList<>();
+
+        String sql = "SELECT * FROM tbllevel ORDER BY levelid";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                LevelData data = new LevelData();
+                data.levelId = rs.getInt("levelid");
+                data.targetIncome = rs.getDouble("targetincome");
+                data.maxCustomers = rs.getInt("maxcustomers");
+                data.timeLimit = rs.getInt("timelimit");
+                data.patienceLevel = rs.getInt("patiencelevel");
+                data.unlocked = data.levelId <= currentLevel;  // determine unlock status
+
+                levels.add(data);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return levels;
+    }
+
 }

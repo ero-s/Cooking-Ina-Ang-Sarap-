@@ -31,9 +31,8 @@ public class ContainerTypeFactory {
                         5.0,
                         12.99,
                         2.0,
-                        1,
                         80,
-                        80) ,
+                        80,1) ,
                         "rawQuekquek_container.png");
             case TEMPURA:
                 return new Food(new StoreItem(

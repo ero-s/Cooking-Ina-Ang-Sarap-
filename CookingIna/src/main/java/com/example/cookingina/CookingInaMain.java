@@ -36,7 +36,7 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
 
 public class CookingInaMain extends GameApplication {
-    private int currentPlayerLevel = 1;
+    private int currentPlayerLevel = 10;
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
