@@ -49,15 +49,17 @@ public class SplashScene extends FXGLMenu {
 
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(evt -> {
-            UserCredentials creds = UserCredentials.load();
+            try {
+                UserCredentials creds = UserCredentials.load();
 
-            if (creds == null) {
-                // No saved credentials -> login
-                getSceneService().pushSubScene(new LoginMenu());
+                if (creds == null || !DatabaseManager.validateLogin(
+                        creds.getUsername(), creds.getPassword())) {
+                    // Invalid or no credentials
+                    getSceneService().pushSubScene(new LoginMenu());
+                    return;
+                }
 
-            } else if (DatabaseManager.validateLogin(
-                    creds.getUsername(), creds.getPassword())) {
-                // Auto-login success
+                // Valid credentials
                 int level = DatabaseManager.getPlayerLevel(creds.getUsername());
                 LocalDateTime joinDate = DatabaseManager.getJoinDate(creds.getUsername());
 
@@ -65,9 +67,8 @@ public class SplashScene extends FXGLMenu {
                 CookingInaMain.setJoinDate(joinDate);
                 getSceneService().pushSubScene(new MainMenu());
 
-            } else {
-                // Invalid saved credentials -> clear and go to login
-                new File("credentials.ser").delete();
+            } catch (Exception e) {
+                System.err.println("Error during auto-login: " + e.getMessage());
                 getSceneService().pushSubScene(new LoginMenu());
             }
         });

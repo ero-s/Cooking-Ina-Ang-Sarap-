@@ -4,6 +4,7 @@ import java.io.*;
 
 public class UserCredentials implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final String CREDENTIALS_PATH = System.getProperty("user.home") + "/.cooking-ina/credentials.ser";
 
     private String username;
     private String password;
@@ -13,27 +14,45 @@ public class UserCredentials implements Serializable {
         this.password = password;
     }
 
+    // [Keep existing constructor and getters]
+
+    public void save() {
+        File dir = new File(System.getProperty("user.home"), ".cooking-ina");
+        if (!dir.exists() && !dir.mkdirs()) {
+            System.err.println("Failed to create config directory");
+            return;
+        }
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream(CREDENTIALS_PATH))) {
+            oos.writeObject(this);
+        } catch (IOException e) {
+            System.err.println("Failed to save credentials: " + e.getMessage());
+        }
+    }
+
+    public static UserCredentials load() {
+        File file = new File(CREDENTIALS_PATH);
+        if (!file.exists()) {
+            return null;
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream(CREDENTIALS_PATH))) {
+            return (UserCredentials) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Failed to load credentials: " + e.getMessage());
+            // Delete corrupted file
+            file.delete();
+            return null;
+        }
+    }
+
     public String getUsername() {
         return username;
     }
 
     public String getPassword() {
         return password;
-    }
-
-    public void save() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("credentials.ser"))) {
-            oos.writeObject(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static UserCredentials load() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("credentials.ser"))) {
-            return (UserCredentials) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            return null;
-        }
     }
 }

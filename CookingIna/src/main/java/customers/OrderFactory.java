@@ -1,6 +1,8 @@
 
 package customers;
 
+import com.example.cookingina.CookingInaMain;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +22,8 @@ public class OrderFactory {
      */
 
     public static Order createRandomOrder() {
-        String item = MENU_ITEMS[RANDOM.nextInt(MENU_ITEMS.length)];
+        int safeUpperBound = Math.min(CookingInaMain.currentPlayerLevel, MENU_ITEMS.length);
+        String item = MENU_ITEMS[RANDOM.nextInt(safeUpperBound)];
         int quantity = RANDOM.nextInt(MAX_QUANTITY) + 1;
         return new Order(item, quantity);
     }
