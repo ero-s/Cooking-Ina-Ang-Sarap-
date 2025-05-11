@@ -36,7 +36,7 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
 import static com.example.cookingina.objects.entity.ContainerTypeFactory.TYPE.*;
 
 public class CookingInaMain extends GameApplication {
-    public static int currentPlayerLevel = 5;
+    public static int currentPlayerLevel;
     private final List<Fryer> fryers = new ArrayList<>();
     private final List<PaperTray> paperTrays = new ArrayList<>();
     private final List<MangoTray> mangoTrays = new ArrayList<>();
@@ -61,7 +61,7 @@ public class CookingInaMain extends GameApplication {
     private ProgressBar incomeBar;
 
     private Timeline timerTimeline;
-    public static final double TOTAL_TIME = 300; // seconds
+    public static final double TOTAL_TIME = 100; // seconds
     public static final double MAX_QUOTA = 100.0; // seconds
     public static final int MAX_CUSTOMERS = 10;
 

@@ -1,3 +1,8 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package com.example.cookingina.menu;
 
 import com.almasb.fxgl.app.scene.FXGLMenu;
@@ -7,126 +12,50 @@ import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.session.Session;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
-import com.almasb.fxgl.dsl.FXGL;
-import com.example.cookingina.CookingInaMain;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
-
-import static com.almasb.fxgl.dsl.FXGL.getGameController;
 
 public class MainMenu extends FXGLMenu {
     public MainMenu() {
         super(MenuType.MAIN_MENU);
-
-        initBackground();
-        initMenuUI();
+        this.initBackground();
+        this.initMenuUI();
     }
+
     private void initMenuUI() {
-        // Play Button
-        Button btnPlay = createGameButton("PLAY", "#2ecc71");
-        btnPlay.setPrefSize(300, 100);
-        btnPlay.setOnAction(e -> {
+        Button btnPlay = new Button();
+        btnPlay.setOnAction((evt) -> this.fireNewGame());
+        btnPlay.setStyle("-fx-background-image: url('assets/textures/play_button.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
+        btnPlay.setPrefWidth((double)300.0F);
+        btnPlay.setPrefHeight((double)200.0F);
+        Button btnExit = new Button();
+        btnExit.setOnAction((evt) -> FXGL.getGameController().exit());
+        btnExit.setStyle("-fx-background-image: url('assets/textures/exit_button.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
+        btnExit.setPrefWidth((double)190.0F);
+        btnExit.setPrefHeight((double)110.0F);
+        btnPlay.setOnAction((e) -> {
             String user = Session.getUsername();
             FXGL.getSceneService().pushSubScene(new LevelMenu(user));
         });
-
-        // Exit Button
-        Button btnExit = createGameButton("EXIT", "#e74c3c");
-        btnExit.setPrefSize(200, 80);
-        btnExit.setOnAction(evt -> getGameController().exit());
-
-        VBox vbox = new VBox(30, btnPlay, btnExit);
+        VBox vbox = new VBox((double)20.0F, new Node[]{btnPlay, btnExit});
         vbox.setAlignment(Pos.CENTER);
-
-        Pane root = getContentRoot();
+        Pane root = this.getContentRoot();
         root.getChildren().add(vbox);
-
-        vbox.layoutXProperty().bind(
-                root.widthProperty()
-                        .subtract(vbox.widthProperty())
-                        .divide(2)
-        );
-        vbox.layoutYProperty().bind(
-                root.heightProperty()
-                        .subtract(vbox.heightProperty())
-                        .divide(2)
-        );
+        vbox.layoutXProperty().bind(root.widthProperty().subtract(vbox.widthProperty()).divide(2));
+        vbox.layoutYProperty().bind(root.heightProperty().subtract(vbox.heightProperty()).divide(2));
     }
 
-    private Button createGameButton(String text, String color) {
-        Button button = new Button();
-        button.setGraphic(createButtonContent( text));
-
-        String baseStyle = "-fx-background-color: " + color + ";"
-                + "-fx-background-radius: 15;"
-                + "-fx-border-radius: 15;"
-                + "-fx-border-width: 0;"
-                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);"
-                + "-fx-cursor: hand;"
-                + "-fx-padding: 15 30 15 30;";
-
-        button.setStyle(baseStyle);
-
-        // Hover effects
-        button.setOnMouseEntered(e -> {
-            button.setStyle(baseStyle
-                    + "-fx-border-width: 3;"
-                    + "-fx-border-color: white;"
-                    + "-fx-background-color: derive(" + color + ", -20%);");
-        });
-
-        button.setOnMouseExited(e -> {
-            button.setStyle(baseStyle);
-        });
-
-        return button;
-    }
-
-
-
-    private StackPane createButtonContent( String text) {
-        StackPane container = new StackPane();
-        VBox content = new VBox(10, createButtonText(text));
-        content.setAlignment(Pos.CENTER);
-        container.getChildren().add(content);
-        return container;
-    }
-
-    private Text createButtonText(String text) {
-        Text textNode = new Text(text);
-
-        // Modern font stack with fallbacks
-        String fontStyle = "-fx-font-family: 'Segoe UI Black', 'Lucida Calligraphy', 'Roboto', sans-serif;"
-                + "-fx-font-size: 26px;"
-                + "-fx-font-weight: 700;"
-                + "-fx-letter-spacing: 1.2px;"
-                + "-fx-fill: white;"
-                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0.5, 1, 1);";
-
-        textNode.setStyle(fontStyle);
-        return textNode;
-    }
-
-
-    protected void initBackground(){
+    protected void initBackground() {
         Texture background = FXGL.texture("main_menu.png");
-        background.setFitHeight(getAppHeight());
-        background.setFitWidth(getAppWidth());
-
-        FadeTransition fade = new FadeTransition(Duration.seconds(1.5), background);
-        fade.setFromValue(0);
-        fade.setToValue(1);
+        background.setFitHeight((double)this.getAppHeight());
+        background.setFitWidth((double)this.getAppWidth());
+        FadeTransition fade = new FadeTransition(Duration.seconds((double)1.5F), background);
+        fade.setFromValue((double)0.0F);
+        fade.setToValue((double)1.0F);
         fade.play();
-
-        getContentRoot().getChildren().add(0, background);
+        this.getContentRoot().getChildren().add(0, background);
     }
 }
