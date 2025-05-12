@@ -225,7 +225,7 @@ public class LoginMenu extends FXGLMenu {
         if (DatabaseManager.validateLogin(username, password)) {
             currentUsername = username;
             Session.setUsername(username);
-            uc = new UserCredentials(username, password);
+            uc = new UserCredentials(username, password, DatabaseManager.getPlayerLevel(username));
             int savedLevel = DatabaseManager.getPlayerLevel(username);
             LocalDateTime joinDate = DatabaseManager.getJoinDate(username);
 
@@ -234,7 +234,7 @@ public class LoginMenu extends FXGLMenu {
             game.setCurrentUsername(username);
             game.setJoinDate(joinDate);
             Session.setUsername(username);
-            uc = new UserCredentials(username,password);
+            uc = new UserCredentials(username,password, DatabaseManager.getPlayerLevel(username));
             uc.save();
             FXGL.getSceneService().pushSubScene(new MainMenu());
         } else {

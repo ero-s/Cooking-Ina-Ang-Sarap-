@@ -131,6 +131,8 @@ public class CookingInaMain extends GameApplication {
         settings.setFullScreenFromStart(true);
         settings.setMainMenuEnabled(true);
 
+        settings.setAppIcon("icon.png");
+
 
 
         settings.setSceneFactory(new SceneFactory() {

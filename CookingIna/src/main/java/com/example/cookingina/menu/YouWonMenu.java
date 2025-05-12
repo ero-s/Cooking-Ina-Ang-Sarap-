@@ -32,15 +32,12 @@ public class YouWonMenu extends FXGLMenu {
         // Only show next level button if not at max level
         int maxLevel =10;
 
-        Button playAgain = new Button();
-        playAgain.setStyle("-fx-background-image: url('assets/textures/playAgain.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
-        playAgain.setPrefSize(430, 130);
-        playAgain.setOnAction(e -> {
+        Button mainMenu = new Button();
+        mainMenu.setStyle("-fx-background-image: url('assets/textures/mainMenu.png');-fx-background-size: cover;-fx-background-color: transparent;-fx-background-position: center center;");
+        mainMenu.setPrefSize(430, 130);
+        mainMenu.setOnAction(e -> {
+            FXGL.getSceneService().pushSubScene(new MainMenu());
 
-            FXGL.getGameController().startNewGame();
-            ((CookingInaMain) FXGL.getApp()).initUI();
-            FXGL.getSceneService().popSubScene();
-            FXGL.getGameController().resumeEngine();
         });
 
         Button nextLevel = new Button();
@@ -65,7 +62,7 @@ public class YouWonMenu extends FXGLMenu {
         }
 
 
-        VBox box = new VBox(10, nextLevel, playAgain);
+        VBox box = new VBox(10, nextLevel, mainMenu);
         centerElements(box);
 
         FadeTransition fade = new FadeTransition(Duration.seconds((double)1.5F), box);

@@ -49,7 +49,7 @@ public class MainMenu extends FXGLMenu {
         btnLogout.setOnAction(e -> {
             // Clear credentials and session
             new File("credentials.ser").delete();
-            uc = new UserCredentials("","");
+            uc = new UserCredentials("","", 0);
             uc.save();
             Session.clear();
             // Return to login

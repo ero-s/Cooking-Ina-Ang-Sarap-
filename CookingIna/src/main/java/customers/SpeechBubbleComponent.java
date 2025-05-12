@@ -53,12 +53,10 @@ public class SpeechBubbleComponent extends Component {
 
         bubbleRoot.getChildren().addAll(bg, pointer);
 
-        // Patience bar background
         Rectangle barBG = new Rectangle(width, 6);
         barBG.setFill(Color.GRAY);
         barBG.setTranslateY(-12);
 
-        // Patience bar foreground
         patienceBar = new Rectangle(width, 6);
         patienceBar.setFill(Color.LIMEGREEN);
         patienceBar.setTranslateY(-12);
@@ -66,7 +64,6 @@ public class SpeechBubbleComponent extends Component {
         bubbleRoot.getChildren().addAll(barBG, patienceBar);
         startTime = System.currentTimeMillis();
 
-        // Icons for orders
         for (int i = 0; i < orders.size(); i++) {
             Order o = orders.get(i);
             String key = o.getItem() + "_" + i;
@@ -108,7 +105,6 @@ public class SpeechBubbleComponent extends Component {
         );
     }
 
-    /** Removes the icon for a served item and checks if all orders are done */
     public void markServed(String baseItem) {
         // Remove one icon
         String matchKey = icons.keySet().stream()
@@ -129,7 +125,6 @@ public class SpeechBubbleComponent extends Component {
         }
     }
 
-    /** Shows a popup with earned price based on remaining patience */
     public void showPricePopup(int basePrice) {
         int adjustedPrice = (int) (basePrice * patience);
         FXGL.inc("income", adjustedPrice);
@@ -152,7 +147,6 @@ public class SpeechBubbleComponent extends Component {
         ft.setOnFinished(e -> bubbleRoot.getChildren().remove(popup));
     }
 
-    /** Shows a deduction popup when losing money */
     public void showDeductionPopup(int amount) {
         FXGL.inc("income", -amount);
         Text popup = new Text("-" + amount);
@@ -174,11 +168,7 @@ public class SpeechBubbleComponent extends Component {
     }
 
     private void removeCustomerEntity() {
-        // 1) Remove the speech bubble itself
         UIController.components.remove(entity.getComponent(CustomerComponent.class));
-
-        // 2) Remove the CustomerComponent so UIController lookup stops
-        // 3) Finally remove the whole entity
         entity.removeFromWorld();
     }
 }

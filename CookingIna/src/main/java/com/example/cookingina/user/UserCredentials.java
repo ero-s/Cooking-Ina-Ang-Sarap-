@@ -7,10 +7,12 @@ public class UserCredentials implements Serializable {
 
     private String username;
     private String password;
+    private int maxLevel;
 
-    public UserCredentials(String username, String password) {
+    public UserCredentials(String username, String password, int maxLevel) {
         this.username = username;
         this.password = password;
+        this.maxLevel = maxLevel;
     }
 
     public void save() {
