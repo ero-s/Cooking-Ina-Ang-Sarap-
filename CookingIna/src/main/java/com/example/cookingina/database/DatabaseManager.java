@@ -182,6 +182,25 @@ public class DatabaseManager {
         return null;
     }
 
+    public static Integer getMaxCustomers(int levelId) {
+        String sql = "SELECT maxcustomers FROM tbllevel WHERE levelid = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, levelId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("maxcustomers");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static int registerUser(String username, String password) {
         String sql = "INSERT INTO tblplayer (username, password, displayname) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();

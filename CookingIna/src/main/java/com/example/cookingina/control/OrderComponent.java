@@ -42,24 +42,18 @@ public class OrderComponent extends Component {
 
         for (Entity customer : FXGL.getGameWorld().getEntitiesByType(CookingInaMain.EntityType.CUSTOMER)) {
             if (customer.isColliding(entity) && customer.hasComponent(SpeechBubbleComponent.class)) {
-                served = true;
+                served = serveCustomer(customer);
+                if(served){
+                    equipment.setOccupied(false);
+                    entity.removeFromWorld();
+                    FXGL.getGameWorld()
+                            .getEntitiesByComponent(CookingComponent.class)
+                            .stream()
+                            .filter(e -> e.getComponent(CookingComponent.class).getEquipment() == equipment)
+                            .forEach(Entity::removeFromWorld);
+                    break;
+                }
 
-                // Free the equipment immediately
-                equipment.setOccupied(false);
-
-                // Serve one matching order, update UI and income
-                serveCustomer(customer);
-
-                // Remove this ready-item entity
-                entity.removeFromWorld();
-
-                // Also remove any cooking entity tied to this equipment
-                FXGL.getGameWorld()
-                        .getEntitiesByComponent(CookingComponent.class)
-                        .stream()
-                        .filter(e -> e.getComponent(CookingComponent.class).getEquipment() == equipment)
-                        .forEach(Entity::removeFromWorld);
-                break;
             }
         }
 
@@ -81,7 +75,7 @@ public class OrderComponent extends Component {
         }
     }
 
-    private void serveCustomer(Entity customer) {
+    private boolean serveCustomer(Entity customer) {
         String servedItem = getServedItemFromTexture();
         CustomerComponent cc = customer.getComponent(CustomerComponent.class);
         SpeechBubbleComponent sb = customer.getComponent(SpeechBubbleComponent.class);
@@ -99,9 +93,10 @@ public class OrderComponent extends Component {
                 int price = getPrice(servedItem);
                 FXGL.inc("income", price);
                 sb.showPricePopup(price);
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     private int getPrice(String itemName) {

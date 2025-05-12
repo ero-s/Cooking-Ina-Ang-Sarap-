@@ -9,11 +9,13 @@ import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.texture.Texture;
 import com.example.cookingina.CookingInaMain;
+import com.example.cookingina.database.DatabaseManager;
 import com.example.cookingina.objects.entity.*;
 import com.example.cookingina.objects.entity.equipment.BeverageDispenser;
 import com.example.cookingina.objects.entity.equipment.Fryer;
 import com.example.cookingina.objects.entity.equipment.IceCrusher;
 import com.example.cookingina.objects.entity.equipment.MangoTray;
+import com.example.cookingina.session.Session;
 import customers.CustomerComponent;
 import customers.Order;
 import customers.SpeechBubbleComponent;
@@ -299,13 +301,13 @@ public class UIController extends Component {
     }
 
     private boolean spawnPaused = false;
+    int customerCounter = 0;
 
     public void spawnCustomerAtRandomIntervals() {
         FXGL.getGameTimer().runAtInterval(this::scheduleNextSpawn, Duration.seconds(1));
     }
 
     private void scheduleNextSpawn() {
-
         List<String> imageName = Arrays.asList(
                 "Austine", "Krizza", "Kyle", "Sherielyn", "Vince", "Christian", "Shervin"
         );
@@ -354,6 +356,8 @@ public class UIController extends Component {
             return false;
         }
 
+
+
         boolean goRight = random.nextBoolean();
         double startX = goRight ? -w : sceneW + w;
         String dir = goRight ? "RIGHT" : "LEFT";
@@ -368,7 +372,6 @@ public class UIController extends Component {
 
         CustomerComponent cc = ent.getComponent(CustomerComponent.class);
         components.add(cc);
-
         System.out.println("Spawned customer → targetX=" + targetX + "  Active: " + components.size());
         return true;
     }

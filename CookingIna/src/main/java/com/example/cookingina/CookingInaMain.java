@@ -74,7 +74,7 @@ public class CookingInaMain extends GameApplication {
     private Timeline timerTimeline;
     public static final double TOTAL_TIME = 100; // seconds
     public static final double MAX_QUOTA = 100.0; // seconds
-    public static final int MAX_CUSTOMERS = 10;
+    public static final int MAX_CUSTOMERS = DatabaseManager.getMaxCustomers(DatabaseManager.getPlayerLevel(Session.getUsername()));
 
     private static LocalDateTime  joinDate;
 
@@ -440,7 +440,7 @@ public class CookingInaMain extends GameApplication {
         }, Duration.seconds(1));
     }
 
-    private void gameOver() {
+    public void gameOver() {
         resetGameState();
 
 
@@ -479,7 +479,7 @@ public class CookingInaMain extends GameApplication {
 
         incomeBar.setCurrentValue(0);
         incomeBar.setMinValue(0);
-        incomeBar.setMaxValue(MAX_QUOTA);
+        incomeBar.setMaxValue(DatabaseManager.getTargetIncome(DatabaseManager.getPlayerLevel(Session.getUsername())));
 
         // Bind world property 'income' -> bar value
         FXGL.getWorldProperties().intProperty("income")

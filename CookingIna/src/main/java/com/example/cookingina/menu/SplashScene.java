@@ -66,7 +66,6 @@ public class SplashScene extends FXGLMenu {
                 LocalDateTime joinDate = DatabaseManager.getJoinDate(creds.getUsername());
 
                 CookingInaMain.setCurrentPlayerLevel(level);
-                CookingInaMain.setJoinDate(joinDate);
                 getSceneService().pushSubScene(new MainMenu());
 
             } catch (Exception e) {
