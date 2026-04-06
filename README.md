@@ -4,7 +4,10 @@
   <img src="image2.png" width="300" alt="Cooking Ina Ang Sarap Desktop Game Screenshot">
   <img src="image3.png" width="300" alt="Cooking Ina Ang Sarap Desktop Game Screenshot">
   <img src="image4.png" width="300" alt="Cooking Ina Ang Sarap Desktop Game Screenshot">
+  <img src="image5.png" width="300" alt="Cooking Ina Ang Sarap Desktop Game Screenshot">
 </p>
+
+
 Members:
  - Fernandez, Christian Luis C.
  - Guadiana, Sherielyn C.
