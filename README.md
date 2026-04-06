@@ -1,6 +1,9 @@
 # CookingIna
 <p align="center">
-  <img src="ultimate-tic-tac-toe.png" width="300" alt="Ultimate Tic-Tac-Toe Mobile Application Screenshot">
+  <img src="image1.png" width="300" alt="Cooking Ina Ang Sarap Desktop Game Screenshot">
+  <img src="image2.png" width="300" alt="Cooking Ina Ang Sarap Desktop Game Screenshot">
+  <img src="image3.png" width="300" alt="Cooking Ina Ang Sarap Desktop Game Screenshot">
+  <img src="image4.png" width="300" alt="Cooking Ina Ang Sarap Desktop Game Screenshot">
 </p>
 Members:
  - Fernandez, Christian Luis C.
